@@ -5,7 +5,7 @@ import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaFacebook, FaTwitter, FaLinkedin 
 const Footer = () => {
   return (
     <div>
-      <footer className="w-full bg-lime-900 text-white py-10">
+      <footer className="w-full bg-gray-800 text-white py-10 rounded-md">
         <div className="container mx-auto px-4 md:px-6 flex flex-wrap justify-between">
           {/* Logo and Contact Info */}
           <div className="flex flex-col space-y-4">

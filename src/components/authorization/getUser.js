@@ -21,5 +21,5 @@ const getLoggedInUserFromToken = async () => {
   };
 
 export {
-    getUser,getLoggedInUserFromToken
+    getUser, getLoggedInUserFromToken
 }
