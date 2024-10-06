@@ -2,7 +2,7 @@ import { Button, Navbar } from "flowbite-react";
 import Logo from "../common/Logo";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Tutor, TutorSignIn, TutorProfile, TutorDashboard } from "../../api/link";
+import { Tutor, TutorSignIn, TutorProfile, TutorDashboard, CreateCourse, ManageCourse } from "../../api/link";
 import { useSelector } from "react-redux";
 import MenuDropDown from "./MenuDropDown";
 
@@ -16,8 +16,8 @@ function NavBar() {
   ];
   const tutornav = [
     { name: "Home", href: Tutor },
-    { name: "Manage Course" },
-    { name: "Create Course" },
+    { name: "Manage Course", href: ManageCourse },
+    { name: "Create Course", href: CreateCourse },
     { name: "Dashboard", href: TutorDashboard },
     { name: "Profile", href: TutorProfile },
   ];

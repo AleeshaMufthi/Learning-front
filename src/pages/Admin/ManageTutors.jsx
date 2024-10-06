@@ -6,7 +6,7 @@ import TableList from "../../components/admin/TableList";
 export default function ManageTutors() {
     return (
       <Layout>
-        <PageInfo admin />
+        <PageInfo admin pageName={"Manage Tutors"}/>
         <div className="flex flex-col gap-10">
           <TableList tutor />
         </div>

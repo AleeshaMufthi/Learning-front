@@ -5,6 +5,7 @@ import Home from "../pages/Admin/Home";
 import NotFound from "../pages/NotFound";
 import ManageUsers from "../pages/Admin/ManageUsers";
 import ManageTutors from "../pages/Admin/ManageTutors";
+import ManageCategory from "../pages/Admin/ManageCategory";
 import { setAdmin, removeAdmin } from "../feautures/adminSlice";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
@@ -50,7 +51,7 @@ export default function adminRoutes() {
             <Route path="/" element={<Home />} />
             <Route path="/users" element={<ManageUsers />} />
             <Route path="/tutors" element={<ManageTutors />} />
-
+            <Route path="/category" element={<ManageCategory />} />
             <Route path="/admins" element={<ManageAdmin />} />
           </Route>
           <Route path="*" element={<NotFound />} />

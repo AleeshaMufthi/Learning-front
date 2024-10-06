@@ -28,32 +28,21 @@ const GoogleSignIn = () => {
       const userInfo = await userInfoResponse.json();
       console.log("User Info:", userInfo);
       
-      const { email } = userInfo; // Extract the email
+      const { name, email } = userInfo; // Extract the email
 
       // Send the email to your backend for authentication
-      const response = await googleAuthAPI({ email });
+      const response = await googleAuthAPI({ name, email });
 
       if (response.status === 200) {
         console.log("Backend Response:", response.data);
 
         const { token, user } = response.data;
 
-        // // Store tokens and user info
-        // localStorage.setItem('refreshToken', token);
-        // setUser(user);
-
-        // // Redirect to the user page
-        // navigate('/user');
-        localStorage.setItem("isAuth", true);
-          toast.success(
-            `Welcome back To Brain Booster!`,
-            {
-              duration: 6000,
-            }
-          );
+        localStorage.setItem("access token", token);
           dispatch(
-            setUser({ ...response.data?.user, userId: response.data.user._id })
+            setUser({ ...user, userId: user._id })
           );
+          toast.success(`Welcome back to Brain Booster!`);
           navigate("/user")
       } else {
         toast.error('An error occurred during login.');

@@ -10,10 +10,13 @@ import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getSignedInTutorAPI } from "../api/tutor";
 import { setTutor, removeTutor } from "../feautures/tutorSlice";
-import Dashboard from "../pages/Tutor/Dashboard";
-import Profile from "../pages/Tutor/Profile";
-import ForgetPassword from "../pages/Tutor/ForgetPassword";
-import ResetPassword from "../pages/Tutor/ResetPassword";
+import Dashboard from "../pages/Tutor/Dashboard.jsx";
+import Profile from "../pages/Tutor/Profile.jsx";
+import ForgetPassword from "../pages/Tutor/ForgetPassword.jsx";
+import ResetPassword from "../pages/Tutor/ResetPassword.jsx";
+import CreateCourse from "../pages/Tutor/CreateCourse.jsx";
+import CourseLesson from "../pages/Tutor/CourseLesson.jsx";
+import ManageCourses from "../pages/Tutor/ManageCourses.jsx";
 
 export default function TutorRoutes() {
 
@@ -54,6 +57,9 @@ export default function TutorRoutes() {
           <Route path="signup" element={<SignUp />} />
           <Route path="forgetPassword" element={<ForgetPassword />} />
           <Route path="resetPassword" element={<ResetPassword />} />
+          <Route path="courses/create" element={<CreateCourse />} />
+          <Route path="courses" element={<ManageCourses />} />
+          <Route path="courses/:id" element={<CourseLesson />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import { blockTutorAPI, blockUserAPI, getAllTutorsAPI, getAllUsersAPI, unBlockTutorAPI, unBlockUserAPI } from "../../api/admin";
+import { blockTutorAPI, blockUserAPI, unBlockTutorAPI, unBlockUserAPI, getAllTutorsAPI, getAllUsersAPI } from "../../api/admin";
 import timeAgo from "../../utils/timeAgo";
 
 const AdminList = () => {
+
     const [users, setUsers] = useState([]);
     const [updateData, setUpdateData] = useState(false);
+    
     useEffect(() => {
       const fetchData = async () => {
         try {

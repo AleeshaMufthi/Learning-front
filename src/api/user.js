@@ -1,5 +1,6 @@
 import API from ".";
 
+// authentication
 const userSignInAPI = (body) => API.post("/auth/signin", body);
 const userSignUpAPI = (body) => API.post("/auth/signup", body);
 const userOtpSendAPI = (body) => API.post("/auth/sendotp", body);
@@ -13,7 +14,13 @@ const googleAuthAPI = (body) => API.post("/auth/google", body);
 
 // user profile
 const getUserDetailsAPI = () => API.get("/user/details");
-const updateUserDetailsAPI = (body) => API.post("/user/details", body);
+const updateUserDetailsAPI = (formData) => API.post("/user/details", formData, { headers: { "Content-Type": "multipart/form-data" }});
+
+// courses
+const getCourseDetailsAPI = (id, route = "/user/courses/enroll/") =>
+    API.get(route + id);
+
+const enrollCourseAPI = (body) => API.post("/user/courses/enroll", body);
 
 export {
     userSignInAPI,
@@ -28,4 +35,6 @@ export {
     getUserDetailsAPI,
     updateUserDetailsAPI,
     googleAuthAPI,
+    getCourseDetailsAPI,
+    enrollCourseAPI,
 }

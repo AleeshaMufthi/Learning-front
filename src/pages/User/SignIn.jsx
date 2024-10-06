@@ -7,6 +7,7 @@ import { setUser } from "../../feautures/userSlice";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import GoogleSignIn from "./GoogleSignIn";
+import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 
 
 export default function SignIn() {
@@ -56,6 +57,8 @@ export default function SignIn() {
       .min(8,"Password must be atleast 8 charecters")
       .required("Password is required")
     })
+
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleSignIn = (values, { setSubmitting, setFieldError }) => {
       userSignInAPI(values)
@@ -130,7 +133,7 @@ export default function SignIn() {
                     />
                   </div>
 
-                  <div>
+                  <div className="relative">
                     <label
                       htmlFor="password"
                       className="block text-sm font-medium text-gray-700"
@@ -140,7 +143,7 @@ export default function SignIn() {
                     <Field
                       id="password"
                       name="password"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       placeholder="Enter your password"
                       className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-green-600 focus:border-green-600"
                     />
@@ -149,6 +152,18 @@ export default function SignIn() {
                       component="div"
                       className="text-red-500 text-sm"
                     />
+
+                <div
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <AiFillEye className="text-gray-700" size={20} />
+                  ) : (
+                    <AiFillEyeInvisible className="text-gray-700" size={20} />
+                  )}
+                </div>
+
                   </div>
 
                   <div className="text-sm mt-2">

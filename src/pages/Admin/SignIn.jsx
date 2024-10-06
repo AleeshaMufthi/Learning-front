@@ -6,6 +6,8 @@ import { adminSignInAPI } from "../../api/admin";
 import { useDispatch, useSelector } from "react-redux";
 import { setAdmin } from "../../feautures/adminSlice";
 import Navbar from "../../components/admin/Navbar";
+import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
+
 
 export default function SignIn() {
     const admin = useSelector((state) => state.admin);
@@ -46,6 +48,9 @@ export default function SignIn() {
       email: "",
       password: "",
     });
+
+    const [showPassword, setShowPassword] = useState(false);
+
     const navigate = useNavigate();
     const [error, setError] = useState("");
     const handleSignIn = (e) => {
@@ -114,6 +119,7 @@ export default function SignIn() {
                     }
                     className="block w-full nexa-font rounded-md border-0 py-1.5 px-1 text-grey-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-grey-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
+
                 </div>
               </div>
               <div>
@@ -126,11 +132,11 @@ export default function SignIn() {
                   </label>
                 
                 </div>
-                <div className="mt-1">
+                <div className="mt-1 relative">
                   <input
                     id="password"
                     name="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     autoComplete="current-password"
                     onChange={(e) =>
                       setFormValues({
@@ -139,9 +145,22 @@ export default function SignIn() {
                       })
                     }
                     required
-                    className="block nexa-font w-full rounded-md border-0 py-1.5 px-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="block nexa-font w-full rounded-md border-0 py-1.5 px-1 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
+
+                <div
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <AiFillEye className="text-gray-700" size={20} />
+                  ) : (
+                    <AiFillEyeInvisible className="text-gray-700" size={20} />
+                  )}
                 </div>
+
+                </div>
+
               </div>
               <div className="flex justify-center">
                 <span className="text-red-400 text-center font-bold nexa-font">

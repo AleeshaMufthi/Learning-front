@@ -4,7 +4,7 @@ import Logo from "../common/Logo";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import MenuDropDown from "./MenuDropDown";
-import { User, UserSignIn, Profile } from "../../api/link";
+import { User, UserSignIn, Profile, Tutor, Explore } from "../../api/link";
 
 
 function NavBar() {
@@ -12,14 +12,14 @@ function NavBar() {
     const user = useSelector((state) => state.user);
     const NormalNav = [
       { name: "Home", href: User },
-      { name: "Explore" },
-      { name: "Teach"},
+      { name: "Explore", href: Explore  },
+      { name: "Teach", href: Tutor},
       { name: "Contact"},
     ];
   
     const UserNav = [
       { name: "Home", href: User },
-      { name: "Explore" },
+      { name: "Explore", href: Explore },
       { name: "Enrolled" },
       { name: "Profile", href: Profile },
     ];

@@ -6,6 +6,7 @@ import LoginPageImg from '../../assets/login-page-img.webp'
 import * as Yup from 'yup';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { Toaster, toast } from "react-hot-toast";
+import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 
 const SignUpSchema = Yup.object().shape({
   name: Yup.string()
@@ -40,6 +41,7 @@ export default function SignUp() {
   const [isLoading, setIsLoading] = useState(false);
   const [timer, setTimer] = useState(null);
   const [otpSection, setOtpSection] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -194,31 +196,55 @@ export default function SignUp() {
                       />
                       <ErrorMessage name="email" component="div" className="text-red-500 text-sm" />
                     </div>
-                    <div>
+                    <div className="relative">
                       <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                         Password
                       </label>
                       <Field
                         id="password"
                         name="password"
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         placeholder="Enter your password"
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-green-600 focus:border-green-600"
                       />
                       <ErrorMessage name="password" component="div" className="text-red-500 text-sm" />
+
+                      <div
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <AiFillEye className="text-gray-700" size={20} />
+                  ) : (
+                    <AiFillEyeInvisible className="text-gray-700" size={20} />
+                  )}
+                </div>
+                
                     </div>
-                    <div>
+                    <div className="relative">
                       <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
                         Confirm Password
                       </label>
                       <Field
                         id="confirmPassword"
                         name="confirmPassword"
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         placeholder="Confirm your password"
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-green-600 focus:border-green-600"
                       />
                       <ErrorMessage name="confirmPassword" component="div" className="text-red-500 text-sm" />
+
+                      <div
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <AiFillEye className="text-gray-700" size={20} />
+                  ) : (
+                    <AiFillEyeInvisible className="text-gray-700" size={20} />
+                  )}
+                </div>
+
                     </div>
                     <div className="flex justify-center mt-2">
                       <span className="text-red-400 text-center font-bold">

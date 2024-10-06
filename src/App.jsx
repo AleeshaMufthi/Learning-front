@@ -10,7 +10,7 @@ function App() {
   
 
   return (
-    <div className='bg-lime-300'>
+    <div className='bg-gray-300'>
       <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/*" element={<UserRoutes />} />

@@ -1,8 +1,8 @@
 const CardOne = ({ title, count, percentage, type, tutor = false }) => {
     return (
-      <div className="rounded-xl border border-stroke bg-lime-600 py-6 px-12 shadow-default dark:border-strokedark dark:bg-boxdark">
+      <div className="rounded-xl border border-stroke bg-gray-600 py-6 px-12 shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex h-15 w-15 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4">
-          {type == "eye" && (
+          { type == "eye" && (
             <svg
               className="fill-primary dark:fill-white"
               width="25"
@@ -21,7 +21,7 @@ const CardOne = ({ title, count, percentage, type, tutor = false }) => {
               />
             </svg>
           )}
-          {type == "purchase" && (
+          { type == "purchase" && (
             <svg
               className="fill-primary dark:fill-white"
               width="20"

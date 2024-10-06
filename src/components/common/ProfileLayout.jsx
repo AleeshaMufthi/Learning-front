@@ -110,8 +110,7 @@ const sidebarMenu = [
                     <li className="flex pl-10">
                       <h1 className="text-3xl font-bold"></h1>
                     </li>
-                    <li className="flex w-full flex-col pb-10 items-center justify-center">
-                      <UserCircleIcon className="w-30 text-gray-300" />
+                    <li className="flex w-full flex-col pb-5 items-center justify-center">
                       <h1 className="font-extra-bold text-md capitalize">
                         {user.name}
                       </h1>
@@ -138,14 +137,7 @@ const sidebarMenu = [
                       </li>
                     ))}
                   </ul>
-                  <ul
-                    role="list"
-                    className="border-b overflow-hidden mt-10 py-5 border rounded-lg border-gray-200 text-sm font-medium text-gray-900"
-                  >
-                    <li className="flex pl-5">
-                      <h1 className="text-3xl font-bold"></h1>
-                    </li>
-                  </ul>
+                  
                 </div>
                 <div className="lg:col-span-3">{children}</div>
               </div>

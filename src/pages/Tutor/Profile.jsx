@@ -78,9 +78,9 @@ function classNames(...classes) {
       <NavBar />
       <ProfileLayout tutor>
         <PageInfo pageName={"profile"} tutor />
-        <div className="isolate bg-gray-300 px-6 lg:px-8">
+        <div className="isolate bg-gray-100 px-6 lg:px-8 py-8">
           <div className="mx-auto max-w-2xl relative text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
+            <h2 className="text-4xl font-extrabold text-gray-800 tracking-tight sm:text-5xl mb-6">
               Manage Profile
             </h2>
             
@@ -163,9 +163,6 @@ function classNames(...classes) {
                   className="block text-sm font-semibold leading-6 text-gray-900"
                 >
                   Age
-                  <span className="text-xs ml-3 mb-1 text-gray-400 text-end">
-                    (optional)
-                  </span>
                 </label>
                 <div className="mt-2">
                   <input
@@ -193,9 +190,6 @@ function classNames(...classes) {
                   className="block text-sm font-semibold leading-6 text-gray-900"
                 >
                   Qualification
-                  <span className="text-xs ml-3 mb-1 text-gray-400 text-end">
-                    (optional)
-                  </span>
                 </label>
                 <div className="mt-2 5">
                   <div className="relative flex items-center">

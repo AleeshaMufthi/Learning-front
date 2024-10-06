@@ -4,6 +4,7 @@ import Banner from "../../components/common/Banner";
 import TutorAdvantages from "../../components/tutor/TutorAdvantages";
 import Footer from "../../components/common/Footer";
 import NavBar from "../../components/tutor/NavBar";
+import TopTutors from "../../components/tutor/TopTutors";
 
 export default function Home() {
     return (
@@ -11,7 +12,6 @@ export default function Home() {
       <NavBar />
         <div className="pt-10 px-1 md:px-10 sm:px-5 bg-gray-200/95 pb-24">
           <Banner /> 
-         
           <div className="flex justify-center px-3 mt-10">
             <Card className="max-w-4xl mb-10">
               <h5 className="mb-2 nexa-font text-3xl font-bold text-amber-500 text-center dark:text-white">
@@ -49,7 +49,11 @@ export default function Home() {
               </div>
             </Card>
           </div>
+
           <TutorAdvantages />
+          <div className="flex items-stretch gap-1 md:gap-5 flex-wrap md:flex-nowrap md:flex-row">
+            <TopTutors className="flex-1" />
+          </div>
           <Footer tutor />
         </div>
       </>

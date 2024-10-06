@@ -20,6 +20,9 @@ function classNames(...classes) {
     const [userDetails, setUserDetails] = useState({});
     const [error, setError] = useState(null);
     const [agreed, setAgreed] = useState(false);
+    const [imagePreview, setImagePreview] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
+
     const {
       register,
       handleSubmit,
@@ -29,6 +32,7 @@ function classNames(...classes) {
     } = useForm({
       resolver: yupResolver(profileSchema),
     });
+
     useEffect(() => {
       console.log("mounted");
       getUserDetailsAPI()
@@ -49,20 +53,24 @@ function classNames(...classes) {
         })
         .catch((err) => console.log(err));
     }, []);
+
     const handleOnSubmit = (data) => {
       setError(null);
+      
       data.visible = agreed;
-      const newData = JSON.parse(JSON.stringify(data));
-      const oldData = JSON.parse(JSON.stringify(userDetails));
-      const sortedNewData = JSON.stringify(newData, Object.keys(newData).sort());
-      const sortedOldData = JSON.stringify(oldData, Object.keys(oldData).sort());
-      if (sortedNewData === sortedOldData) {
-        setError(
-          "No change detected. Please review your entered data and make any necessary modifications before submitting."
-        );
-        return;
+
+      const formData = new FormData()
+
+      formData.append('name', data.name)
+      formData.append('age',data.age)
+      formData.append('about', data.about)
+      formData.append('address', data.address)
+      formData.append('visible',data.visible)
+
+      if (selectedImage) {
+        formData.append('profilePicture', selectedImage) // Append the selected image
       }
-      updateUserDetailsAPI(data)
+      updateUserDetailsAPI(formData)
         .then((response) => {
           toast.success("Profile Updated Successfully", {
             duration: 3000,
@@ -74,12 +82,25 @@ function classNames(...classes) {
           setError(err?.response.errors.message);
         });
     };
+
+    const handleImageChange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        setSelectedImage(file);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+
     return (
       <>
       <NavBar />
       <ProfileLayout>
         <PageInfo pageName={"profile"} />
-        <div className="isolate bg-gray-300 px-6 lg:px-8">
+        <div className="isolate bg-gray-300 px-6 lg:px-8 rounded-md pt-10 pb-10">
           <div className="mx-auto max-w-2xl relative text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
             Customize Profile 
@@ -129,6 +150,31 @@ function classNames(...classes) {
             onSubmit={ handleSubmit(handleOnSubmit)}
             className="mx-auto mt-16 max-w-xl sm:mt-20"
           >
+
+<div className="mb-6">
+              <label className="block text-sm font-semibold leading-6 text-gray-900">Profile Picture</label>
+              <div className="mt-2">
+                {imagePreview ? (
+                  <img
+                    src={imagePreview}
+                    alt="Profile Preview"
+                    className="mb-4 h-32 w-32 object-cover rounded-full mx-auto"
+                  />
+                ) : (
+                  <div className="mb-4 h-32 w-32 object-cover rounded-full bg-gray-200 mx-auto"></div>
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  id="contained-button-file"
+                  multiple
+                  onChange={handleImageChange}
+                  disabled={!editMode}
+                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                />
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
               <div className="sm:col-span-2">
                 <label

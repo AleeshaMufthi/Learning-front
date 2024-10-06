@@ -14,6 +14,8 @@ import { setUser, removeUser } from '../feautures/userSlice'
 import { PrivateUser } from '../components/authorization/privateAccess.jsx'
 import NotFound from '../pages/NotFound.jsx'
 import Profile from '../pages/User/Profile.jsx'
+import Explore from '../pages/User/Explore.jsx'
+import Course from '../pages/User/Course.jsx'
 
 
 export default function UserRoutes() {
@@ -56,7 +58,8 @@ export default function UserRoutes() {
         <Route path="/forgetPassword" element={<ForgetPassword />} />
         <Route path="/resetPassword" element={<ResetPassword />} />
         <Route path="user/profile" element={<Profile />} />
-        {/* <Route path="/sendotp" element={<Otp />} /> */}
+        <Route path="explore" element={<Explore />} />
+        <Route path="courses/:id" element={<Course />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>

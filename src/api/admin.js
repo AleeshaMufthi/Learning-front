@@ -6,8 +6,8 @@ const adminOtpSendAPI = (body) => API.post("./auth/admin/sendotp", body);
 const getSignedInAdminAPI = () => API.get("/auth/admin/restore");
 const handleAdminLogOutAPI = () => API.delete("/auth/admin/logout");
 
-// full user api
-const getAllUsersAPI = (route = "/admin/users") => {
+// user list
+  const getAllUsersAPI = (route = "/admin/users") => {
     return API.get(route);
   };
   const blockUserAPI = (userId) => {
@@ -16,6 +16,8 @@ const getAllUsersAPI = (route = "/admin/users") => {
   const unBlockUserAPI = (userId) => {
     return API.post("/admin/users/unblock", { userId });
   };
+
+
   // tutors list
   const getAllTutorsAPI = (route = "/admin/tutors") => {
     return API.get(route);
@@ -25,6 +27,20 @@ const getAllUsersAPI = (route = "/admin/users") => {
   };
   const unBlockTutorAPI = (userId) => {
     return API.post("/admin/tutors/unblock", { userId });
+  };
+
+  
+  // category
+  const createCategoryAPI = (body, route = "/admin/category") => {
+    return API.post(route, body);
+  };
+
+  const updateCategoryAPI = (id, body, route = `/admin/category/${id}`) => {
+    return API.put(route, body)
+  };
+
+  const deleteCategoryAPI = (id, route = `/admin/category/${id}`) => {
+    return API.delete(route);
   };
 
   export {
@@ -39,4 +55,7 @@ const getAllUsersAPI = (route = "/admin/users") => {
     getAllTutorsAPI,
     blockTutorAPI,
     unBlockTutorAPI,
+    createCategoryAPI,
+    updateCategoryAPI,
+    deleteCategoryAPI,
   }
