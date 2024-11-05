@@ -1,4 +1,4 @@
-import NavBar from "../components/tutor/NavBar";
+import NavBar from '../components/tutor/NavBar.jsx'
 import { Route, Routes } from "react-router-dom";
 import SignIn from "../pages/Tutor/SignIn";
 import SignUp from "../pages/Tutor/SignUp";
@@ -17,6 +17,8 @@ import ResetPassword from "../pages/Tutor/ResetPassword.jsx";
 import CreateCourse from "../pages/Tutor/CreateCourse.jsx";
 import CourseLesson from "../pages/Tutor/CourseLesson.jsx";
 import ManageCourses from "../pages/Tutor/ManageCourses.jsx";
+import EditCourseForm from '../pages/Tutor/EditCourseForm.jsx';
+import ViewLesson from '../pages/Tutor/ViewLesson.jsx';
 
 export default function TutorRoutes() {
 
@@ -46,6 +48,7 @@ export default function TutorRoutes() {
     }, []);
     return (
       <div>
+        <NavBar />
         <Toaster />
         <Routes>
           <Route element={<PrivateTutor />}>
@@ -60,8 +63,10 @@ export default function TutorRoutes() {
           <Route path="courses/create" element={<CreateCourse />} />
           <Route path="courses" element={<ManageCourses />} />
           <Route path="courses/:id" element={<CourseLesson />} />
+          <Route path="courses/edit/:id" element={<EditCourseForm />}/>
           <Route path="*" element={<NotFound />} />
         </Routes>
+      
       </div>
     );
   }

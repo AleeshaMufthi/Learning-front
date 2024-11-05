@@ -6,11 +6,11 @@ import { useState, useRef, useEffect } from 'react'
 
 import Counter from "../utils/Counter";
 import Logo from "../components/common/Logo";
-import { User, Tutor } from '../api/link'
+import { User, Tutor, Explore } from '../api/link'
 
 const navigation = [
   { name: "Home", href: User },
-  { name: "Explore"},
+  { name: "Explore", href: Explore},
   { name: "Teach", href: Tutor },
   { name: "Contact"},
 ]

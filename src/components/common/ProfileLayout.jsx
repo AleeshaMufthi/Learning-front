@@ -8,11 +8,18 @@ const sidebarMenu = [
     { title: "Profile", link: "/user/profile", icon: <UserCircleIcon /> },
     {
       title: "Courses",
+      link: "/user/profile/courses",
       icon: <ClipboardDocumentCheckIcon />,
     },
     {
       title: "Transactions",
+      link: "/user/profile/transactions",
       icon: <UserCircleIcon />,
+    },
+    {
+      title: "Wallet",
+      link: "/user/profile/wallet",
+      icon: <ClipboardDocumentCheckIcon />,
     },
   ];
 

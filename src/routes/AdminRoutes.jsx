@@ -56,6 +56,7 @@ export default function adminRoutes() {
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
+       
       </div>
     );
   }

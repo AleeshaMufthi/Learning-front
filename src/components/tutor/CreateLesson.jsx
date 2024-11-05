@@ -7,16 +7,19 @@ import PropTypes from "prop-types";
 import { PhotoIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { createLessonAPI } from "../../api/tutor";
 import * as yup from "yup"
+import toast from "react-hot-toast";
+
 
 const lessonSchema = yup.object({
     title: yup.string().required().trim().min(3).max(30),
     description: yup.string().required().min(5).max(50),
   });
 
-export default function CreateLesson({ course }) {
+  export default function CreateLesson({ course, setCourse }) {   
     const [isOpen, setIsOpen] = useState(false);
     const [error, setError] = useState(null);
     const [fileName, setFileName] = useState(null);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const {
       handleSubmit,
@@ -25,56 +28,67 @@ export default function CreateLesson({ course }) {
     } = useForm({
       resolver: yupResolver(lessonSchema),
     });
-    const formData = new FormData();
-    const handleFileSelect = async (e) => {
-      setError(null);
-      const fileSizeInBytes = e.target.files[0].size;
-      const fileSizeInMB = fileSizeInBytes / (1024 * 1024);
-      if (fileSizeInMB > 30) {
-        return setError("file size exceeded 30Mb");
-      }
-      setFileName(e.target.files[0].name);
-    };
-    const removeSelectedFile = async () => {
-      setFileName(null);
-    };
+
+  const handleFileSelect = async (e) => {
+    setError(null);
+    const fileSizeInBytes = e.target.files[0].size;
+    const fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+    if (fileSizeInMB > 30) {
+      return setError("file size exceeded 30Mb");
+    }
+    setFileName(e.target.files[0].name);
+  };
+  const removeSelectedFile = async () => {
+    setFileName(null);
+  };
+    
     const onSubmit = (data) => {
       if (error) {
         console.log(error);
         return false;
       }
+
+      setLoading(true);
+
+      const formData = new FormData(); // Declare formData inside onSubmit
       formData.append("title", data.title);
       formData.append("description", data.description);
-      formData.append("lesson", Array.from(data.files)[0]);
+      formData.append("lesson", Array.from(data.files)[0]); 
       formData.append("courseId", course._id);
+    
       createLessonAPI(formData)
         .then((response) => {
-          setIsOpen(!open);
+          setIsOpen(false);
+          toast.success("Lesson created successfully", {
+            duration: 6000, // 6 seconds
+          });
           navigate(`/tutor/courses/${course._id}`);
           console.log(response);
         })
         .catch((error) => console.log(error));
+       
     };
+    
     return (
       <>
-        <Button onClick={() => setIsOpen(!isOpen)} color="warning">
+        <Button onClick={() => setIsOpen(true)} color="blue">
           Add New Lesson
         </Button>
         <Modal
           dismissible={true}
           show={isOpen}
-          onClose={() => setIsOpen(!isOpen)}
+          onClose={() => setIsOpen(false)}
         >
-          <form onSubmit={handleSubmit(onSubmit)} className="bg-white">
+          <form onSubmit={handleSubmit(onSubmit)} className="bg-black">
             <Modal.Header>
               <span className="text-amber-500 nexa-font">
-                {course.title} -Add New Lesson
+                {course.title} - Attach New Lesson
               </span>
             </Modal.Header>
             <Modal.Body>
               <div className="space-y-12">
                 <div className="border-b border-gray-900/10 pb-12">
-                  <h2 className="text-base font-semibold leading-7 text-gray-900">
+                  <h2 className="text-base font-semibold leading-7 text-white">
                     Lesson No - {course.lessons.length + 1}
                   </h2>
                   <p className="mt-1 text-sm leading-6 text-gray-600">
@@ -85,18 +99,18 @@ export default function CreateLesson({ course }) {
                     <div className="sm:col-span-full">
                       <label
                         htmlFor="username"
-                        className="block text-sm font-medium leading-6 text-gray-900"
+                        className="block text-sm font-medium leading-6 text-gray-300"
                       >
                         Title
                       </label>
                       <div className="mt-2">
-                        <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-">
+                        <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-600 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-">
                           <input
                             type="text"
                             {...register("title")}
                             id="username"
                             autoComplete="username"
-                            className="block flex-1 border-0 bg-transparent py-1.5 pl-3 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                            className="block flex-1 border-0 bg-transparent py-1.5 pl-3 text-gray-400 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                             placeholder="lesson title"
                           />
                         </div>
@@ -108,7 +122,7 @@ export default function CreateLesson({ course }) {
                     <div className="col-span-full">
                       <label
                         htmlFor="about"
-                        className="block text-sm font-medium leading-6 text-gray-900"
+                        className="block text-sm font-medium leading-6 text-gray-300"
                       >
                         Description
                       </label>
@@ -134,7 +148,7 @@ export default function CreateLesson({ course }) {
                         <>
                           <label
                             htmlFor="file"
-                            className="block text-sm font-medium leading-6 text-gray-900"
+                            className="block text-sm font-medium leading-6 text-gray-300"
                           >
                             Upload File
                           </label>
@@ -155,8 +169,8 @@ export default function CreateLesson({ course }) {
                                     id="file-upload"
                                     name="file-upload"
                                     accept=".mp4, .heic, .mov, .pdf, .jpg, .jpeg , .avi , .wmv" // Allow specified file types
-                                    {...register("files", {
-                                      onChange: handleFileSelect,
+                                    {...register("files", 
+                                      { onChange: handleFileSelect,
                                     })}
                                     className="sr-only"
                                   />
@@ -189,10 +203,10 @@ export default function CreateLesson({ course }) {
               </div>
             </Modal.Body>
             <Modal.Footer className="flex justify-end">
-              <Button type="submit" onClick={() => {}}>
-                Create Lesson
+              <Button color="blue" type="submit" disabled={loading}>
+              {loading ? "Loading..." : "Create Lesson"} 
               </Button>
-              <Button color="gray" onClick={() => setIsOpen(!isOpen)}>
+              <Button color="blue" onClick={() => setIsOpen(!isOpen)} disabled={loading}>
                 Go Back
               </Button>
             </Modal.Footer>

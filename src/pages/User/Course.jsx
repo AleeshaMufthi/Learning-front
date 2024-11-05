@@ -6,11 +6,13 @@ import { BookOpenIcon, ClockIcon, CodeBracketIcon, UserGroupIcon, CheckCircleIco
 import { Disclosure, Tab } from "@headlessui/react";
 import { getUser } from "../../components/authorization/getUser";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { getCourseDetailsAPI, enrollCourseAPI } from "../../api/user";
+import { getCourseDetailsAPI, enrollCourseAPI, isEnrolledInCourseAPI } from "../../api/user";
 import timeAgo from "../../utils/timeAgo";
 import { Button } from "flowbite-react";
 import Modal from "../../components/user/Modal";
 import HorizontalRule from '../../components/common/HorizontalRule'
+import Payment from "../../components/user/Payment";
+import Footer from "../../components/common/Footer";
 
 export default function Course() {
     const [course, setCourse] = useState({});
@@ -26,6 +28,10 @@ export default function Course() {
     useEffect(() => {
       (async () => {
         const courseDetails = await getCourseDetailsAPI(params.id);
+        console.log(user.userId)
+        const userCourse = await isEnrolledInCourseAPI(params.id,user.userId);
+        console.log(userCourse,"==============================")
+        setIsEnrolled(userCourse?.data?.enrolled);
         setCourse(courseDetails.data.data);
         setTimeout(() => setIsLoading(false));
       })();
@@ -60,6 +66,8 @@ export default function Course() {
         }
       );
     };
+
+    console.log(isEnrolled,"entrolled")
     return (
       <>
         <Toaster />
@@ -75,7 +83,7 @@ export default function Course() {
               <HorizontalRule />
               <div className="flex justify-around sm:px-10 md:px-15 lg:px-20 mt-10 bg-white rounded-xl sm:p-5 md:p-10">
                 <div className="flex justify-center items-center">
-                  <span className="text-sm text-center px-4 text-gray-400 md:text-lg">
+                  <span className="text-md text-center px-4 text-gray-600 md:text-lg">
                     Instructor
                     <HorizontalRule />
                     <h1 className="text-sm text-amber-500 md:text-lg">
@@ -89,14 +97,14 @@ export default function Course() {
                   />
                 </div>
                 <div className="flex flex-row-reverse justify-center items-center">
-                  <div className="text-sm text-center px-4 text-gray-400 md:text-lg">
+                  <div className="text-md text-center px-4 text-gray-600 md:text-lg">
                     Category
                     <hr />
+                    <HorizontalRule />
                     <span className="text-sm text-amber-500  md:text-lg">
                       {course?.category || "programming"}
                     </span>
                   </div>
-                  <CodeBracketIcon className="sm:w-6 md:w-7 lg:w-10" />
                 </div>
               </div>
               <div className="bg-white flex p-3 my-3 rounded-lg">
@@ -104,10 +112,6 @@ export default function Course() {
                   <li className="flex gap-2">
                     <BookOpenIcon className="w-5 text-blue-500" />
                     {course.lessons?.length} Lessons
-                  </li>
-                  <li className="flex gap-2">
-                    <ClockIcon className="w-5 text-blue-500" />
-                    {course.totalDuration ?? "10 hours"}
                   </li>
                   <li className="flex gap-2">
                     <UserGroupIcon className="w-5 text-blue-500" />
@@ -121,12 +125,12 @@ export default function Course() {
                   style={{ minHeight: "31rem" }}
                 >
                   <Tab.Group>
-                    <Tab.List className="flex space-x-1 rounded-xl bg-indigo-500 p-1">
+                    <Tab.List className="flex space-x-1 rounded-xl bg-gray-500 p-1">
                       <Tab
                         className={({ selected }) =>
                           classNames(
-                            "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700",
-                            "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2",
+                            "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-gray-700",
+                            "ring-white ring-opacity-60 ring-offset-2 ring-offset-gray-400 focus:outline-none focus:ring-2",
                             selected
                               ? "bg-white shadow"
                               : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
@@ -139,8 +143,8 @@ export default function Course() {
                       <Tab
                         className={({ selected }) =>
                           classNames(
-                            "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700",
-                            "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2",
+                            "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-gray-700",
+                            "ring-white ring-opacity-60 ring-offset-2 ring-offset-gray-400 focus:outline-none focus:ring-2",
                             selected
                               ? "bg-white shadow"
                               : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
@@ -185,7 +189,7 @@ export default function Course() {
                               <HorizontalRule />
                               <div className="flex justify-center pb-4">
                                 <img
-                                  src={course.thumbnailURL}
+                                  src={course.thumbnail}
                                   alt="course thumbnail image"
                                   className="rounded-lg w-132.5 shadow-2"
                                 />
@@ -319,14 +323,23 @@ export default function Course() {
                           INR
                         </span>
                       </p>
-                      <button
+                      <Payment
+                      courseId={course._id}
+                      setIsEnrolled={(value) => {
+                        setIsEnrolled(value);
+                      }}
+                      // onEnroll={handleEnrollCourse}
+                    >
+                      Get Course
+                    </Payment>
+                      {/* <button
                       onClick={() => setIsOpen(!isOpen)}
                       className="mt-2 block w-full rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     >
                       Fake Buy
-                    </button>
+                    </button> */}
                     
-                    <Modal
+                    {/* <Modal
                       isOpen={isOpen}
                       setIsOpen={setIsOpen}
                       modalData={{
@@ -335,7 +348,7 @@ export default function Course() {
                           'By Clicking "Confirm" you are accepting Learnt payment procedures and proceed to payment',
                         onClick: () => handleEnrollCourse(course._id, "fake"),
                       }}
-                    />
+                    /> */}
                  
                       <p className="mt-6 text-xs leading-5 text-gray-600">
                         Invoices and receipts available for easy company
@@ -348,6 +361,7 @@ export default function Course() {
             </div>
           </div>
         )}
+        <Footer />
       </>
     );
   }

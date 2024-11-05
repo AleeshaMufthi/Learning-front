@@ -17,15 +17,17 @@ const getTopTutorsAPI = async (route = "/tutor/details/top") => {
 };
 
 // courses
-const createCourseAPI = (body, route = `/tutor/courses/create`) => {
-  return API.post(route, body, {
+const createCourseAPI = (formData, route = `/tutor/courses/create`) => {
+  return API.post(route, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
 };
-const createLessonAPI = (body, route = `/tutor/lessons`) => {
-  return API.post(route, body, {
+
+
+const createLessonAPI = (formData, route = `/tutor/lessons`) => {
+  return API.post(route, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -35,8 +37,17 @@ const createLessonAPI = (body, route = `/tutor/lessons`) => {
 const getAllCoursesByTutorAPI = (route = "/tutor/courses") => {
   return API.get(route);
 };
-const getCourseDetailsAPI = (id, route = "/tutor/courses/") => {
-  return API.get(route + id);
+const getCourseDetailsAPI = (id, route = `/tutor/courses/${id}`) => {
+  return API.get(route);
+};
+
+const deleteCourseAPI = (id, route = `/tutor/courses/${id}`) => {
+  return API.delete(route);
+};
+
+const updateCourseAPI = (id, course, route = `/tutor/courses/${id}`) => {
+  console.log(route, "API route"); // Debug route URL
+  return API.put(route, course);
 };
 
 
@@ -55,4 +66,6 @@ export{
     createLessonAPI,
     getAllCoursesByTutorAPI,
     getCourseDetailsAPI,
+    deleteCourseAPI,
+    updateCourseAPI,
 }

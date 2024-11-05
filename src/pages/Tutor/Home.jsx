@@ -3,13 +3,11 @@ import { Link } from "react-router-dom";
 import Banner from "../../components/common/Banner";
 import TutorAdvantages from "../../components/tutor/TutorAdvantages";
 import Footer from "../../components/common/Footer";
-import NavBar from "../../components/tutor/NavBar";
 import TopTutors from "../../components/tutor/TopTutors";
 
 export default function Home() {
     return (
       <>
-      <NavBar />
         <div className="pt-10 px-1 md:px-10 sm:px-5 bg-gray-200/95 pb-24">
           <Banner /> 
           <div className="flex justify-center px-3 mt-10">

@@ -4,7 +4,7 @@ import Logo from "../common/Logo";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import MenuDropDown from "./MenuDropDown";
-import { User, UserSignIn, Profile, Tutor, Explore } from "../../api/link";
+import { User, UserSignIn, Profile, Tutor, Explore, Enrolled } from "../../api/link";
 
 
 function NavBar() {
@@ -20,7 +20,7 @@ function NavBar() {
     const UserNav = [
       { name: "Home", href: User },
       { name: "Explore", href: Explore },
-      { name: "Enrolled" },
+      { name: "Enrolled", href: Enrolled },
       { name: "Profile", href: Profile },
     ];
     const navitems = user?.loggedIn ? UserNav : NormalNav;

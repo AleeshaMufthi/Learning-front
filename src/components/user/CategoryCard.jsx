@@ -25,14 +25,14 @@ export default function CategoryCard({categories}) {
           <Link
             to={"/explore"}
             key={i}
-            className="block min-w-full sm:min-w-0 max-w-xs p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 transition ease-in-out hover:scale-105 duration-300 hover:shadow-lg ring-1 sm:ring-0"
+            className="block min-w-full sm:min-w-0 max-w-xs p-6 bg-white border border-gray-800 rounded-lg shadow hover:bg-gray-400 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 transition ease-in-out hover:scale-105 duration-300 hover:shadow-lg ring-1 sm:ring-0"
           >
             <div className="flex flex-col gap-2 items-center justify-between">
-              <CodeBracketIcon className="h-6 w-6 text-sm sm:block" />
-              <h6 className="text-lg md:text-2xl font-bold tracking-tight text-center text-blue-500 nexa-font dark:text-white">
+              <CodeBracketIcon className="h-6 w-6 text-sm sm:block text-white" />
+              <h6 className="text-lg md:text-2xl font-bold tracking-tight text-center text-white nexa-font">
                 {category.title}
               </h6>
-              <p className="font-normal text-sm hidden sm:block md:text-md text-center whitespace pre-wrap text-gray-700 nexa-font dark:text-gray-400">
+              <p className="font-normal text-sm hidden sm:block md:text-md text-center whitespace pre-wrap text-white nexa-font">
                 {category.description}
               </p>
             </div>

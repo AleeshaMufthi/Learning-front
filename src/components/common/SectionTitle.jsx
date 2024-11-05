@@ -8,7 +8,7 @@ export default function SectionTitle({
       <>
         <h1
           className={`nexa-font text-start sm:ml-6 md:ml-10 lg:ml-16 drop-shadow-sm text-xl md:text-4xl pt-10 font-black pb-4 ${
-            tutor ? "text-gray-800" : "text-gray-700"
+            tutor ? "text-gray-800" : "text-gray-800"
           }`}
         >
           {title}

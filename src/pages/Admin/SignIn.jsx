@@ -5,7 +5,6 @@ import { useNavigate, Link, useSearchParams } from "react-router-dom";
 import { adminSignInAPI } from "../../api/admin";
 import { useDispatch, useSelector } from "react-redux";
 import { setAdmin } from "../../feautures/adminSlice";
-import Navbar from "../../components/admin/Navbar";
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 
 
@@ -83,7 +82,6 @@ export default function SignIn() {
     };
     return (
       <>
-        <Navbar />
         <div>
           <Toaster />
         </div>

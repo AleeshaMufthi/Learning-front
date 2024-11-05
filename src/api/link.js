@@ -8,6 +8,10 @@ const Profile = "/user/profile";
 const Explore = "/explore";
 const ForgetPassword = "/forgetPassword"
 const ResetPassword = "/resetPassword"
+const CourseOwned = "/user/profile/courses";
+const ViewTransaction = "/user/profile/transactions";
+const Wallet = "/user/profile/wallet";
+const Enrolled = "/courses/enrolled";
 const UserCourse = (id) => `/courses/${id}`;
 const UserViewCourse = (id) => `/courses/enrolled/${id}`;
 
@@ -21,6 +25,7 @@ const TutorforgetPassword = "/tutor/forgetPassword"
 const TutorresetPassword = "/tutor/resetPassword"
 const ManageCourse = "/tutor/courses";
 const CreateCourse = "/tutor/courses/create";
+const EditCourseForm = (id) =>`/tutor/courses/edit/${id}`
 const TutorViewCourse = (id) => `/tutor/courses/${id}`;
 
 // admin
@@ -45,6 +50,10 @@ export {
     Explore,
     ForgetPassword,
     ResetPassword,
+    CourseOwned,
+    ViewTransaction,
+    Wallet,
+    Enrolled,
     Tutor,
     TutorDashboard,
     TutorSignIn,
@@ -54,6 +63,7 @@ export {
     TutorresetPassword,
     ManageCourse,
     CreateCourse,
+    EditCourseForm,
     TutorViewCourse,
     Admin,
     AdminSignIn,

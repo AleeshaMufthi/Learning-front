@@ -12,8 +12,8 @@ export default function CourseCard({ courses, loading }) {
             !loading ? (
               courses.map((course) => (
                 <Link to={TutorViewCourse(course._id)} key={course._id}>
-                  <div className="w-full max-w-xs block hover:shadow-lg duration-300 bg-white border overflow-hidden border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 ml-10">
-                    <div className="overflow-hidden">
+                  <div className="w-82 max-w-xs block hover:shadow-lg duration-300 bg-white border overflow-hidden border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 ml-10">
+                    <div className="h-40 overflow-hidden">
                       <img
                         src={course?.thumbnailURL}
                         alt="image here"
@@ -56,11 +56,11 @@ export default function CourseCard({ courses, loading }) {
               <Loading />
             )
           ) : (
-            <div className="flex flex-col gap-3">
-              <div>You Haven't Created any Courses Yet!</div>
+            <div className="flex flex-col gap-3 pt-5">
+              <div>You haven't created any courses yet!</div>
               <Link
                 to={"/tutor/courses/create"}
-                className="rounded bg-indigo-300 p-2 max-w-34 hover:bg-indigo-300/80 hover:text-gray-700"
+                className="rounded bg-gray-700 p-2 max-w-34 hover:bg-gray-500 hover:text-gray-700 text-center pt-3 pb-3"
               >
                 Create Course
               </Link>

@@ -8,7 +8,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import profileSchema from "../../utils/validation/profileSchema";
 import { getTutorDetailsAPI, updateTutorDetailsAPI } from "../../api/tutor";
 import toast from "react-hot-toast";
-import NavBar from "../../components/tutor/NavBar";
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
@@ -75,7 +74,6 @@ function classNames(...classes) {
     };
     return (
       <>
-      <NavBar />
       <ProfileLayout tutor>
         <PageInfo pageName={"profile"} tutor />
         <div className="isolate bg-gray-100 px-6 lg:px-8 py-8">

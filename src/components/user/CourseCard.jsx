@@ -2,23 +2,23 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "flowbite-react";
 import timeAgo from '../../utils/timeAgo'
-// import { getAllCoursesAPI } from "../../api/common";
+import { getAllCoursesAPI } from "../../api/common";
 
 export default function CourseCard() {
 
     const [courses, setCourses] = useState([]);
 
-    // useEffect(() => {
-    //   (async () => {
-    //     getAllCoursesAPI()
-    //       .then((response) => {
-    //         setCourses(response.data.data);
-    //       })
-    //       .catch((error) => {
-    //         console.log(error);
-    //       });
-    //   })();
-    // }, []);
+    useEffect(() => {
+      (async () => {
+        getAllCoursesAPI()
+          .then((response) => {
+            setCourses(response.data.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      })();
+    }, []);
     return (
       <>
         <div
@@ -29,12 +29,12 @@ export default function CourseCard() {
             <div
               key={course._id}
               style={{ flexShrink: 0, scrollSnapAlign: "start" }}
-              className="w-full max-w-70 block hover:shadow-lg duration-300 bg-white border overflow-hiddden border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 ml-5"
+              className="w-50 block hover:shadow-lg duration-300 bg-white border overflow-hiddden border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 ml-5"
             >
               <div className="overflow-hidden">
                 <Link>
                   <img
-                    className="rounded-t-lg duraction-300 scale-105 hover:scale-100 min-h-[12rem] object-cover aspect-video"
+                    className="rounded-t-lg duration-300 scale-105 hover:scale-100 h-[8rem] object-cover aspect-video"
                     src={course.thumbnailURL}
                     alt="product image"
                   />
@@ -42,10 +42,10 @@ export default function CourseCard() {
               </div>
               <div className="px-5 pb-3 nexa-font">
                 <Link to={(course._id)}>
-                  <h5 className="text-lg font-semibold tracking-tight text-gray-900 dark:text-white pt-4 nexa-font">
+                  <h5 className="text-lg font-semibold tracking-tight text-white pt-4 nexa-font">
                     {course.title}
                   </h5>
-                  <h5 className="text-xs font-semibold tracking-tight text-gray-400 dark:text-white nexa-font">
+                  <h5 className="text-sm font-semibold tracking-tight text-white nexa-font pt-3">
                     {course.tagline}
                   </h5>
                 </Link>
@@ -74,10 +74,10 @@ export default function CourseCard() {
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex flex-col items-start justify-start">
-                    <span className="text-sm font-bold text-red-700 line-through dark:text-white">
+                    <span className="text-sm font-bold text-red-700 line-through">
                       ₹{course.price + 490}
                     </span>
-                    <span className="text-sm font-bold text-gray-900 dark:text-white nexa-font">
+                    <span className="text-sm font-bold text-green-600 nexa-font">
                       ₹{course.price}
                     </span>
                   </div>

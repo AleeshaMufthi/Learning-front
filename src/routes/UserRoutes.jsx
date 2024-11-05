@@ -1,5 +1,4 @@
 import React from 'react'
-import NavBar from '../components/user/NavBar'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 import SignIn from '../pages/User/SignIn.jsx'
 import SignUp  from '../pages/User/SignUp.jsx'
@@ -16,6 +15,12 @@ import NotFound from '../pages/NotFound.jsx'
 import Profile from '../pages/User/Profile.jsx'
 import Explore from '../pages/User/Explore.jsx'
 import Course from '../pages/User/Course.jsx'
+import CourseOwned from '../pages/User/CourseOwned.jsx'
+import ViewTransaction from '../pages/User/ViewTransaction.jsx'
+import ViewCourse from '../pages/User/ViewCourse.jsx'
+import Enrolled from '../pages/User/Enrolled.jsx'
+import Wallet from '../pages/User/ViewWallet.jsx'
+import NavBar from '../components/user/NavBar.jsx'
 
 
 export default function UserRoutes() {
@@ -49,6 +54,7 @@ export default function UserRoutes() {
   }, []);
   return (
     <div>
+      <NavBar />
       <Toaster />
       <Routes>
         <Route path="user" element={<Home />} />
@@ -60,8 +66,14 @@ export default function UserRoutes() {
         <Route path="user/profile" element={<Profile />} />
         <Route path="explore" element={<Explore />} />
         <Route path="courses/:id" element={<Course />} />
+        <Route path="user/profile/courses" element={<CourseOwned />} />
+        <Route path="user/profile/transactions" element={<ViewTransaction />}/>
+        <Route path="user/profile/wallet" element={<Wallet />}/>
+        <Route path="courses/enrolled" element={<Enrolled />} />
+        <Route path="courses/enrolled/:id" element={<ViewCourse />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+     
     </div>
   );
 }

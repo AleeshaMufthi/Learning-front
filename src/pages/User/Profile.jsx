@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import ProfileLayout from "../../components/common/ProfileLayout";
 import PageInfo from "../../components/common/PageInfo";
-import { LockClosedIcon, PencilSquareIcon } from "@heroicons/react/20/solid";
+import { LockClosedIcon, PencilSquareIcon, PhotoIcon } from "@heroicons/react/20/solid";
 import { Switch } from "@headlessui/react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -9,7 +9,7 @@ import profileSchema from "../../utils/validation/profileSchema";
 import { getUserDetailsAPI, updateUserDetailsAPI } from "../../api/user";
 import toast from "react-hot-toast";
 import { Dumy } from "../../api/link";
-import NavBar from "../../components/user/NavBar";
+
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
@@ -20,7 +20,7 @@ function classNames(...classes) {
     const [userDetails, setUserDetails] = useState({});
     const [error, setError] = useState(null);
     const [agreed, setAgreed] = useState(false);
-    const [imagePreview, setImagePreview] = useState(null);
+    const [imagePreviewURL, setImagePreviewURL] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);
 
     const {
@@ -31,6 +31,7 @@ function classNames(...classes) {
       formState: { errors },
     } = useForm({
       resolver: yupResolver(profileSchema),
+      defaultValues: userDetails, 
     });
 
     useEffect(() => {
@@ -50,9 +51,29 @@ function classNames(...classes) {
           setValue("age", userDetails.age);
           setValue("about", userDetails.about);
           setValue("address", userDetails.address);
+          setValue("thumbnail", userDetails.thumbnail[0])
         })
         .catch((err) => console.log(err));
     }, []);
+
+    useEffect(() => {
+      const thumbnail = watch("thumbnail");
+      if (thumbnail && thumbnail.length > 0) {
+        const file = thumbnail[0];
+        const fileReader = new FileReader();
+        fileReader.onload = (e) => setImagePreviewURL(e.target.result);
+        fileReader.readAsDataURL(file);
+      }
+    }, [watch("thumbnail")]);
+
+    const handleImageChange = (event) => {
+      const file = event.target.files[0];
+      setSelectedImage(file);
+      setValue('thumbnail', file); // Set form value for thumbnail
+      const fileReader = new FileReader();
+      fileReader.onload = (e) => setImagePreviewURL(e.target.result); // Preview image
+      fileReader.readAsDataURL(file); // Read file for preview
+  };
 
     const handleOnSubmit = (data) => {
       setError(null);
@@ -66,10 +87,8 @@ function classNames(...classes) {
       formData.append('about', data.about)
       formData.append('address', data.address)
       formData.append('visible',data.visible)
+      formData.append('thumbnail', selectedImage);
 
-      if (selectedImage) {
-        formData.append('profilePicture', selectedImage) // Append the selected image
-      }
       updateUserDetailsAPI(formData)
         .then((response) => {
           toast.success("Profile Updated Successfully", {
@@ -83,21 +102,8 @@ function classNames(...classes) {
         });
     };
 
-    const handleImageChange = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        setSelectedImage(file);
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setImagePreview(reader.result);
-        };
-        reader.readAsDataURL(file);
-      }
-    };
-
     return (
       <>
-      <NavBar />
       <ProfileLayout>
         <PageInfo pageName={"profile"} />
         <div className="isolate bg-gray-300 px-6 lg:px-8 rounded-md pt-10 pb-10">
@@ -153,26 +159,34 @@ function classNames(...classes) {
 
 <div className="mb-6">
               <label className="block text-sm font-semibold leading-6 text-gray-900">Profile Picture</label>
-              <div className="mt-2">
-                {imagePreview ? (
-                  <img
-                    src={imagePreview}
-                    alt="Profile Preview"
-                    className="mb-4 h-32 w-32 object-cover rounded-full mx-auto"
-                  />
-                ) : (
-                  <div className="mb-4 h-32 w-32 object-cover rounded-full bg-gray-200 mx-auto"></div>
-                )}
-                <input
-                  type="file"
-                  accept="image/*"
-                  id="contained-button-file"
-                  multiple
-                  onChange={handleImageChange}
-                  disabled={!editMode}
-                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
-                />
-              </div>
+              <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
+                        <div className="text-center">
+                          <PhotoIcon className="mx-auto h-12 w-12 text-gray-300" aria-hidden="true" />
+                          <div className="mt-4 flex text-sm leading-6 text-gray-600">
+                            <label
+                              htmlFor="thumbnail"
+                              className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2"
+                            >
+                              <span>Upload Picture</span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange} // Handle image upload
+                                className="form-input"
+                              />
+                            </label>
+                          </div>
+                          <p className="text-xs leading-5 text-gray-600">PNG, JPG, WEBP up to 1MB</p>
+                          <p className="text-red-600 text-xs mt-2">{errors.thumbnail?.message}</p>
+                          {imagePreviewURL && (
+                            <img
+                              className="mx-auto mt-4 h-32 object-cover"
+                              src={imagePreviewURL}
+                              alt="Preview"
+                            />
+                          )}
+                        </div>
+                      </div>
             </div>
 
             <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
