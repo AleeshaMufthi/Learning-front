@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ProfileLayout from "../../components/common/ProfileLayout";
+import ProfileLayout from "../../components/user/ProfileLayout";
 import PageInfo from "../../components/common/PageInfo";
 import Loading from "../../components/common/Loading";
 import { Badge, Button } from "flowbite-react";

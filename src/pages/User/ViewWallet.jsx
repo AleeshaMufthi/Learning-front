@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { getWalletBalanceAPI } from "../../api/user";
 import Loading from "../../components/common/Loading";
 import { Badge } from "flowbite-react";
-import ProfileLayout from "../../components/common/ProfileLayout";
+import ProfileLayout from "../../components/user/ProfileLayout";
 import PageInfo from "../../components/common/PageInfo";
 
 export default function Wallet() {

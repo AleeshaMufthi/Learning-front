@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import ProfileLayout from "../../components/common/ProfileLayout";
+import ProfileLayout from "../../components/user/ProfileLayout";
 import PageInfo from "../../components/common/PageInfo";
 import { LockClosedIcon, PencilSquareIcon, PhotoIcon } from "@heroicons/react/20/solid";
 import { Switch } from "@headlessui/react";

@@ -49,11 +49,23 @@ const createOrderAPI = (courseId) =>
   
   const getUserEnrolledCoursesAPI = () => API.get(`user/courses/enroll`);
 
+  // chat
+
+  const fetchEnrolledCoursesAPI = () => API.get(`/user/chat/enrolled-courses`)
+
+  // const messageFromUserAPI = (data) => API.post(`/user/chat/message`, data)
+  const messageFromUserAPI = async (data) => {
+    console.log("Sending data to backend:", data); // Ensure data contains `uniqueInstructorIds`
+    return await API.post(`/user/chat/message`, data);
+  };
+
+  const fetchAllMessagesAPI = (tutorId) => API.get(`/user/chat/message/${tutorId}`)
+
 export {
     userSignInAPI,
     userSignUpAPI,
     userOtpSendAPI,
-    forgetPasswordAPI,
+    forgetPasswordAPI,  
     // verifyOtpAPI,
     getSignedInUserAPI,
     resetPasswordAPI,
@@ -73,4 +85,7 @@ export {
     getUserEnrolledCoursesAPI,
     getWalletBalanceAPI,
     creditWalletAPI,
+    fetchEnrolledCoursesAPI,
+    messageFromUserAPI,
+    fetchAllMessagesAPI,
 }

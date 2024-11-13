@@ -20,7 +20,9 @@ import ViewTransaction from '../pages/User/ViewTransaction.jsx'
 import ViewCourse from '../pages/User/ViewCourse.jsx'
 import Enrolled from '../pages/User/Enrolled.jsx'
 import Wallet from '../pages/User/ViewWallet.jsx'
+import Tutors from '../pages/User/Tutors.jsx'
 import NavBar from '../components/user/NavBar.jsx'
+import { Chat } from '../pages/User/Chat.jsx'
 
 
 export default function UserRoutes() {
@@ -69,8 +71,11 @@ export default function UserRoutes() {
         <Route path="user/profile/courses" element={<CourseOwned />} />
         <Route path="user/profile/transactions" element={<ViewTransaction />}/>
         <Route path="user/profile/wallet" element={<Wallet />}/>
+        <Route path="user/profile/chat" element={<Chat />} />
         <Route path="courses/enrolled" element={<Enrolled />} />
+        <Route path="tutors" element={<Tutors />} />
         <Route path="courses/enrolled/:id" element={<ViewCourse />} />
+
         <Route path="*" element={<NotFound />} />
       </Routes>
      

@@ -11,7 +11,9 @@ const ResetPassword = "/resetPassword"
 const CourseOwned = "/user/profile/courses";
 const ViewTransaction = "/user/profile/transactions";
 const Wallet = "/user/profile/wallet";
+const Chat = "/user/profile/chat"
 const Enrolled = "/courses/enrolled";
+const Tutors = "/tutors"
 const UserCourse = (id) => `/courses/${id}`;
 const UserViewCourse = (id) => `/courses/enrolled/${id}`;
 
@@ -19,6 +21,7 @@ const UserViewCourse = (id) => `/courses/enrolled/${id}`;
 const Tutor = "/tutor"
 const TutorDashboard = "/tutor/dashboard"
 const TutorProfile = "/tutor/profile";
+const TutorChat = "/tutor/profile/chat"
 const TutorSignIn = (pathname) => `/tutor/signin?from=${pathname}`;
 const TutorSignUp = "/tutor/signup";
 const TutorforgetPassword = "/tutor/forgetPassword"
@@ -48,17 +51,20 @@ export {
     UserViewCourse,
     Profile,
     Explore,
+    Tutors,
     ForgetPassword,
     ResetPassword,
     CourseOwned,
     ViewTransaction,
     Wallet,
+    Chat,
     Enrolled,
     Tutor,
     TutorDashboard,
     TutorSignIn,
     TutorSignUp,
     TutorProfile,
+    TutorChat,
     TutorforgetPassword,
     TutorresetPassword,
     ManageCourse,

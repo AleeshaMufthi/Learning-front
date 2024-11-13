@@ -15,6 +15,7 @@ const updateTutorDetailsAPI = (body) => API.post("/tutor/details", body);
 const getTopTutorsAPI = async (route = "/tutor/details/top") => {
   return API.get(route);
 };
+const getAllTutorsAPI = () => API.get("/tutor/details/all")
 
 // courses
 const createCourseAPI = (formData, route = `/tutor/courses/create`) => {
@@ -24,7 +25,6 @@ const createCourseAPI = (formData, route = `/tutor/courses/create`) => {
     },
   });
 };
-
 
 const createLessonAPI = (formData, route = `/tutor/lessons`) => {
   return API.post(route, formData, {
@@ -46,10 +46,15 @@ const deleteCourseAPI = (id, route = `/tutor/courses/${id}`) => {
 };
 
 const updateCourseAPI = (id, course, route = `/tutor/courses/${id}`) => {
-  console.log(route, "API route"); // Debug route URL
   return API.put(route, course);
 };
 
+// chat
+const fetchEnrolledUsersAPI = () => API.get(`/tutor/chat/enrolled-users`)
+
+const tutorMessageAPI = () => API.get(`/tutor/chat/message`)
+
+const fetchTutorMessagesAPI = (userId) => API.get(`/tutor/chat/message/${userId}`)
 
 export{
     tutorSignInAPI,
@@ -60,6 +65,7 @@ export{
     tutorResetPasswordAPI,
     handleTutorLogOutAPI,
     getTutorDetailsAPI,
+    getAllTutorsAPI,
     updateTutorDetailsAPI,
     getTopTutorsAPI,
     createCourseAPI,
@@ -68,4 +74,7 @@ export{
     getCourseDetailsAPI,
     deleteCourseAPI,
     updateCourseAPI,
+    fetchEnrolledUsersAPI,
+    tutorMessageAPI,
+    fetchTutorMessagesAPI,
 }

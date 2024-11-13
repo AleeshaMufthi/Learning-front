@@ -19,6 +19,7 @@ import CourseLesson from "../pages/Tutor/CourseLesson.jsx";
 import ManageCourses from "../pages/Tutor/ManageCourses.jsx";
 import EditCourseForm from '../pages/Tutor/EditCourseForm.jsx';
 import ViewLesson from '../pages/Tutor/ViewLesson.jsx';
+import { Chat } from '../pages/Tutor/Chat.jsx';
 
 export default function TutorRoutes() {
 
@@ -64,6 +65,7 @@ export default function TutorRoutes() {
           <Route path="courses" element={<ManageCourses />} />
           <Route path="courses/:id" element={<CourseLesson />} />
           <Route path="courses/edit/:id" element={<EditCourseForm />}/>
+          <Route path="profile/chat" element={<Chat />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       
