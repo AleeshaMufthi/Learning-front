@@ -28,10 +28,8 @@ export const UserChat = (handleError) => {
             
             const instructor = course.courseDetails.tutor;
 
-            console.log(instructor, "instructorrrrrrrrrrrrr")
             const instructorId = course.courseDetails.tutor._id;
 
-            console.log(instructorId, "instructor idddddddddddd");
             
             if (!uniqueInstructorIds.has(instructorId)) {
               uniqueInstructorIds.add(instructorId);
@@ -39,12 +37,9 @@ export const UserChat = (handleError) => {
             }
           })
           const instructorIdsArray = Array.from(uniqueInstructorIds);
-  
-          console.log(messageFromUserAPI(), "+==============");
           
           const messages = await messageFromUserAPI({ uniqueInstructorIds: instructorIdsArray });
-          console.log(messages,"messages");
-          
+          console.log(messages,"messagesssssssssssss (messageFromUserAPI");
           setMessages(messages)
           setInstructors(uniqueInstructors);
   

@@ -14,10 +14,12 @@ import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
 export const Chat = () => {
 
     const instructor = useSelector((state) => state.tutor)
+
+    const sender = useSelector((state) => state.tutor);
     
     const [message, setMessage] = useState('')
-    const [messages, setMessages] = useState({})
-    const [sender, setSender] = useState()
+    const [messages, setMessages] = useState([])
+    // const [sender, setSender] = useState()
     const [selectedStudent, setSelectedStudent] = useState()
     const { students, instMessages, setFetchChange } = TutorChat()
     const [Students, setStudents] = useState([])
@@ -28,18 +30,47 @@ export const Chat = () => {
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [showMediaOptions, setShowMediaOptions] = useState(false);
     const [isRecording, setIsRecording] = useState(false);
-    const [mediaRecorder, setMediaRecorder] = useState(null);
-    const [audioChunks, setAudioChunks] = useState([])
-    const [audioStream, setAudioStream] = useState(null)
     const [change, setChange] = useState(false)
     const messageContainerRef = useRef(null);
+    
+
+    useEffect(() => {
+       if(selectedStudent){
+        socket.emit("joinedRoom", {instructor, selectedStudent})
+       }
+    }, [selectedStudent])
+
+    const sendMessage = () => {
+        if (message.trim() === '') {
+            return;
+        }
+        setMessages((prev) => [...prev,{
+            _id:'',
+            sender: instructor.tutorId,
+            senderType: 'Tutors',
+            recipient:selectedStudent,
+            recipientType: 'Users',
+            message: message,
+            Time:  new Date().toLocaleTimeString([], {  hour: "2-digit",  minute: "2-digit",})}]);
+        socket.emit('sendMessage', { instructor, recipient: selectedStudent, message })
+        setMessage('')
+    }
+
+    useEffect(() => {
+        socket.on("messageRecieved", ({ messageData }) => {
+            setMessages((prev) => [...prev]);
+        });
+
+        return () => {
+            socket.off('messageRecieved')
+        }
+    }, [socket])
 
     useEffect(() => {
         if (students && students?.length > 0) {
             setStudents([...students])
         }
     }, [students])
-
     
 
     useEffect(() => {
@@ -89,8 +120,11 @@ export const Chat = () => {
             if (selectedStudent) {
                 try {
                     const instructorId = selectedStudent._id;
+                    
                     const getAllMessages = await fetchTutorMessagesAPI(instructorId);
-                    setMessages(getAllMessages);
+                    console.log(getAllMessages.data, "getAlllMessagess");
+                    
+                    setMessages(getAllMessages.data);
                 } catch (error) {
                     if (error?.data?.message === 'No messages found') {
                         setMessages({});
@@ -102,178 +136,16 @@ export const Chat = () => {
         fetchMessages();
     }, [selectedStudent, change]);
 
-    // useEffect(() => {
-
-    //     // const token = Cookies.get('InstructorAccessToken')
-
-    //     // socket.emit('authenticate', token)
-
-    //     socket.on('Authorized', (user) => {
-    //         setSender(user)
-    //         students?.forEach((student) => {
-    //             const room = `private-${student._id}-${user._id}`
-    //             socket.emit('joinRoom', room)
-    //         })
-    //         socket.on('userOnline', (data) => {
-    //             setOnlineUsers((prev) => ({ ...prev, [data.userId]: 'online' }));
-    //         });
-    //         socket.on('userOffline', (data) => {
-    //             setOnlineUsers((prev) => ({ ...prev, [data.userId]: 'offline' }));
-    //         });
-    //     })
-    //     socket.on('privateMessage', (message) => {
-    //         setMessages((prevMessages) => {
-    //             const newMessage = {
-    //                 text: message.message,
-    //                 CurrentUser: message?.senderId === sender?._id,
-    //                 Time: getTimeFromDateTime(message.Time),
-    //                 TimeforSorting: new Date(message.Time),
-    //                 type: message.type
-    //             }
-    //             const updatedMessages = [...prevMessages['Messages'] || [], newMessage]
-    //             setChange(prevChange => !prevChange);
-    //             setFetchChange(prevChange => !prevChange);
-    //             return {
-    //                 ...prevMessages,
-    //                 ['Messages']: updatedMessages
-    //             }
-    //         })
-    //     })
-        
-    //     socket.on('typing', (data) => {
-    //         setTypingStatus((prevStatus) => ({
-    //             ...prevStatus,
-    //             [data.userId]: true,
-    //         }));
-    //     });
-    //     socket.on('stopTyping', (data) => {
-    //         setTypingStatus((prevStatus) => ({
-    //             ...prevStatus,
-    //             [data.userId]: false,
-    //         }));
-    //     });
-    //     socket.on('Unauthorized', (error) => {
-    //        console.log('socket io unauthorized');
-           
-    //     })
-
-    //     return () => {
-    //         socket.off('Authorized')
-    //         socket.off('Unauthorized')
-    //         socket.off('privateMessage')
-    //     }
-
-    // }, [students, setSender, setMessages, socket, change])
-
     useEffect(() => {
         if (messageContainerRef.current) {
             messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
         }
     }, [messages, typingStatus]);
 
-    const sendMessage = (recipient) => {
-        console.log(typingTimeout)
-        if (message.trim() === '') {
-            return
-        }
-        const type = 'text'
-        const text = message
-        const room = `private-${recipient._id}-${sender._id}`
-        socket.emit('privateMessage', { type, sender, recipient, text, room })
-        setChange(prevChange => !prevChange);
-        setFetchChange(prevChange => !prevChange);
-        setMessage('')
-    }
     const handleTyping = (e) => {
         setMessage(e.target.value)
-        const room = `private-${selectedStudent._id}-${sender?._id}`
-        socket.emit('typing', { userId: sender?._id, room: room })
-        setTypingTimeout(
-            setTimeout(() => {
-                socket.emit("stopTyping", {
-                    userId: sender?._id,
-                    room: room,
-                });
-            }, 2000)
-        );
+        
     }
-
-    const onEmojiClick = (emojiObject) => {
-        setMessage(message + emojiObject.emoji);
-    };
-    const handleFileUpload = async (event) => {
-        let file;
-        if (event instanceof Blob) {
-            file = event;
-        } else {
-            file = event.target.files?.[0];
-        }
-        if (file) {
-            try {
-
-                const formData = new FormData();
-                formData.append("file", file);
-                formData.append('upload_preset', 'vedaByte');
-
-                const recipient = selectedStudent
-                const room = `private-${selectedStudent?._id}-${sender?._id}`;
-                socket.emit('privateMessage', { type, sender, recipient, text, room });
-
-            } catch (error) {
-                console.log(error)
-            } finally {
-
-            }
-
-        }
-    };
-
-    useEffect(() => {
-        if (!isRecording && audioChunks.length > 0) {
-            const audioBlob = new Blob(audioChunks, { type: "audio/mpeg" });
-            handleFileUpload(audioBlob, "audio");
-            setAudioChunks([]);
-        }
-    }, [isRecording, audioChunks]);
-
-    const startRecording = () => {
-        navigator.mediaDevices
-            .getUserMedia({ audio: true })
-            .then((stream) => {
-                const recorder = new MediaRecorder(stream);
-                recorder.ondataavailable = (event) => {
-                    if (event.data.size > 0) {
-                        setAudioChunks((prev) => [...prev, event.data]);
-                    }
-                };
-                recorder.start();
-                setMediaRecorder(recorder);
-                setAudioStream(stream);
-                setIsRecording(true);
-            })
-            .catch((error) => {
-                console.error("Error accessing microphone:", error);
-            });
-    };
-
-    const stopRecording = () => {
-        if (mediaRecorder) {
-            mediaRecorder.stop();
-            setIsRecording(false);
-            if (audioStream) {
-                audioStream.getTracks().forEach((track) => track.stop());
-                setAudioStream(null);
-            }
-        }
-    };
-    const getMessagesForStudent = (studentId) => {
-        if (Array.isArray(messages.Messages)) {
-            return instMessages.filter((message) => message?.recipient?._id === studentId || message?.sender?._id === studentId);
-        } else {
-            console.error('messages.Messages is not an array:', messages.Messages);
-            return [];
-        }
-    };
 
     return (
         <>
@@ -294,8 +166,7 @@ export const Chat = () => {
                             </div>
                             {Students.length ? (
                                 Students?.map((student) => {
-                                    const messagesForStudent = getMessagesForStudent(student._id);
-                                    const lastMessage = messagesForStudent[messagesForStudent.length - 1];
+                                    
                                     return (
                                         <div key={student._id} className="flex w-full h-16 border-2 border-gray-300 justify-start items-start p-3" onClick={() => setSelectedStudent(student)}>
                                             {student?.profileImage ? (
@@ -311,18 +182,7 @@ export const Chat = () => {
                                             )}
                                             <div className="flex flex-col ml-4">
                                                 <span className=" text-xs font-semibold">{student.name}</span>
-                                                {lastMessage ? (
-                                                    <>
-                                                        <span className="text-xs text-green-900 font-semibold">
-                                                            last message : {lastMessage?.type === 'text' ? `${lastMessage?.message.substring(0, 6)}...` : 'File'}
-                                                        </span>
-                                                        <span className="text-xs text-gray-700 font-semibold">
-                                                            {new Date(lastMessage?.Time).toLocaleString()}
-                                                        </span>
-                                                    </>
-                                                ) : (
-                                                    <span className="text-sm text-gray-500">No messages</span>
-                                                )}
+                                               
                                                 {typingStatus[sender?._id] && (
                                                     <div className="flex">
                                                         <img src={student.profileImage} className="w-10 h-10 rounded-full bg-black" alt={student?.name} />
@@ -341,7 +201,7 @@ export const Chat = () => {
                         </div>
                         {selectedStudent ? (
                             <div className=" flex flex-col justify-between border-2 w-full h-screen overflow-hidden">
-                                {/* Header Section */}
+                             
                                 <div className="flex justify-start items-center border-2 border-sky-100 shadow-md h-16 p-3 gap-5">
                                     {selectedStudent?.profileImage ? (
                                         <div className="relative">
@@ -368,70 +228,36 @@ export const Chat = () => {
                                     )}
                                 </div>
 
-                                {/* Message Display Area */}
                                 <div ref={messageContainerRef} className="border-2  flex flex-col-reverse w-full h-full bg-zinc-900 overflow-y-auto">
-                                    {Object.keys(messages).length > 0 ? (
-                                        Object.keys(messages).map((userId, index) => (
-                                            <div key={index}>
-                                                {messages[userId].map((msg, idx) => (
-                                                    <div key={idx} className={`flex p-1 mb-2 ${msg.CurrentUser ? 'justify-end' : 'justify-start'} items-center gap-1`}>
-                                                        {msg.CurrentUser === false && (
-                                                            <img src={selectedStudent?.profileImage} className="w-5 h-5 rounded-full bg-black border-2 border-zinc-400" alt="" />
-                                                        )}
-                                                        <div className={`inline-block px-2 py-1 rounded-lg shadow-md bg-lime-200 relative flex-col`}>
-                                                            {msg?.type === "text" && <span>{msg?.text}</span>}
-
-                                                            {msg?.type === "image" && (
-                                                                <img src={msg?.text} alt="Sent image" className="w-40 h-40 object-cover rounded" />
-                                                            )}
-                                                            {msg?.type === "video" && (
-                                                                <video controls className="w-40 h-40 rounded">
-                                                                    <source src={msg?.text} type="video/mp4" />
-                                                                    Your browser does not support the video tag.
-                                                                </video>
-                                                            )}
-                                                            {msg?.type === "audio" && (
-                                                                <audio controls className="w-40">
-                                                                    <source src={msg?.text} type="audio/mpeg" />
-                                                                    Your browser does not support the audio element.
-                                                                </audio>
-                                                            )}
-                                                            <span className="text-xs text-gray-500 self-end ml-2">
-                                                                {msg.Time}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                                {typingStatus[selectedStudent?._id] && (
-                                                    <div className="flex items-center gap-2">
-                                                        <img
-                                                            src={selectedStudent?.profileImage}
-                                                            className="w-5 h-5 rounded-full bg-black border-2 border-zinc-400"
-                                                            alt=""
-                                                        />
-                                                        <div className="flex items-center bg-lime-200 rounded-lg shadow-md px-2 py-1">
-                                                            <span className="text-md font-semibold text-gray-950">
-                                                                Typing
-                                                            </span>
-                                                            <div className="typing-indicator ml-2 flex items-center">
-                                                                <div className="bubble"></div>
-                                                                <div className="bubble"></div>
-                                                                <div className="bubble"></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                )}
-
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <div className="flex justify-center items-center text-lime-100 h-full">
-                                            <h1>No messages</h1>
-                                        </div>
-                                    )}
+                              
                                 </div>
 
-                                {/* Footer Section */}
+
+                                {
+                                        messages.map((data, index) => {
+                                            console.log(data, 'daataaaa');
+                                            console.log(data.sender, 'this is data senderId');
+                                            console.log(sender, 'senderrrrrrrrr');
+                                            console.log(sender.tutorId, 'tutorId from sender');
+                                            
+                                            const isSender = data.sender == sender.tutorId; 
+                                            console.log(isSender, "this is sender match");
+                                            
+                                            return (
+                                                <div key={index} className={`flex p-1 mb-2 ${isSender ? 'justify-end' : 'justify-start'} my-2`}>
+                                                  
+                                                    <div className={`inline-block px-2 py-1 rounded-lg shadow-md bg-lime-200 relative flex-col`}>
+                                                        <span>{data?.message}</span>
+                                                    
+                                                        <span className="text-xs self-end ml-2">
+                                                            {data.Time}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })
+                                    }
+
                                 <div className="flex items-center h-14 border-2 border-sky-200 px-2 ">
                                     <button
                                         onClick={() => setShowEmojiPicker(!showEmojiPicker)}

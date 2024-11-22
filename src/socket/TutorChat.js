@@ -14,15 +14,15 @@ export const TutorChat = (handleError) => {
 
                 const students = await fetchEnrolledUsersAPI()
                 
-                console.log(students, 'students details from tutor chat');
+                console.log(students.data.data, 'students details from tutor chattttttttttttttttttt');
                 
                 if (students.error) {
                     throw new Error(students.error.data.message)
                 }
                 const messages = await tutorMessageAPI()
-                console.log(messages, "messaaagessssssssss")
-                setInstructorMessages(messages)
-                setStudents(students)
+                console.log(messages.data.data, "messaaagesssssssssssssss")
+                setInstructorMessages(messages.data.data)
+                setStudents(students.data.data)
             } catch (error) {
                 console.log(error)
                 if (

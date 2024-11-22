@@ -8,6 +8,7 @@ import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 
 
+
 export const Chat = () => {
 
     const [message, setMessage] = useState('')
@@ -15,6 +16,7 @@ export const Chat = () => {
     const sender = useSelector((state) => state.user);
     const [messages, setMessages] = useState([]);
     const { instructors, studentMessages, setFetchChange } = UserChat();
+    
     const [Instructors, setInstructors] = useState([]);
     const [selectedInstructor, setSelectedInstructor] = useState();
     const [typingStatus, setTypingStatus] = useState({})
@@ -40,20 +42,28 @@ export const Chat = () => {
         if (message.trim() === '') {
             return;
         }
+        setMessages((prev) => [...prev,{
+            _id:'',
+            sender: sender.userId,
+            senderType: 'Users',
+            recipient:selectedInstructor,
+            recipientType: 'Tutors',
+            message: message,
+            Time:  new Date().toLocaleTimeString([], {  hour: "2-digit",  minute: "2-digit",})}]);
         socket.emit('sendMessage', { sender, recipient: selectedInstructor, message })
         setMessage('')
     }
 
     useEffect(() => {
-
         socket.on("messageRecieved", ({ messageData }) => {
-            setMessages((prev) => [...prev, messageData]);
+            setMessages((prev) => [...prev]);
         });
 
         return () => {
             socket.off('messageRecieved')
         }
     }, [socket])
+    
 
     useEffect(() => {
         if (instructors && instructors.length > 0) {
@@ -61,14 +71,27 @@ export const Chat = () => {
         }
     }, [instructors])
 
+    const fetchAllMessages = async (instructorId) => {
+        try {
+            const response = await fetchAllMessagesAPI(instructorId);
+            console.log(response.data.data, 'response from fetch all messagessssssssssssss');
+            return response.data.data; // Assuming fetchAllMessagesAPI returns the data directly
+        } catch (error) {
+            console.error("Error fetching messages:", error);
+        }
+    };
+
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const instructorMessageTimestamps = {};
+                
                 studentMessages.forEach((message) => {
                     const senderId = message.sender._id;
+                    
                     const recipientId = message.recipient._id;
+                    
                     const messageTime = new Date(message.Time).getTime();
                     if (senderId === student?._id) {
                         if (!instructorMessageTimestamps[recipientId] || messageTime > instructorMessageTimestamps[recipientId]) {
@@ -98,28 +121,25 @@ export const Chat = () => {
             }
         };
         fetchData();
-    }, [instructors, studentMessages, change]);
+    }, [studentMessages]);
 
     useEffect(() => {
         const fetchMessages = async () => {
             if (selectedInstructor) {
                 try {
                     const instructorId = selectedInstructor._id;
-                    console.log(instructorId, 'instructorrrrrrrrrrriddddddddd');
 
-                    const getAllMessages = await fetchAllMessagesAPI(instructorId).unwrap();
-                    setMessages(getAllMessages?.group || []);
+                    const getAllMessages = await fetchAllMessages(instructorId);
+                    console.log(getAllMessages.sortedData, "get Alllllll messagesssssssssssss");
+                    setMessages(getAllMessages?.sortedData || []);
+                  
                 } catch (error) {
-                    if (error?.data?.message === 'No messages found') {
-                        setMessages({});
-                    }
+                    console.error("Error fetching messages:", error);
                 }
             }
         };
         fetchMessages();
-    }, [selectedInstructor, change]);
-
-
+    }, [selectedInstructor]);
 
     useEffect(() => {
         if (messageContainerRef.current) {
@@ -127,85 +147,28 @@ export const Chat = () => {
         }
     }, [messages, typingStatus]);
 
-
     const onEmojiClick = (emojiObject) => {
         setMessage(message + emojiObject.emoji);
     };
 
     const handleTyping = (e) => {
-        setMessage(e.target.value)
-        console.log(selectedInstructor, sender, "-------------------");
+        setMessage(e.target.value);
+        setTypingStatus({ [sender.userId]: true });
+        
+        if (typingTimeout) clearTimeout(typingTimeout);
+    
+        setTypingTimeout(
+            setTimeout(() => {
+                setTypingStatus((prev) => ({ ...prev, [sender.userId]: false }));
+            }, 2000)
+        );
     }
 
-    const handleFileUpload = async (event) => {
-        let file;
-        if (event instanceof Blob) {
-            file = event;
-        } else {
-            file = event.target.files?.[0];
-        }
-        if (file) {
-            try {
-                const formData = new FormData();
-                formData.append("file", file);
-                formData.append('upload_preset', 'vedaByte');
-                const recipient = selectedInstructor
-                const room = `private-${sender?._id}-${selectedInstructor?._id}`;
-                socket.emit('privateMessage', { type, sender, recipient, text, room });
-                setChange(!change)
-            } catch (error) {
-                console.log(error)
-            } finally {
-            }
-
-        }
-    };
-
-    useEffect(() => {
-        if (!isRecording && audioChunks.length > 0) {
-            const audioBlob = new Blob(audioChunks, { type: "audio/mpeg" });
-            handleFileUpload(audioBlob, "audio");
-            setAudioChunks([]);
-        }
-    }, [isRecording, audioChunks]);
-
-    const startRecording = () => {
-        navigator.mediaDevices
-            .getUserMedia({ audio: true })
-            .then((stream) => {
-                const recorder = new MediaRecorder(stream)
-                recorder.ondataavailable = (event) => {
-                    if (event.data.size > 0) {
-                        setAudioChunks((prev) => [...prev, event.data])
-                    }
-                };
-                recorder.start();
-                setMediaRecorder(recorder);
-                setAudioStream(stream);
-                setIsRecording(true);
-            })
-            .catch((error) => {
-                console.error("Error accessing microphone:", error);
-            });
-    };
-
-    const stopRecording = () => {
-        if (mediaRecorder) {
-            mediaRecorder.stop();
-            setIsRecording(false);
-            if (audioStream) {
-                audioStream.getTracks().forEach((track) => track.stop());
-                setAudioStream(null);
-            }
-        }
-    };
-
-
-    useEffect(() => {
-        if (chatContainerRef.current) {
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-        }
-    }, [messages]);
+    // useEffect(() => {
+    //     if (chatContainerRef.current) {
+    //         chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    //     }
+    // }, [messages]);
     return (
         <>
             <div className="overflow-hidden fixed w-screen shadow-lg ">
@@ -226,8 +189,6 @@ export const Chat = () => {
                             {Instructors.length ? (
                                 <div className="instructor-list flex-1 overflow-y-auto">
                                     {Instructors.map((instructor) => {
-                                        // const messagesForInstructor = getMessagesForInstructor(instructor._id);
-                                        // const lastMessage = messagesForInstructor[messagesForInstructor.length - 1];
                                         return (
                                             <div key={instructor._id} className="flex w-full h-16 border-2 border-gray-700 justify-start items-start p-2" onClick={() => setSelectedInstructor(instructor)}>
                                                 <div className="relative">
@@ -239,18 +200,7 @@ export const Chat = () => {
                                                 <div className="flex flex-col">
                                                     <span className="ml-4 text-xs font-semibold">{instructor.name}</span>
                                                     <div className="ml-4 flex flex-col">
-                                                        {/* {lastMessage ? (
-                                                            <>
-                                                                <span className="text-xs text-green-900 font-semibold">
-                                                                    last message : {lastMessage?.type === 'text' ? `${lastMessage?.message.substring(0, 6)}...` : 'File'}
-                                                                </span>
-                                                                <span className="text-xs text-gray-700 font-semibold">
-                                                                    {new Date(lastMessage?.Time).toLocaleString()}
-                                                                </span>
-                                                            </>
-                                                        ) : (
-                                                            <span className="text-sm text-gray-500">No messages yet</span>
-                                                        )} */}
+                                                      
                                                     </div>
                                                     {typingStatus[sender?._id] && (
                                                         <span className="text-sm text-black ml-2 mt-2">Typing...</span>
@@ -284,101 +234,42 @@ export const Chat = () => {
                                     )}
                                 </div>
                                 <div ref={messageContainerRef} className="chat-messages flex-1 overflow-y-auto bg-zinc-900">
-                                    {/* {Object.keys(messages).length > 0 ? (
-                                        Object.keys(messages).map((userId, index) => (
-                                            <div key={index}>
-                                                {messages[userId].map((msg, idx) => (
-                                                    <div key={idx} className={`flex p-1 mb-2 ${msg.CurrentUser ? 'justify-end' : 'justify-start'} items-center gap-1`}>
-                                                        {msg.CurrentUser === false ? (
-                                                            <img src={selectedInstructor?.profileImage} className="w-5 h-5 rounded-full bg-black border-2 border-zinc-400" alt="" />
-                                                        ) : ''}
-                                                        <div className={`inline-block px-2 py-1 rounded-lg shadow-md bg-lime-200 relative flex-col`}>
-                                                            {msg?.type === "text" && <span>{msg?.text}</span>}
-                                                            {msg?.type === "image" && (
-                                                                <img src={msg?.text} alt="Sent image" className="w-40 h-40 object-cover rounded" />
-                                                            )}
-                                                            {msg?.type === "video" && (
-                                                                <video controls className="w-40 h-40 rounded">
-                                                                    <source src={msg?.text} type="video/mp4" />
-                                                                    Your browser does not support the video tag.
-                                                                </video>
-                                                            )}
-                                                            {msg?.type === "audio" && (
-                                                                <audio controls className="w-40">
-                                                                    <source src={msg?.text} type="audio/mpeg" />
-                                                                    Your browser does not support the audio element.
-                                                                </audio>
-                                                            )}
-                                                            <span className="text-xs text-gray-500 self-end ml-2">
-                                                                {msg.Time}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                                {typingStatus[selectedInstructor?._id] && (
-                                                    <div className="flex items-center gap-2">
-                                                        <img
-                                                            src="https://i.pinimg.com/236x/26/e6/23/26e6237651d3b543359b02f0d9cceaee.jpg"
-                                                            // src={selectedInstructor?.profileImage}
-                                                            className="w-5 h-5 rounded-full bg-black border-2 border-zinc-400"
-                                                            alt="fff"
-                                                        />
-                                                        <div className="flex items-center bg-lime-200 rounded-lg shadow-md px-2 py-1">
-                                                            <span className="text-md font-semibold text-gray-950">
-                                                                Typing
-                                                            </span>
-                                                            <div className="typing-indicator ml-2 flex items-center">
-                                                                <div className="bubble"></div>
-                                                                <div className="bubble"></div>
-                                                                <div className="bubble"></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                )}
 
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <div className="flex justify-center items-center text-white">
-                                            <h1>No messages</h1>
-                                        </div>
-                                    )} */}
-
-
-
-
-                                    {
+                                {/* {
                                         messages.map((data, index) => {
 
-                                            // const messageData = {
-                                            //     senderId: sender.email,
-                                            //     recipientId: recipient._id,
-                                            //     message: message,
-                                            //     Time: currentTime,
-                                            // };
-
                                             return (
-                                                <div key={index} className={`flex p-1 mb-2 ${data.senderId === sender?.email ? 'justify-end' : 'justify-start'} items-center gap-1`}>
-                                                    {/* {msg.CurrentUser === false ? (
-                                                        <img src={selectedInstructor?.profileImage} className="w-5 h-5 rounded-full bg-black border-2 border-zinc-400" alt="" />
-                                                    ) : ''} */}
+                                                <div key={index} className={`flex p-1 mb-2 ${data.senderId === sender.email ? 'justify-end' : 'justify-start'} items-center gap-1`}>
+                                                  
+                                                  
                                                     <div className={`inline-block px-2 py-1 rounded-lg shadow-md bg-lime-200 relative flex-col`}>
                                                         <span>{data?.message}</span>
-                                                        {/* {msg?.type === "image" && (
-                                                            <img src={msg?.text} alt="Sent image" className="w-40 h-40 object-cover rounded" />
-                                                        )}
-                                                        {msg?.type === "video" && (
-                                                            <video controls className="w-40 h-40 rounded">
-                                                                <source src={msg?.text} type="video/mp4" />
-                                                                Your browser does not support the video tag.
-                                                            </video>
-                                                        )}
-                                                        {msg?.type === "audio" && (
-                                                            <audio controls className="w-40">
-                                                                <source src={msg?.text} type="audio/mpeg" />
-                                                                Your browser does not support the audio element.
-                                                            </audio>
-                                                        )} */}
+                                                    
+                                                        <span className="text-xs self-end ml-2">
+                                                            {data.Time}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })
+                                    } */}
+
+{
+                                        messages.map((data, index) => {
+                                            console.log(data, 'daataaaa');
+                                            
+                                            console.log(data.sender, 'this is dataaas senderrrrrrrrid');
+                                            console.log(sender.userId, 'senderinte emailllll');
+                                            
+                                            const isSender = data.sender === sender.userId;
+                                            console.log(isSender, "this is senderrrrrrrrrrrrrrr");
+                                            
+                                            return (
+                                                <div key={index} className={`flex p-1 mb-2 ${isSender ? 'justify-end' : 'justify-start'} my-2`}>
+                                                  
+                                                    <div className={`inline-block px-2 py-1 rounded-lg shadow-md bg-lime-200 relative flex-col`}>
+                                                        <span>{data?.message}</span>
+                                                    
                                                         <span className="text-xs self-end ml-2">
                                                             {data.Time}
                                                         </span>
@@ -387,6 +278,8 @@ export const Chat = () => {
                                             )
                                         })
                                     }
+                                
+
                                 </div>
                                 <div className="chat-footer flex items-center h-14 border-2 border-sky-200">
                                     <button

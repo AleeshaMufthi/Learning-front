@@ -55,7 +55,7 @@ const createOrderAPI = (courseId) =>
 
   // const messageFromUserAPI = (data) => API.post(`/user/chat/message`, data)
   const messageFromUserAPI = async (data) => {
-    console.log("Sending data to backend:", data); // Ensure data contains `uniqueInstructorIds`
+    console.log("Sending data to backend:", data);
     return await API.post(`/user/chat/message`, data);
   };
 
