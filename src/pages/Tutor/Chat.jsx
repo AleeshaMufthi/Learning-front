@@ -8,13 +8,13 @@ import { getTimeFromDateTime } from "../../socket/date";
 import EmojiPicker from "emoji-picker-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
+import '../../style/chat.css'
 
 
 
 export const Chat = () => {
 
     const instructor = useSelector((state) => state.tutor)
-
     const sender = useSelector((state) => state.tutor);
     
     const [message, setMessage] = useState('')
@@ -32,13 +32,55 @@ export const Chat = () => {
     const [isRecording, setIsRecording] = useState(false);
     const [change, setChange] = useState(false)
     const messageContainerRef = useRef(null);
+    const chatContainerRef = useRef(null)
     
 
     useEffect(() => {
        if(selectedStudent){
         socket.emit("joinedRoom", {instructor, selectedStudent})
        }
+
+       socket.on("messageReceived", ({ messageData }) => {
+        setMessages((prev) => [...prev, messageData]);
+      });
+
+    socket.on('userOnline', (sender) => {
+        setOnlineUsers((prev) => ({ ...prev, [sender.tutorId]: 'online' }));
+    })
+
+    socket.on('userOffline', (sender) => {
+        setOnlineUsers((prev) => ({ ...prev, [sender.tutorId]: 'offline' }));
+    })
+
+    socket.on('typing', (sender) => {
+        console.log(typingTimeout)
+        setTypingStatus((prevStatus) => ({
+            ...prevStatus,
+            [sender.tutorId]: true,
+        }));
+    })
+
+    socket.on('stopTyping', (sender) => {
+        setTypingStatus((prevStatus) => ({
+            ...prevStatus,
+            [sender.tutorId]: false,
+        }));
+    })
+
+    return () => {
+        socket.off("messageReceived");
+        socket.off("typing");
+        socket.off("stopTyping");
+        socket.off('userOnline');
+        socket.off('userOffline');
+    };
     }, [selectedStudent])
+
+    useEffect(() => {
+        if (messageContainerRef.current) {
+            messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
+        }
+    }, [messages, typingStatus]);
 
     const sendMessage = () => {
         if (message.trim() === '') {
@@ -56,15 +98,15 @@ export const Chat = () => {
         setMessage('')
     }
 
-    useEffect(() => {
-        socket.on("messageRecieved", ({ messageData }) => {
-            setMessages((prev) => [...prev]);
-        });
+    // useEffect(() => {
+    //     socket.on("messageRecieved", ({ messageData }) => {
+    //         setMessages((prev) => [...prev]);
+    //     });
 
-        return () => {
-            socket.off('messageRecieved')
-        }
-    }, [socket])
+    //     return () => {
+    //         socket.off('messageRecieved')
+    //     }
+    // }, [socket])
 
     useEffect(() => {
         if (students && students?.length > 0) {
@@ -135,17 +177,31 @@ export const Chat = () => {
         };
         fetchMessages();
     }, [selectedStudent, change]);
-
-    useEffect(() => {
-        if (messageContainerRef.current) {
-            messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
-        }
-    }, [messages, typingStatus]);
+    
+    const onEmojiClick = (emojiObject) => {
+        setMessage(message + emojiObject.emoji);
+    };
 
     const handleTyping = (e) => {
-        setMessage(e.target.value)
-        
+        setMessage(e.target.value);
+        socket.emit('typing', {
+            roomId: [instructor.email, selectedStudent.email].sort().join("-"), 
+            userId: sender.tutorId })
+        setTypingTimeout(
+            setTimeout(() => {
+                socket.emit("stopTyping", {
+                    roomId: [instructor.email, selectedStudent.email].sort().join("-"),
+                    userId: sender.tutorId
+                });
+            }, 2000)
+        );
     }
+
+    useEffect(() => {
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
+    }, [messages]);
 
     return (
         <>
@@ -183,7 +239,7 @@ export const Chat = () => {
                                             <div className="flex flex-col ml-4">
                                                 <span className=" text-xs font-semibold">{student.name}</span>
                                                
-                                                {typingStatus[sender?._id] && (
+                                                {typingStatus[selectedStudent._id] && (
                                                     <div className="flex">
                                                         <img src={student.profileImage} className="w-10 h-10 rounded-full bg-black" alt={student?.name} />
                                                         <span className="text-xs font-semibold text-gray-500 ml-10">

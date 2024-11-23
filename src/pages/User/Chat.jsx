@@ -6,14 +6,15 @@ import { UserChat } from "../../socket/UserChat";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
-
+import '../../style/chat.css'
 
 
 export const Chat = () => {
 
-    const [message, setMessage] = useState('')
-    const student = useSelector((state) => state.user);
+    // const student = useSelector((state) => state.user);
     const sender = useSelector((state) => state.user);
+
+    const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([]);
     const { instructors, studentMessages, setFetchChange } = UserChat();
     
@@ -31,12 +32,58 @@ export const Chat = () => {
     const chatContainerRef = useRef(null)
     const [change, setChange] = useState(false)
     const messageContainerRef = useRef(null);
+    const typingTimeoutRef = useRef(null);
 
     useEffect(() => {
         if (selectedInstructor) {
             socket.emit("joinedRoom", { sender, selectedInstructor })
         }
+
+        socket.on("messageReceived", ({ messageData }) => {
+            setMessages((prev) => [...prev, messageData]);
+          });
+
+        socket.on('userOnline', (sender) => {
+            setOnlineUsers((prev) => ({ ...prev, [sender.userId]: 'online' }));
+        })
+
+        socket.on('userOffline', (sender) => {
+            setOnlineUsers((prev) => ({ ...prev, [sender.userId]: 'offline' }));
+        })
+
+        socket.on('typing', (sender) => {
+            console.log(typingTimeout)
+            setTypingStatus((prevStatus) => ({
+                ...prevStatus,
+                [sender.userId]: true,
+            }));
+        })
+
+        socket.on('stopTyping', (sender) => {
+            setTypingStatus((prevStatus) => ({
+                ...prevStatus,
+                [sender.userId]: false,
+            }));
+        })
+
+        return () => {
+            socket.off("messageReceived");
+            socket.off("typing");
+            socket.off("stopTyping");
+            socket.off('userOnline');
+            socket.off('userOffline');
+        };
+
     }, [selectedInstructor])
+
+    console.log(selectedInstructor,'selected instructorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
+    
+
+    useEffect(() => {
+        if (messageContainerRef.current) {
+            messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
+        }
+    }, [messages, typingStatus]);
 
     const sendMessage = () => {
         if (message.trim() === '') {
@@ -51,18 +98,20 @@ export const Chat = () => {
             message: message,
             Time:  new Date().toLocaleTimeString([], {  hour: "2-digit",  minute: "2-digit",})}]);
         socket.emit('sendMessage', { sender, recipient: selectedInstructor, message })
+        setChange(prevChange => !prevChange);
+        setFetchChange(prevChange => !prevChange);
         setMessage('')
     }
 
-    useEffect(() => {
-        socket.on("messageRecieved", ({ messageData }) => {
-            setMessages((prev) => [...prev]);
-        });
+    // useEffect(() => {
+    //     socket.on("messageRecieved", ({ messageData }) => {
+    //         setMessages((prev) => [...prev]);
+    //     });
 
-        return () => {
-            socket.off('messageRecieved')
-        }
-    }, [socket])
+    //     return () => {
+    //         socket.off('messageRecieved')
+    //     }
+    // }, [socket])
     
 
     useEffect(() => {
@@ -74,8 +123,7 @@ export const Chat = () => {
     const fetchAllMessages = async (instructorId) => {
         try {
             const response = await fetchAllMessagesAPI(instructorId);
-            console.log(response.data.data, 'response from fetch all messagessssssssssssss');
-            return response.data.data; // Assuming fetchAllMessagesAPI returns the data directly
+            return response.data.data; 
         } catch (error) {
             console.error("Error fetching messages:", error);
         }
@@ -93,11 +141,11 @@ export const Chat = () => {
                     const recipientId = message.recipient._id;
                     
                     const messageTime = new Date(message.Time).getTime();
-                    if (senderId === student?._id) {
+                    if (senderId === sender?._id) {
                         if (!instructorMessageTimestamps[recipientId] || messageTime > instructorMessageTimestamps[recipientId]) {
                             instructorMessageTimestamps[recipientId] = messageTime;
                         }
-                    } else if (recipientId === student?._id) {
+                    } else if (recipientId === sender?._id) {
                         if (!instructorMessageTimestamps[senderId] || messageTime > instructorMessageTimestamps[senderId]) {
                             instructorMessageTimestamps[senderId] = messageTime;
                         }
@@ -128,11 +176,8 @@ export const Chat = () => {
             if (selectedInstructor) {
                 try {
                     const instructorId = selectedInstructor._id;
-
                     const getAllMessages = await fetchAllMessages(instructorId);
-                    console.log(getAllMessages.sortedData, "get Alllllll messagesssssssssssss");
                     setMessages(getAllMessages?.sortedData || []);
-                  
                 } catch (error) {
                     console.error("Error fetching messages:", error);
                 }
@@ -141,34 +186,30 @@ export const Chat = () => {
         fetchMessages();
     }, [selectedInstructor]);
 
-    useEffect(() => {
-        if (messageContainerRef.current) {
-            messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
-        }
-    }, [messages, typingStatus]);
-
     const onEmojiClick = (emojiObject) => {
         setMessage(message + emojiObject.emoji);
     };
 
     const handleTyping = (e) => {
         setMessage(e.target.value);
-        setTypingStatus({ [sender.userId]: true });
-        
-        if (typingTimeout) clearTimeout(typingTimeout);
-    
+        socket.emit('typing', {
+            roomId: [sender.email, selectedInstructor.email].sort().join("-"), 
+            userId: sender.userId })
         setTypingTimeout(
             setTimeout(() => {
-                setTypingStatus((prev) => ({ ...prev, [sender.userId]: false }));
+                socket.emit("stopTyping", {
+                    roomId: [sender.email, selectedInstructor.email].sort().join("-"),
+                    userId: sender.userId
+                });
             }, 2000)
         );
     }
 
-    // useEffect(() => {
-    //     if (chatContainerRef.current) {
-    //         chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
-    //     }
-    // }, [messages]);
+    useEffect(() => {
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
+    }, [messages]);
     return (
         <>
             <div className="overflow-hidden fixed w-screen shadow-lg ">
@@ -193,7 +234,7 @@ export const Chat = () => {
                                             <div key={instructor._id} className="flex w-full h-16 border-2 border-gray-700 justify-start items-start p-2" onClick={() => setSelectedInstructor(instructor)}>
                                                 <div className="relative">
                                                     <img src={instructor.profileImage} className="w-10 h-10 rounded-full bg-black" alt={instructor.name} />
-                                                    {onlineUsers[instructor?._id] === 'online' && (
+                                                    {onlineUsers[instructor._id] === 'online' && (
                                                         <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-700 rounded-full border-2 border-white"></span>
                                                     )}
                                                 </div>
@@ -202,7 +243,7 @@ export const Chat = () => {
                                                     <div className="ml-4 flex flex-col">
                                                       
                                                     </div>
-                                                    {typingStatus[sender?._id] && (
+                                                    {typingStatus[sender._id] && (
                                                         <span className="text-sm text-black ml-2 mt-2">Typing...</span>
                                                     )}
                                                 </div>
@@ -235,34 +276,10 @@ export const Chat = () => {
                                 </div>
                                 <div ref={messageContainerRef} className="chat-messages flex-1 overflow-y-auto bg-zinc-900">
 
-                                {/* {
-                                        messages.map((data, index) => {
-
-                                            return (
-                                                <div key={index} className={`flex p-1 mb-2 ${data.senderId === sender.email ? 'justify-end' : 'justify-start'} items-center gap-1`}>
-                                                  
-                                                  
-                                                    <div className={`inline-block px-2 py-1 rounded-lg shadow-md bg-lime-200 relative flex-col`}>
-                                                        <span>{data?.message}</span>
-                                                    
-                                                        <span className="text-xs self-end ml-2">
-                                                            {data.Time}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            )
-                                        })
-                                    } */}
-
 {
                                         messages.map((data, index) => {
-                                            console.log(data, 'daataaaa');
-                                            
-                                            console.log(data.sender, 'this is dataaas senderrrrrrrrid');
-                                            console.log(sender.userId, 'senderinte emailllll');
                                             
                                             const isSender = data.sender === sender.userId;
-                                            console.log(isSender, "this is senderrrrrrrrrrrrrrr");
                                             
                                             return (
                                                 <div key={index} className={`flex p-1 mb-2 ${isSender ? 'justify-end' : 'justify-start'} my-2`}>
@@ -278,7 +295,28 @@ export const Chat = () => {
                                             )
                                         })
                                     }
-                                
+                                    
+                                    {typingStatus[selectedInstructor?._id] && (
+                                    
+                                        
+                                                    <div className="flex items-center gap-2">
+                                                        <img
+                                                            src={selectedInstructor?.profileImage}
+                                                            className="w-5 h-5 rounded-full bg-black border-2 border-zinc-400"
+                                                            alt="image"
+                                                        />
+                                                        <div className="flex items-center bg-lime-200 rounded-lg shadow-md px-2 py-1">
+                                                            <span className="text-md font-semibold text-gray-950">
+                                                                typing...
+                                                            </span>
+                                                            <div className="typing-indicator ml-2 flex items-center">
+                                                                <div className="bubble"></div>
+                                                                <div className="bubble"></div>
+                                                                <div className="bubble"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
 
                                 </div>
                                 <div className="chat-footer flex items-center h-14 border-2 border-sky-200">
@@ -314,14 +352,8 @@ export const Chat = () => {
                                             >
                                                 <FaCamera />
                                             </label>
-                                            <input
-                                                type="file"
-                                                accept="audio/*"
-                                                onChange={(e) => handleFileUpload(e, "audio")}
-                                                className="hidden"
-                                                id="audio-upload"
-                                            />
-                                            <button
+                        
+                                            {/* <button
                                                 onClick={isRecording ? stopRecording : startRecording}
                                                 className="flex text-center p-1 cursor-pointer transition-transform duration-300 hover:scale-110"
                                             >
@@ -329,7 +361,7 @@ export const Chat = () => {
                                                     {isRecording && <span className="text-red-500 mr-1">🔴</span>}
                                                     <FontAwesomeIcon icon={faMicrophone} />
                                                 </span>
-                                            </button>
+                                            </button> */}
                                             <input
                                                 type="file"
                                                 accept="video/*"
@@ -359,14 +391,14 @@ export const Chat = () => {
                                     </button>
                                     <input
                                         type="text"
-                                        placeholder="Type a message"
+                                        placeholder="Type your message"
                                         value={message}
                                         onChange={handleTyping}
                                         className="flex-1 p-2 border-2 border-sky-200 rounded-l-lg focus:outline-none"
                                     />
                                     <button
                                         onClick={sendMessage}
-                                        className="flex justify-center items-center font-semibold bg-green-900 text-center w-20 h-10 text-white"                                    >
+                                        className="flex justify-center items-center font-semibold bg-green-900 text-center w-20 h-10 text-white rounded-md"                                    >
                                         Send
                                     </button>
                                 </div>
