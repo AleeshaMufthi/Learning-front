@@ -52,25 +52,20 @@ console.log(courses,"iriririririr")
                 </div>
                 <div className="px-5 pb-5">
                   <Link to={Dumy}>
-                    <h5 className="text-xl font-semibold tracking-tight text-gray-900 pt-4 nexa-font">
+                    <h5 className="text-xl font-semibold tracking-tight text-white text-center uppercase pt-4 nexa-font pb-3">
                       {course.title}
                     </h5>
-                    <span className="text-sm font-semibold tracking-tight text-gray-600 nexa-font">
+                    <span className="text-sm font-semibold tracking-tight text-gray-600 nexa-font pb-3">
                       {course.tagline}
                     </span>
                   </Link>
-                  <div className="py-4">
-                    <Badge color="info" className="w-fit">
-                      {console.log(course)}
-                      {course.category}
-                    </Badge>
-                  </div>
+                
                   <div className="flex items-center justify-between">
                     <div className="flex flex-col items-start justify-start">
-                      <span className="text-sm font-bold text-red-700 line-through ">
+                      <span className="text-sm font-bold text-red-500 line-through ">
                         ₹{course.price + 490}
                       </span>
-                      <span className="text-2xl font-bold text-gray-900 ">
+                      <span className="text-2xl font-bold text-green-900 ">
                         ₹{course.price}
                       </span>
                     </div>

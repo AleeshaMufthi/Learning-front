@@ -96,16 +96,7 @@ export default function Course() {
                     className="rounded-full w-10 sm:w-10 md:w-15 lg:w-20"
                   />
                 </div>
-                <div className="flex flex-row-reverse justify-center items-center">
-                  <div className="text-md text-center px-4 text-gray-600 md:text-lg">
-                    Category
-                    <hr />
-                    <HorizontalRule />
-                    <span className="text-sm text-amber-500  md:text-lg">
-                      {course?.category || "programming"}
-                    </span>
-                  </div>
-                </div>
+               
               </div>
               <div className="bg-white flex p-3 my-3 rounded-lg">
                 <ul className="flex justify-evenly w-full">
@@ -215,10 +206,10 @@ export default function Course() {
                             <div className="sm:p-2 md:p-3 lg:p-5">
                               <div className="sm:ml-1 md:ml-3 lg:ml-5 flex justify-between">
                                 <div>
-                                  <h3 className="sm:text-xl md:text-2xl lg:text-3xl">
+                                  <h3 className="sm:text-xl md:text-2xl lg:text-3xl pb-3">
                                     Total Lessons - {course?.lessons?.length}
                                   </h3>
-                                  <h3 className="sm:text-sm md:text-md text-gray-500">
+                                  <h3 className="sm:text-sm md:text-md text-gray-500 pb-3">
                                     {course.tagline}
                                   </h3>
                                 </div>
@@ -249,13 +240,16 @@ export default function Course() {
                                             </div>
   
                                             <div className="flex items-center gap-2">
-                                              {/* Second line - right-aligned */}
+                                              <div className="ml-auto">10: 00
+                                              </div>
+
+                                            {/* <div className="flex items-center gap-2">
                                               <div className="ml-auto">
                                                 {(lesson.duration / 60).toFixed(
                                                   2
                                                 )}
                                                 :00
-                                              </div>
+                                              </div> */}
   
                                               <ChevronUpIcon
                                                 className={`${

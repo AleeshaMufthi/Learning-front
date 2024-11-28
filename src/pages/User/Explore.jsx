@@ -322,12 +322,7 @@ export default function Explore() {
                                 </Link>
                                 <div className="py-4 flex justify-between">
                                   <div>
-                                    <Badge
-                                      color="info"
-                                      className="w-fit capitalize mb-1"
-                                    >
-                                      {course.category}
-                                    </Badge>
+                              
                                     <Badge
                                       color={
                                         course.difficulty === "expert" ||

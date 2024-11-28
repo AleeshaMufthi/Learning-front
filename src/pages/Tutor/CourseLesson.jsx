@@ -65,19 +65,12 @@ export default function CourseLesson() {
                 className="w-125 card ml-1 rounded"
                 alt="alternate image"
               />
-              <h1 className="text-white text-3xl p-5">{course.title}</h1>
+              <h1 className="text-white mt-3 uppercase text-center text-3xl p-5">{course.title}</h1>
               <h3 className="mt-5 text-gray-400">{course.tagline}</h3>
-              <h3 className="mt-5 text-gray-400">{course.about}</h3>
-              <div className="mt-5 mr-1 flex gap-3 pb-5">
-                <Badge className="text-gray-400 capitalize">
-                  {course.category}
-                </Badge>
-                <Badge className="text-gray-400 capitalize">
-                  {course.difficulty}
-                </Badge>
-              </div>
+              <h3 className="mt-2 text-gray-400">{course.about}</h3>
+           
 
-             <div className="flex justify-between">
+             <div className="flex mt-5 justify-between">
              <Button 
                 onClick={handleDeleteCourse} 
                 color="red" 

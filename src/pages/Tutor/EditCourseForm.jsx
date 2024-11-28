@@ -17,14 +17,45 @@ export default function EditCourseForm(){
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getCourseDetailsAPI(id).then((response) => {
-      setCourse({  title: response.data.title,
-        tagline: response.data.tagline,
-        about: response.data.about,
-        price: response.data.price,});
-      setIsLoading(false);
-    });
+    async function fetchCourseDetails() {
+      try {
+        const response = await getCourseDetailsAPI(id);
+
+        const courseData = response.data.data || response.data;
+        setCourse({
+          title: courseData.title,
+          tagline: courseData.tagline,
+          about: courseData.about,
+          price: courseData.price,
+        });
+
+        console.log("Course data set in state:", {
+          title: courseData.title,
+          tagline: courseData.tagline,
+          about: courseData.about,
+          price: courseData.price,
+        });
+        
+      } catch (error) {
+        console.error("Error fetching course details:", error);
+        toast.error("Failed to load course details.");
+      } finally {
+        setIsLoading(false); 
+      }
+    }
+
+    fetchCourseDetails();
   }, [id]);
+
+  // useEffect(() => {
+  //   getCourseDetailsAPI(id).then((response) => {
+  //     setCourse({  title: response.data.title,
+  //       tagline: response.data.tagline,
+  //       about: response.data.about,
+  //       price: response.data.price,});
+  //     setIsLoading(false);
+  //   });
+  // }, [id]);
 
   const handleInputChange = (e) => {
     setCourse({ ...course, [e.target.name]: e.target.value });
@@ -32,13 +63,9 @@ export default function EditCourseForm(){
 
   const handleUpdateCourse = async () => { 
     try {
-      console.log("Inside handleUpdateCourse");      
-      console.log(course, "Course data before API call"); // Debug course data
-      console.log(id, "Course ID"); // Debug ID
 
       setIsLoading(true);
       await updateCourseAPI(id, course); 
-
       toast.success("Course updated successfully!");
       navigate(`/tutor/courses/${id}`);
     } catch (error) {

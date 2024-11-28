@@ -42,21 +42,14 @@ export default function CourseCard() {
               </div>
               <div className="px-5 pb-3 nexa-font">
                 <Link to={(course._id)}>
-                  <h5 className="text-lg font-semibold tracking-tight text-white pt-4 nexa-font">
+                  <h5 className="text-lg font-semibold tracking-tight text-center uppercase text-white pt-4 nexa-font">
                     {course.title}
                   </h5>
                   <h5 className="text-sm font-semibold tracking-tight text-white nexa-font pt-3">
                     {course.tagline}
                   </h5>
                 </Link>
-                <div className="py-4 flex justify-between">
-                  <Badge color="info" className="w-fit capitalize">
-                    {course.category}
-                  </Badge>
-                  <Badge color="danger" className="capitalize">
-                    {timeAgo(course.createdAt)}
-                  </Badge>
-                </div>
+            
                 <div className="flex items-center mt-2 5 mb-5">
                   {Array.from({ length: 5 }).map((_, index) => (
                     <svg
@@ -74,7 +67,7 @@ export default function CourseCard() {
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex flex-col items-start justify-start">
-                    <span className="text-sm font-bold text-red-700 line-through">
+                    <span className="text-sm font-bold text-red-500 line-through">
                       ₹{course.price + 490}
                     </span>
                     <span className="text-sm font-bold text-green-600 nexa-font">

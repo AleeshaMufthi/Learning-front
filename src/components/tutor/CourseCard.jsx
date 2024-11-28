@@ -21,23 +21,16 @@ export default function CourseCard({ courses, loading }) {
                       />
                     </div>
                     <div className="px-5 pb-5">
-                      <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white pt-4 nexa-font">
+                      <h5 className="text-xl font-semibold text-center uppercase pb-3 tracking-tight text-gray-900 dark:text-white pt-4 nexa-font">
                         {course.title}
                       </h5>
-                      <h5 className="text-sm font-semibold tracking-tight text-gray-400 dark:text-white nexa-font">
+                      <h5 className="text-sm pb-3 font-semibold tracking-tight text-gray-400 dark:text-white nexa-font">
                         {course.tagline}
                       </h5>
-                      <div className="py-4 flex justify-between">
-                        <Badge color="info" className="w-fit capitalize">
-                          {course.category}
-                        </Badge>
-                        <Badge color="danger" className="capitalize">
-                          {timeAgo(course.createdAt)}
-                        </Badge>
-                      </div>
+                    
                       <div className="flex items-center justify-between">
                         <div className="flex flex-col items-start justify-start">
-                          <span className="text-sm font-bold text-red-700 line-through dark:text-white">
+                          <span className="text-sm font-bold text-red-500 line-through ">
                             ₹{course.price + 490}
                           </span>
                           <span className="text-2xl font-bold text-gray-900 dark:text-white">
