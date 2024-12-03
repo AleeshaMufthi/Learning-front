@@ -3,6 +3,7 @@ import API from ".";
 const adminSignInAPI = (body) => API.post("./auth/admin/signin", body);
 const adminSignUpAPI = (body) => API.post("/auth/admin/signup", body);
 const adminOtpSendAPI = (body) => API.post("./auth/admin/sendotp", body);
+const getAdminTokenUpdate = () => API.get("/auth/admin/token");
 const getSignedInAdminAPI = () => API.get("/auth/admin/restore");
 const handleAdminLogOutAPI = () => API.delete("/auth/admin/logout");
 
@@ -48,6 +49,7 @@ const handleAdminLogOutAPI = () => API.delete("/auth/admin/logout");
     adminSignUpAPI,
     adminOtpSendAPI,
     getSignedInAdminAPI,
+    getAdminTokenUpdate,
     handleAdminLogOutAPI,
     getAllUsersAPI,
     blockUserAPI,

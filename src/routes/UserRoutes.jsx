@@ -22,7 +22,7 @@ import Enrolled from '../pages/User/Enrolled.jsx'
 import Wallet from '../pages/User/ViewWallet.jsx'
 import Tutors from '../pages/User/Tutors.jsx'
 import NavBar from '../components/user/NavBar.jsx'
-import { Chat } from '../pages/User/Chat.jsx'
+// import { Chat } from '../pages/User/Chat.jsx'
 
 
 export default function UserRoutes() {
@@ -39,21 +39,26 @@ export default function UserRoutes() {
             setUser({
               ...userData,
               userId: userData._id,
+              // role: userData.role,
             })
           );
         }else{
-           localStorage.removeItem("isAuth");
-           dispatch(removeUser());
+          handleLogout();
         }
       })
       .catch((err) => {
         console.error("Error fetching user data", err);
-        // Handle error case, optionally remove auth state and redirect
-        localStorage.removeItem("isAuth");
-        dispatch(removeUser());
-        navigate('/signin');
+        handleLogout();
       });
-  }, []);
+  }, [dispatch, navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("isAuth");
+    // localStorage.removeItem("role");
+    dispatch(removeUser());
+    navigate('/signin');
+  };
+
   return (
     <div>
       <NavBar />
@@ -71,7 +76,7 @@ export default function UserRoutes() {
         <Route path="user/profile/courses" element={<CourseOwned />} />
         <Route path="user/profile/transactions" element={<ViewTransaction />}/>
         <Route path="user/profile/wallet" element={<Wallet />}/>
-        <Route path="user/profile/chat" element={<Chat />} />
+        {/* <Route path="user/profile/chat" element={<Chat />} /> */}
         <Route path="courses/enrolled" element={<Enrolled />} />
         <Route path="tutors" element={<Tutors />} />
         <Route path="courses/enrolled/:id" element={<ViewCourse />} />

@@ -27,6 +27,7 @@
     "flowbite": "^2.5.1",
     "flowbite-react": "^0.10.1",
     "formik": "^2.4.6",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.454.0",
     "postcss": "^8.4.40",
     "prop-types": "^15.8.1",

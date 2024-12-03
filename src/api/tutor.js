@@ -6,6 +6,7 @@ const tutorSignUpAPI = (body) => API.post("/auth/tutor/signup", body);
 const tutorOtpSendAPI = (body) => API.post("/auth/tutor/sendotp", body);
 const tutorForgetPasswordAPI = (body) => API.post("/auth/tutor/forgetPassword",body);
 const tutorResetPasswordAPI = (body) => API.post("/auth/tutor/resetPassword",body)
+const getTutorTokenUpdate = () => API.get("/auth/tutor/token");
 const getSignedInTutorAPI = () => API.get("/auth/tutor/restore");
 const handleTutorLogOutAPI = () => API.delete("/auth/tutor/logout");
 
@@ -63,6 +64,7 @@ export{
     tutorSignUpAPI,
     tutorOtpSendAPI,
     getSignedInTutorAPI,
+    getTutorTokenUpdate,
     tutorForgetPasswordAPI,
     tutorResetPasswordAPI,
     handleTutorLogOutAPI,

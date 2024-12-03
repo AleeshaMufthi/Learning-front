@@ -1,62 +1,62 @@
-import { useState, useEffect } from "react";
-import { fetchEnrolledCoursesAPI, messageFromUserAPI } from "../api/user";
+// import { useState, useEffect } from "react";
+// import { fetchEnrolledCoursesAPI, messageFromUserAPI } from "../api/user";
 
-export const UserChat = (handleError) => {
+// export const UserChat = (handleError) => {
 
-    const [instructors, setInstructors] = useState([]);
-    const [studentMessages, setMessages] = useState([])
-    const [fetchChange, setFetchChange] = useState(false)
+//     const [instructors, setInstructors] = useState([]);
+//     const [studentMessages, setMessages] = useState([])
+//     const [fetchChange, setFetchChange] = useState(false)
 
-    useEffect(() => {
-      const fetchEnrolledCoursesTutors = async () => {
-        try {
-          const response = await fetchEnrolledCoursesAPI();
-          const courses = response.data.data;
-          console.log(fetchEnrolledCoursesAPI(), '=====================================================');
+//     useEffect(() => {
+//       const fetchEnrolledCoursesTutors = async () => {
+//         try {
+//           const response = await fetchEnrolledCoursesAPI();
+//           const courses = response.data.data;
+//           console.log(fetchEnrolledCoursesAPI(), '=====================================================');
           
-          console.log(courses, "courrrrrseeeeeeessssssssss")
+//           console.log(courses, "courrrrrseeeeeeessssssssss")
           
-          if (courses.error) {
-            throw new Error(courses.error.data.message);
-          }
+//           if (courses.error) {
+//             throw new Error(courses.error.data.message);
+//           }
 
-          const uniqueInstructorIds = new Set();
-          const uniqueInstructors = [];
+//           const uniqueInstructorIds = new Set();
+//           const uniqueInstructors = [];
           
    
-          courses.forEach((course) => {
+//           courses.forEach((course) => {
             
-            const instructor = course.courseDetails.tutor;
+//             const instructor = course.courseDetails.tutor;
 
-            const instructorId = course.courseDetails.tutor._id;
+//             const instructorId = course.courseDetails.tutor._id;
 
             
-            if (!uniqueInstructorIds.has(instructorId)) {
-              uniqueInstructorIds.add(instructorId);
-              uniqueInstructors.push(instructor);
-            }
-          })
-          const instructorIdsArray = Array.from(uniqueInstructorIds);
+//             if (!uniqueInstructorIds.has(instructorId)) {
+//               uniqueInstructorIds.add(instructorId);
+//               uniqueInstructors.push(instructor);
+//             }
+//           })
+//           const instructorIdsArray = Array.from(uniqueInstructorIds);
           
-          const messages = await messageFromUserAPI({ uniqueInstructorIds: instructorIdsArray });
-          console.log(messages,"messagesssssssssssss (messageFromUserAPI");
-          setMessages(messages)
-          setInstructors(uniqueInstructors);
+//           const messages = await messageFromUserAPI({ uniqueInstructorIds: instructorIdsArray });
+//           console.log(messages,"messagesssssssssssss (messageFromUserAPI");
+//           setMessages(messages)
+//           setInstructors(uniqueInstructors);
   
-        } catch (error) {
-          console.log(error.message)
-          if (
-            error?.message === "Access token is required" ||
-            error?.message === "User not found" ||
-            error?.message === "Invalid token"
+//         } catch (error) {
+//           console.log(error.message)
+//           if (
+//             error?.message === "Access token is required" ||
+//             error?.message === "User not found" ||
+//             error?.message === "Invalid token"
   
-          ) {
-            handleError(error.message);
-          }
-        }
-      };
+//           ) {
+//             handleError(error.message);
+//           }
+//         }
+//       };
   
-      fetchEnrolledCoursesTutors();
-    }, [handleError, fetchChange]);
-    return { instructors, studentMessages, setFetchChange };
-  };
+//       fetchEnrolledCoursesTutors();
+//     }, [handleError, fetchChange]);
+//     return { instructors, studentMessages, setFetchChange };
+//   };

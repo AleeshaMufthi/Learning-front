@@ -7,7 +7,6 @@ import TutorRoutes from './routes/TutorRoutes'
 import AdminRoutes from './routes/AdminRoutes'
 
 function App() {
-  
 
   return (
     <div className='bg-white'>
