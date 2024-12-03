@@ -28,36 +28,29 @@ import NavBar from '../components/user/NavBar.jsx'
 export default function UserRoutes() {
 
   const dispatch = useDispatch();
-  const navigate = useNavigate()
   
   useEffect(() => {
     getSignedInUserAPI()
       .then((response) => {
         let userData = response.data?.userData || null;
-        if (userData) {
+        console.log(userData);
+          if (!userData) {
+            console.log("user not logged in");
+            localStorage.removeItem("isAuth");
+            dispatch(removeUser());
+            return;
+          }
           dispatch(
             setUser({
-              ...userData,
-              userId: userData._id,
-              // role: userData.role,
+              ...response.data?.userData,
+              userId: response.data.userData._id,
             })
           );
-        }else{
-          handleLogout();
-        }
       })
       .catch((err) => {
         console.error("Error fetching user data", err);
-        handleLogout();
       });
-  }, [dispatch, navigate]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("isAuth");
-    // localStorage.removeItem("role");
-    dispatch(removeUser());
-    navigate('/signin');
-  };
+  }, []);
 
   return (
     <div>
