@@ -19,11 +19,11 @@ import CourseLesson from "../pages/Tutor/CourseLesson.jsx";
 import ManageCourses from "../pages/Tutor/ManageCourses.jsx";
 import EditCourseForm from '../pages/Tutor/EditCourseForm.jsx';
 import ViewLesson from '../pages/Tutor/ViewLesson.jsx';
-// import { Chat } from '../pages/Tutor/Chat.jsx';
+import { Chat } from '../pages/Tutor/Chat.jsx';
 
 export default function TutorRoutes() {
 
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
     useEffect(() => {
       getSignedInTutorAPI()
@@ -47,26 +47,29 @@ export default function TutorRoutes() {
           console.log("error", err);
         });
     }, []);
+  
     return (
       <div>
         <NavBar />
         <Toaster />
         <Routes>
-          <Route element={<PrivateTutor />}>
+        <Route element={<PrivateTutor />}>
           <Route path="profile" element={<Profile />} />
           <Route path="dashboard" element={<Dashboard />} />
-          </Route>
-          <Route path="/" element={<Home />} />
-          <Route path="signin" element={<SignIn />} />
-          <Route path="signup" element={<SignUp />} />
-          <Route path="forgetPassword" element={<ForgetPassword />} />
-          <Route path="resetPassword" element={<ResetPassword />} />
           <Route path="courses/create" element={<CreateCourse />} />
           <Route path="courses" element={<ManageCourses />} />
           <Route path="courses/:id" element={<CourseLesson />} />
           <Route path="courses/edit/:id" element={<EditCourseForm />}/>
-          {/* <Route path="profile/chat" element={<Chat />} /> */}
+        </Route>
+        <Route path="/" element={<Home />} />
+          <Route path="signin" element={<SignIn />} />
+          <Route path="signup" element={<SignUp />} />
           <Route path="*" element={<NotFound />} />
+          <Route path="forgetPassword" element={<ForgetPassword />} />
+          <Route path="resetPassword" element={<ResetPassword />} />
+         
+          <Route path="profile/chat" element={<Chat />} />
+       
         </Routes>
       
       </div>

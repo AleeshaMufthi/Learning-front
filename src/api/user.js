@@ -61,11 +61,15 @@ const createOrderAPI = (courseId) =>
 
   const fetchAllMessagesAPI = (tutorId) => API.get(`/user/chat/message/${tutorId}`)
 
+  // const UserViewLesson = (lessonId) => API.get(`/user/lessons/video?id=${lessonId}`);
+  
+
 export {
     userSignInAPI,
     userSignUpAPI,
     userOtpSendAPI,
-    forgetPasswordAPI,  
+    forgetPasswordAPI,
+    // UserViewLesson,  
     // verifyOtpAPI,
     getSignedInUserAPI,
     resetPasswordAPI,

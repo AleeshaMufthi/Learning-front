@@ -1,5 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom"
 import { useSelector } from "react-redux"
+import { useState, useEffect } from "react";
+
 
 const PrivateAdmin = () => {
     const admin = localStorage.getItem("isAdminAuth");
@@ -7,13 +9,36 @@ const PrivateAdmin = () => {
 };
 
 const PrivateUser = () => {
-    const user = localStorage.getItem("isAuth")
-    return user ? <Outlet /> : <Navigate to={"/signin?private=true"} />
+    const [isAllowed, setIsAllowed] = useState(null);
+    useEffect(() => {
+        const user = localStorage.getItem("isAuth");
+        if (user) {
+          setIsAllowed(true);
+        } else {
+          setIsAllowed(false);
+        }
+      }, []);
+      if (isAllowed === null) {
+        return <div>Loading...</div>;
+      } 
+    return isAllowed ? <Outlet /> : <Navigate to={"/signin?private=true"} />
 }
 
 const PrivateTutor = () => {
-    const tutor = localStorage.getItem("isTutorAuth");
-    return tutor ? <Outlet /> : <Navigate to={"/tutor/signin?private=true"} />;
+    const [isAllowed, setIsAllowed] = useState(null);
+    useEffect(() => {
+        const tutor = localStorage.getItem("isTutorAuth");
+        if (tutor) {
+          setIsAllowed(true);
+        } else {
+          setIsAllowed(false);
+        }
+      }, []); 
+
+      if (isAllowed === null) {
+        return <div>Loading...</div>;
+      }
+    return isAllowed ? <Outlet /> : <Navigate to={"/tutor/signin?private=true"} />;
   };
   
 

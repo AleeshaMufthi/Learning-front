@@ -24,7 +24,6 @@ export default function Enrolled() {
           console.log(err);
         });
     }, []);
-console.log(courses,"iriririririr")
     return (
       <>
         <SectionTitle

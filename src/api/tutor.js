@@ -55,8 +55,8 @@ const fetchEnrolledUsersAPI = () => API.get(`/tutor/chat/enrolled-users`)
 
 const tutorMessageAPI = () => API.get(`/tutor/chat/message`)
 
-// const fetchTutorMessagesAPI = (userId) => API.get(`/tutor/chat/message/${userId}`)
-const fetchTutorMessagesAPI = async (userId) => API.get(`/tutor/chat/message/${userId}`);
+const fetchTutorMessagesAPI = (userId) => API.get(`/tutor/chat/message/${userId}`)
+// const fetchTutorMessagesAPI = async (userId) => API.get(`/tutor/chat/message/${userId}`);
 
 
 export{

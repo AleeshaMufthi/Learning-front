@@ -40,8 +40,8 @@ export default function ViewCourse() {
         setLesson(response.data.lesson);
         setFormatVideo(response.data.lesson?.videoFormat);
       });
-      
     };
+
     useEffect(() => {
       const courseDate = new Date(course.createdAt).toDateString();
       const courseTimeAgo = timeAgo(course.createdAt);
@@ -80,7 +80,9 @@ export default function ViewCourse() {
                   ></video>
                 </div>
               ) : (
+                
                 <div className="flex justify-center pb-4" height="800px">
+                
                   {/* <iframe
                     src={lesson.videoURL}
                     className="w-full rounded-lg h-full"

@@ -32,10 +32,10 @@ const lessonSchema = yup.object({
   const handleFileSelect = async (e) => {
     setError(null);
     const fileSizeInBytes = e.target.files[0].size;
-    const fileSizeInMB = fileSizeInBytes / (1024 * 1024);
-    if (fileSizeInMB > 30) {
-      return setError("file size exceeded 30Mb");
-    }
+    // const fileSizeInMB = fileSizeInBytes / (1024 * 1024);
+    // if (fileSizeInMB > 30) {
+    //   return setError("file size exceeded 30Mb");
+    // }
     setFileName(e.target.files[0].name);
   };
   const removeSelectedFile = async () => {

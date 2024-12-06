@@ -17,6 +17,7 @@ const Tutors = "/tutors"
 const UserCourse = (id) => `/courses/${id}`;
 const UserViewCourse = (id) => `/courses/enrolled/${id}`;
 
+
 // tutors
 const Tutor = "/tutor"
 const TutorDashboard = "/tutor/dashboard"
@@ -49,6 +50,7 @@ export {
     UserSignUp,
     UserCourse,
     UserViewCourse,
+    // UserViewLesson,
     Profile,
     Explore,
     Tutors,
