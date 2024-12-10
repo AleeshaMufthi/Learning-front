@@ -20,6 +20,7 @@ const lessonSchema = yup.object({
     const [error, setError] = useState(null);
     const [fileName, setFileName] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [progress, setProgress] = useState(0);
     const navigate = useNavigate();
     const {
       handleSubmit,
@@ -49,6 +50,7 @@ const lessonSchema = yup.object({
       }
 
       setLoading(true);
+      // setProgress(0); 
 
       const formData = new FormData(); // Declare formData inside onSubmit
       formData.append("title", data.title);
@@ -57,17 +59,20 @@ const lessonSchema = yup.object({
       formData.append("courseId", course._id);
     
       createLessonAPI(formData)
-        .then((response) => {
-          setIsOpen(false);
-          toast.success("Lesson created successfully", {
-            duration: 6000, // 6 seconds
-          });
-          navigate(`/tutor/courses/${course._id}`);
-          console.log(response);
-        })
-        .catch((error) => console.log(error));
-       
-    };
+      toast.success("Lesson upload started, please wait.")
+    .then((response) => {
+      setIsOpen(false);
+      toast.success("Lesson created successfully", {
+        duration: 6000,
+      });
+      navigate(`/tutor/courses/${course._id}`);
+      console.log(response);
+    })
+    .catch((err) => {
+      console.error("Error while creating lesson:", err);
+      toast.error("Failed to create lesson. Please try again.");
+    })
+};
     
     return (
       <>
@@ -203,8 +208,18 @@ const lessonSchema = yup.object({
               </div>
             </Modal.Body>
             <Modal.Footer className="flex justify-end">
+            {/* {progress > 0 && (
+               <div className="w-full bg-gray-200 rounded-full mt-4">
+                <div
+                className="bg-blue-500 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
+                style={{ width: `${progress}%` }}
+                >
+            {progress}%
+           </div>
+          </div>
+          )} */}
               <Button color="blue" type="submit" disabled={loading}>
-              {loading ? "Loading..." : "Create Lesson"} 
+              {loading ? `Uploading...` : "Create Lesson"} 
               </Button>
               <Button color="blue" onClick={() => setIsOpen(!isOpen)} disabled={loading}>
                 Go Back

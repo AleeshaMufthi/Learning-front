@@ -5,7 +5,7 @@ import { useRef, useState, useEffect } from "react";
 import socket from "../../socket/SocketioClient";
 import { fetchTutorMessagesAPI } from "../../api/tutor";
 import { getTimeFromDateTime } from "../../socket/date";
-import EmojiPicker from "emoji-picker-react";
+import Picker from "emoji-picker-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
 import '../../style/chat.css'
@@ -27,7 +27,7 @@ export const Chat = () => {
     const [onlineUsers, setOnlineUsers] = useState({});
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [showMediaOptions, setShowMediaOptions] = useState(false);
-    const [isRecording, setIsRecording] = useState(false);
+    // const [isRecording, setIsRecording] = useState(false);
     const [change, setChange] = useState(false)
     const messageContainerRef = useRef(null);
     const chatContainerRef = useRef(null)
@@ -40,20 +40,16 @@ useEffect(()=>{
 
     useEffect(() => {
        socket.on("messageRecieved", ({messageData}) => {
-        console.log(messageData,'+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
         
         setMessages((prev) => [...prev, messageData]);
       });
 
-    socket.on('userOnline', (sender) => {
-        setOnlineUsers((prev) => ({ ...prev, [sender.tutorId]: 'online' }));
-    })
-
-    socket.on('userOffline', (sender) => {
-        setOnlineUsers((prev) => ({ ...prev, [sender.tutorId]: 'offline' }));
-    })
+      socket.on("userStatus", ({ email, status }) => {
+        setOnlineUsers((prev) => ({ ...prev, [email]: status }));
+      });
 
     socket.on('typing', (sender) => {
+        console.log(typingTimeout)
         setTypingStatus((prevStatus) => ({
             ...prevStatus,
             [sender.tutorId]: true,
@@ -71,8 +67,7 @@ useEffect(()=>{
         socket.off("messageRecieved");
         socket.off("typing");
         socket.off("stopTyping");
-        socket.off('userOnline');
-        socket.off('userOffline');
+        socket.off("userStatus");
     };
     }, [])
 
@@ -96,18 +91,10 @@ useEffect(()=>{
             type: 'text',
             Time:  new Date().toLocaleTimeString([], {  hour: "2-digit",  minute: "2-digit",})}]);
         socket.emit('sendMessage', { sender: instructor, recipient: selectedStudent, message, type: "text"})
+        setChange(prevChange => !prevChange);
+        setFetchChange(prevChange => !prevChange);
         setMessage('')
     }
-
-    // useEffect(() => {
-    //     socket.on("messageRecieved", ({ messageData }) => {
-    //         setMessages((prev) => [...prev]);
-    //     });
-
-    //     return () => {
-    //         socket.off('messageRecieved')
-    //     }
-    // }, [socket])
 
     useEffect(() => {
         if (students && students?.length > 0) {
@@ -154,7 +141,7 @@ useEffect(()=>{
             }
         }
         sinc()
-    }, [students, change]);
+    }, [students]);
 
     useEffect(() => {
         const fetchMessages = async () => {
@@ -174,10 +161,10 @@ useEffect(()=>{
             }
         };
         fetchMessages();
-    }, [selectedStudent, change]);
-    
+    }, [selectedStudent]);
+  
     const onEmojiClick = (emojiObject) => {
-        setMessage(message + emojiObject.emoji);
+        setMessage(prevMessage => prevMessage + emojiObject.emoji);
     };
 
     const handleTyping = (e) => {
@@ -195,6 +182,9 @@ useEffect(()=>{
         );
     }
 
+    console.log(selectedStudent, 'selected student vaadeyy');
+    
+
     useEffect(() => {
         if (chatContainerRef.current) {
             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
@@ -203,211 +193,187 @@ useEffect(()=>{
 
     return (
         <>
-            <div className="">
-                <div className="content  flex flex-col">
-                 
-                    <div className="flex flex-1 flex-col overflow-y-auto lg:flex-row mt-3 bg-gray-200 shadow-xl rounded-lg border-2 border-gray-300 sm:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl h-screen " style={{ height: '60%' }}>
-                        <div className="sm:hidden md:flex flex-col border-r-2  lg:w-1/4 sm:max-w-screen-md lg:max-w-full">
-                            <div className="relative w-full p-3 border-b-2 bg-buttonGreen">
-                                <input
-                                    type="text"
-                                    className="w-full h-10 pl-10 pr-4 rounded-md mt-3 shadow focus:outline-none"
-                                    placeholder="Search"
-                                />
-                                <div className="absolute inset-y-0 left-2 top-3 flex items-center pl-3 text-black pointer-events-none ">
-                                    <FaSearch />
-                                </div>
-                            </div>
-                            {Students.length ? (
-                                Students?.map((student) => {
-                                    
-                                    return (
-                                        <div key={student._id} className="flex w-full h-16 border-2 border-gray-300 justify-start items-start p-3" onClick={() => setSelectedStudent(student)}>
-                                            {student?.profileImage ? (
-                                                <div className="relative">
-                                                    <img src={student.profileImage} className="w-10 h-10 rounded-full bg-black" alt={student?.name} />
-                                                    {onlineUsers[student?._id] === 'online' && (
-                                                        <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-700 rounded-full border-2 border-white"></span>
-                                                    )}
-
-                                                </div>
-                                            ) : (
-                                                <p className="flex justify-center items-center bg-zinc-800 w-10 h-10 text-md text-white rounded-full"><FaUser size={20} /></p>
-                                            )}
-                                            <div className="flex flex-col ml-4">
-                                                <span className=" text-xs font-semibold">{student.name}</span>
-                                               
-                                                {typingStatus[selectedStudent._id] && (
-                                                    <div className="flex">
-                                                        <img src={student.profileImage} className="w-10 h-10 rounded-full bg-black" alt={student?.name} />
-                                                        <span className="text-xs font-semibold text-gray-500 ml-10">
-                                                            Typing...
-                                                        </span>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    )
-                                })
-                            ) : (
-                                <p className=" flex justify-center text-zinc-700 font-semibold">No messages found !</p>
-                            )}
-                        </div>
-                        {selectedStudent ? (
-                            <div className=" flex flex-col justify-between border-2 w-full h-screen overflow-hidden">
-                             
-                                <div className="flex justify-start items-center border-2 border-sky-100 shadow-md h-16 p-3 gap-5">
-                                    {selectedStudent?.profileImage ? (
-                                        <div className="relative">
-                                            <img src={selectedStudent.profileImage} className="w-12 h-12 rounded-full bg-black" alt={selectedStudent.name} />
-                                            {onlineUsers[selectedStudent?._id] === 'online' && (
-                                                <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-700 rounded-full border-2 border-white"></span>
-                                            )}
-                                        </div>
-                                    ) : (
-                                        <p className="flex justify-center items-center bg-zinc-800 w-10 h-10 text-md text-white rounded-full">
-                                            <FaUser size={20} />
-                                        </p>
-                                    )}
-                                    <p className="text-sm font-semibold">{selectedStudent?.name}</p>
-                                    {typingStatus[selectedStudent?._id] && (
-
-                                        <div className="flex">
-                                            <div className="typing-indicator">
-                                                <div className="bubble"></div>
-                                                <div className="bubble"></div>
-                                                <div className="bubble"></div>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div ref={messageContainerRef} className="border-2  flex flex-col-reverse w-full h-full bg-zinc-900 overflow-y-auto">
-                              
-                                </div>
-
-
-                                {
-                                        messages.map((data, index) => {
-                                            
-                                            
-                                            const isSender = data.sender == sender.tutorId; 
-                                            
-                                            return (
-                                                <div key={index} className={`flex p-1 mb-2 ${isSender ? 'justify-end' : 'justify-start'} my-2`}>
-                                                  
-                                                    <div className={`inline-block px-2 py-1 rounded-lg shadow-md bg-lime-200 relative flex-col`}>
-                                                        <span>{data?.message}</span>
-                                                    
-                                                        <span className="text-xs self-end ml-2">
-                                                            {data.Time}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            )
-                                        })
-                                    }
-
-                                <div className="flex items-center h-14 border-2 border-sky-200 px-2 ">
-                                    <button
-                                        onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                                        className="p-2 bg-sky-100 border-2 border-sky-200 transition-transform duration-300 hover:scale-110"
-                                    >
-                                        😊
-                                    </button>
-                                    {showEmojiPicker && (
-                                        <div className="absolute bottom-20 z-10 bg-white shadow-lg rounded">
-                                            <button
-                                                onClick={() => setShowEmojiPicker(false)}
-                                                className="text-red-500 p-1"
-                                            >
-                                                ✕
-                                            </button>
-                                            <Picker onEmojiClick={onEmojiClick} />
-                                        </div>
-                                    )}
-                                    {showMediaOptions && (
-                                        <div className="absolute flex justify-between items-center gap-5 bottom-20 z-10 bg-white shadow-lg rounded p-1">
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={(e) => handleFileUpload(e, "image")}
-                                                className="hidden"
-                                                id="image-upload"
-                                            />
-                                            <label
-                                                htmlFor="image-upload"
-                                                className="flex text-center p-1 cursor-pointer transition-transform duration-300 hover:scale-110"
-                                            >
-                                                <FaCamera />
-                                            </label>
-                                            <input
-                                                type="file"
-                                                accept="audio/*"
-                                                onChange={(e) => handleFileUpload(e, "audio")}
-                                                className="hidden"
-                                                id="audio-upload"
-                                            />
-                                            <button
-                                                onClick={isRecording ? stopRecording : startRecording}
-                                                className="flex text-center p-1 cursor-pointer transition-transform duration-300 hover:scale-110"
-                                            >
-                                                <span className="text-sm font-semibold flex items-center">
-                                                    {isRecording && <span className="text-red-500 mr-1">🔴</span>}
-                                                    <FontAwesomeIcon icon={faMicrophone} />
-                                                </span>
-                                            </button>
-                                            <input
-                                                type="file"
-                                                accept="video/*"
-                                                onChange={(e) => handleFileUpload(e, "video")}
-                                                className="hidden"
-                                                id="video-upload"
-                                            />
-                                            <label
-                                                htmlFor="video-upload"
-                                                className="flex text-center p-1 cursor-pointer transition-transform duration-300 hover:scale-110"
-                                            >
-                                                <FaVideo />
-                                            </label>
-                                            <button
-                                                onClick={() => setShowMediaOptions(false)}
-                                                className="block w-full text-sm font-semibold p-2 text-zinc-600 mt-2 border-red-300 rounded"
-                                            >
-                                                Cancel
-                                            </button>
-                                        </div>
-                                    )}
-                                    <button
-                                        onClick={() => setShowMediaOptions(!showMediaOptions)}
-                                        className="p-3 bg-sky-100 border-2 border-sky-200 text-gray-500 transition-transform duration-300 hover:scale-110"
-                                    >
-                                        <FaPaperclip />
-                                    </button>
-                                    <input
-                                        onChange={handleTyping}
-                                        value={message}
-                                        type="text"
-                                        className="w-full h-full p-2 rounded-md shadow focus:outline-none"
-                                        placeholder="Enter the message......"
-                                    />
-                                    <button
-                                        className="flex justify-center items-center font-semibold bg-green-900 text-center w-24 h-full text-white"
-                                        onClick={() => sendMessage(selectedStudent)}
-                                    >
-                                        Send
-                                    </button>
-                                </div>
-                            </div>
-
-                        ) : (
-                            <div className="flex justify-center ml-96 font-semibold text-xl items-center">
-                                <p>No message to show</p>
-                            </div>
-                        )}
-                    </div>
+  <div className="h-screen flex flex-col bg-gray-100 overflow-hidden">
+      <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+        {/* Sidebar */}
+        <div className="w-full md:w-1/3 lg:w-1/4 bg-white border-r border-gray-200 flex flex-col">
+          {/* <div className="p-4 border-b border-gray-200 bg-green-500">
+            <div className="relative">
+              <input
+                type="text"
+                className="w-full h-10 pl-10 pr-4 rounded-full bg-white shadow-inner focus:outline-none focus:ring-2 focus:ring-green-300"
+                placeholder="Search"
+              />
+              <FaSearch className="absolute left-3 top-3 text-gray-400" />
+            </div>
+          </div> */}
+          <div className="flex-1 overflow-y-auto">
+            {Students.length ? (
+              Students.map((student) => (
+                <div
+                  key={student._id}
+                  className="flex items-center p-3 border-b border-gray-200 cursor-pointer hover:bg-gray-50"
+                  onClick={() => setSelectedStudent(student)}
+                >
+                  <div className="relative">
+                    <img src={student.profileImage} className="w-12 h-12 rounded-full object-cover" alt={student.name} />
+                    {onlineUsers[student.email] === 'online' && (
+                      <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+                    )}
+                  </div>
+                  <div className="ml-3 flex-1">
+                    <p className="font-semibold text-gray-800">{student.name}</p>
+                    {typingStatus[student._id] && (
+                      <p className="text-sm text-gray-500">Typing...</p>
+                    )}
+                  </div>
                 </div>
-            </div >
+              ))
+            ) : (
+              <p className="text-center text-gray-500 py-4">No messages found!</p>
+            )}
+          </div>
+        </div>
+
+        {/* Chat Area */}
+        <div className="flex-1 flex flex-col bg-gray-50 overflow-hidden">
+          {selectedStudent ? (
+            <>
+              <div className="flex items-center p-4 border-b border-gray-200 bg-white">
+                <img src={selectedStudent.profileImage} className="w-10 h-10 rounded-full object-cover" alt={selectedStudent.name} />
+                <div className="ml-3">
+                  <p className="font-semibold text-gray-800">{selectedStudent.name}</p>
+                  {onlineUsers[selectedStudent.email] === 'online' && (
+                    <p className="text-sm text-green-500">Online</p>
+                  )}
+                </div>
+                {typingStatus[selectedStudent?._id] && (
+                  <div className="ml-auto flex items-center">
+                    <span className="text-sm text-gray-500 mr-2">Typing</span>
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div ref={messageContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4">
+                {messages.map((data, index) => {
+                  const isSender = data.sender === sender.tutorId
+                  return (
+                    <div key={index} className={`flex ${isSender ? 'justify-end' : 'justify-start'}`}>
+                      <div className={`max-w-xs lg:max-w-md xl:max-w-lg px-4 py-2 rounded-lg ${isSender ? 'bg-green-500 text-white' : 'bg-white'}`}>
+                        <p>{data.message}</p>
+                        <p className="text-xs mt-1 text-right">{data.Time}</p>
+                      </div>
+                    </div>
+                  )
+                })}
+
+                {typingStatus[selectedStudent._id] && (
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={selectedStudent.profileImage}
+                      className="w-5 h-5 rounded-full bg-black border-2 border-zinc-400"
+                      alt="Instructor"
+                    />
+                    <div className="flex items-center bg-lime-200 rounded-lg shadow-md px-2 py-1">
+                      <span className="text-md font-semibold text-gray-950">
+                        typing...
+                      </span>
+                      <div className="typing-indicator ml-2 flex items-center">
+                        <div className="bubble"></div>
+                        <div className="bubble"></div>
+                        <div className="bubble"></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+              </div>
+              <div className="p-4 bg-white border-t border-gray-200 sticky bottom-0">
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                    className="p-2 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-300 rounded-full"
+                  >
+                    😊
+                  </button>
+                  <button
+                    onClick={() => setShowMediaOptions(!showMediaOptions)}
+                    className="p-2 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-300 rounded-full"
+                  >
+                    <FaPaperclip />
+                  </button>
+                  <input
+                    type="text"
+                    placeholder="Type your message"
+                    value={message}
+                    onChange={handleTyping}
+                    className="flex-1 p-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-green-300"
+                  />
+                  <button
+                    onClick={sendMessage}
+                    className="px-4 py-2 bg-green-500 text-white rounded-full hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300"
+                  >
+                    Send
+                  </button>
+                </div>
+                {showEmojiPicker && (
+                  <div className="absolute bottom-20 right-4 z-10">
+                    <Picker onEmojiClick={onEmojiClick} />
+                  </div>
+                )}
+                {showMediaOptions && (
+                  <div className="absolute bottom-20 left-4 z-10 bg-white shadow-lg rounded-lg p-4 space-y-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleFileUpload(e, "image")}
+                      className="hidden"
+                      id="image-upload"
+                    />
+                    <label
+                      htmlFor="image-upload"
+                      className="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 p-2 rounded"
+                    >
+                      <FaCamera className="text-gray-500" />
+                      <span>Upload Image</span>
+                    </label>
+                    <input
+                      type="file"
+                      accept="video/*"
+                      onChange={(e) => handleFileUpload(e, "video")}
+                      className="hidden"
+                      id="video-upload"
+                    />
+                    <label
+                      htmlFor="video-upload"
+                      className="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 p-2 rounded"
+                    >
+                      <FaVideo className="text-gray-500" />
+                      <span>Upload Video</span>
+                    </label>
+                    <button
+                      onClick={() => setShowMediaOptions(false)}
+                      className="w-full text-center p-2 text-red-500 hover:bg-red-100 rounded"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="flex-1 flex items-center justify-center text-gray-500">
+              <p>Select a conversation to start chatting</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+
         </>
     )
 }
