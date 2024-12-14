@@ -1,4 +1,4 @@
-import { Button, Modal } from "flowbite-react";
+import { Button, Modal, Progress } from "flowbite-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -8,7 +8,20 @@ import { PhotoIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { createLessonAPI } from "../../api/tutor";
 import * as yup from "yup"
 import toast from "react-hot-toast";
+import { Loader2 } from "lucide-react";
 
+const LoadingFallback = ({ progress, message }) => (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="w-96 p-6 bg-white rounded-lg shadow-xl">
+      <h2 className="text-2xl font-bold mb-4 text-center">{message}</h2>
+      <div className="flex justify-center mb-4">
+        <Loader2 className="w-12 h-12 animate-spin text-teal-500" />
+      </div>
+      <Progress value={progress} className="mb-4" />
+      <p className="text-center text-gray-600">{progress.toFixed(0)}% Complete</p>
+    </div>
+  </div>
+); 
 
 const lessonSchema = yup.object({
     title: yup.string().required().trim().min(3).max(30),
@@ -20,7 +33,8 @@ const lessonSchema = yup.object({
     const [error, setError] = useState(null);
     const [fileName, setFileName] = useState(null);
     const [loading, setLoading] = useState(false);
-    const [progress, setProgress] = useState(0);
+    const [uploadProgress, setUploadProgress] = useState(0);
+    const [processing, setProcessing] = useState(false);
     const navigate = useNavigate();
     const {
       handleSubmit,
@@ -43,35 +57,54 @@ const lessonSchema = yup.object({
     setFileName(null);
   };
     
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
       if (error) {
         console.log(error);
         return false;
       }
 
-      setLoading(true);
-      // setProgress(0); 
+      setLoading(true); 
+      setUploadProgress(0);
+      setProcessing(false);
 
       const formData = new FormData(); // Declare formData inside onSubmit
       formData.append("title", data.title);
       formData.append("description", data.description);
       formData.append("lesson", Array.from(data.files)[0]); 
       formData.append("courseId", course._id);
+      
+      try {
+        const response = await createLessonAPI(formData, (progressEvent) => {
+          const { loaded, total } = progressEvent;
+          const progress =  total ? Math.round((loaded * 100) / total) : 0;
+          setUploadProgress(progress); // Update the state here
+          if (progress === 100) {
+            setProcessing(true);
+          }
+        });
+        setUploadProgress(100); 
+        setProcessing(false);
+
+        setIsOpen(false);
+        toast.success("Lesson created successfully", {
+          duration: 6000,
+        });
+       
+      if (setCourse) {
+        const newLesson = response; // Adjust this based on your API response
+        setCourse((prevCourse) => ({
+          ...prevCourse,
+          lessons: [...prevCourse.lessons, newLesson],
+        }));
+      }
     
-      createLessonAPI(formData)
-      toast.success("Lesson upload started, please wait.")
-    .then((response) => {
-      setIsOpen(false);
-      toast.success("Lesson created successfully", {
-        duration: 6000,
-      });
-      navigate(`/tutor/courses/${course._id}`);
-      console.log(response);
-    })
-    .catch((err) => {
-      console.error("Error while creating lesson:", err);
-      toast.error("Failed to create lesson. Please try again.");
-    })
+        navigate(`/tutor/courses/${course._id}`);
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to create lesson.");
+      } finally {
+        setLoading(false);
+      }
 };
     
     return (
@@ -141,6 +174,18 @@ const lessonSchema = yup.object({
                           defaultValue={""}
                         />
                       </div>
+                    {loading && (
+                      <LoadingFallback
+                        progress={uploadProgress}
+                        message={
+                          processing
+                            ? "Finalizing your lesson..."
+                            : fileName
+                            ? "Uploading Video..."
+                            : "Adding Lesson..."
+                        }
+                      />
+                    )}
                       <p className="text-red-600 nexa-font text-xs mt-2 ml-1">
                         {errors.description?.message}
                       </p>
@@ -208,16 +253,6 @@ const lessonSchema = yup.object({
               </div>
             </Modal.Body>
             <Modal.Footer className="flex justify-end">
-            {/* {progress > 0 && (
-               <div className="w-full bg-gray-200 rounded-full mt-4">
-                <div
-                className="bg-blue-500 text-xs font-medium text-blue-100 text-center p-0.5 leading-none rounded-full"
-                style={{ width: `${progress}%` }}
-                >
-            {progress}%
-           </div>
-          </div>
-          )} */}
               <Button color="blue" type="submit" disabled={loading}>
               {loading ? `Uploading...` : "Create Lesson"} 
               </Button>

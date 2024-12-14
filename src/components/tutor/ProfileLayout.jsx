@@ -6,7 +6,8 @@ import { Link, useLocation } from "react-router-dom";
 
 const sidebarMenu = [
     { title: "Profile", link: "/tutor/profile", icon: <UserCircleIcon /> },
-    { title: "Chat", link: "/tutor/profile/chat", icon: <ChatBubbleOvalLeftEllipsisIcon />}
+    { title: "Chat", link: "/tutor/profile/chat", icon: <ChatBubbleOvalLeftEllipsisIcon />},
+    { title: "Meet", link: "/tutor/profile/meet", icon: <ChatBubbleOvalLeftEllipsisIcon />}
     // {
     //   title: "Courses",
     //   link: "/user/profile/courses",

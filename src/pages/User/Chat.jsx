@@ -33,7 +33,8 @@ export const Chat = () => {
     const [change, setChange] = useState(false)
     const messageContainerRef = useRef(null);
     const typingTimeoutRef = useRef(null);
-
+    
+    console.log(instructors, 'instructoooooooooooooooorrrrrrrrrrrrrrrrsssssssssss');
     useEffect(() =>{
         if (selectedInstructor) {
             socket.emit("joinedRoom", { sender, selectedInstructor })
@@ -203,16 +204,6 @@ export const Chat = () => {
         <div className="flex-1 flex flex-col lg:flex-row bg-gray-200 shadow-xl rounded-lg border-2 border-gray-300 h-full sm:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl">
         {/* Sidebar */}
         <div className="w-full lg:w-1/4 bg-white border-r border-gray-300 flex flex-col">
-          {/* <div className="p-4 border-b border-gray-300 bg-green-500">
-            <div className="relative">
-              <input
-                type="text"
-                className="w-full h-10 pl-10 pr-4 rounded-full bg-white shadow-inner focus:outline-none focus:ring-2 focus:ring-green-300"
-                placeholder="Search"
-              />
-              <FaSearch className="absolute left-3 top-3 text-gray-400" />
-            </div>
-          </div> */}
           <div className="flex-1 overflow-y-auto">
             {Instructors.length ? (
               Instructors.map((instructor) => (
@@ -222,7 +213,8 @@ export const Chat = () => {
                   onClick={() => setSelectedInstructor(instructor)}
                 >
                   <div className="relative">
-                    <img src={instructor.profileImage} className="w-12 h-12 rounded-full object-cover" alt={instructor.name} />
+                    {/* <img src={instructor.profileImage} className="w-12 h-12 rounded-full object-cover" alt={instructor.name} /> */}
+                    <img src="https://i.pinimg.com/236x/ad/57/b1/ad57b11e313616c7980afaa6b9cc6990.jpg" className="w-12 h-12 rounded-full object-cover" alt={instructor.name} />
                     {onlineUsers[instructor.email] === 'online' && (
                       <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
                     )}
@@ -246,7 +238,8 @@ export const Chat = () => {
           {selectedInstructor ? (
             <>
               <div className="flex items-center p-4 border-b border-gray-200 bg-white">
-                <img src={selectedInstructor.profileImage} className="w-10 h-10 rounded-full object-cover" alt={selectedInstructor.name} />
+                {/* <img src={selectedInstructor.profileImage} className="w-10 h-10 rounded-full object-cover" alt={selectedInstructor.name} /> */}
+                <img src="https://img.freepik.com/premium-photo/beautiful-british-girl-white-sweater_146105-51507.jpg?semt=ais_hybrid" className="w-10 h-10 rounded-full object-cover" alt={selectedInstructor.name} />
                 <div className="ml-3">
                   <p className="font-semibold text-gray-800">{selectedInstructor.name}</p>
                   {onlineUsers[selectedInstructor.email] === 'online' && (
@@ -278,11 +271,12 @@ export const Chat = () => {
                 })}
                 {typingStatus[selectedInstructor._id] && (
                   <div className="flex items-center gap-2">
-                    <img
+                    {/* <img
                       src={selectedInstructor.profileImage}
                       className="w-5 h-5 rounded-full bg-black border-2 border-zinc-400"
                       alt="Instructor"
-                    />
+                    /> */}
+                    <img src="https://img.freepik.com/premium-photo/beautiful-british-girl-white-sweater_146105-51507.jpg?semt=ais_hybrid" className="w-5 h-5 rounded-full bg-black border-2 border-zinc-400" alt={selectedInstructor.name} />
                     <div className="flex items-center bg-lime-200 rounded-lg shadow-md px-2 py-1">
                       <span className="text-md font-semibold text-gray-950">
                         typing...

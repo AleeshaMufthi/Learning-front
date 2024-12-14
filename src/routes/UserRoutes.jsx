@@ -23,6 +23,7 @@ import Wallet from '../pages/User/ViewWallet.jsx'
 import Tutors from '../pages/User/Tutors.jsx'
 import NavBar from '../components/user/NavBar.jsx'
 import { Chat } from '../pages/User/Chat.jsx'
+import VideoMeet from '../pages/User/VideoMeet.jsx'
 
 
 export default function UserRoutes() {
@@ -70,6 +71,7 @@ export default function UserRoutes() {
         <Route path="user/profile/transactions" element={<ViewTransaction />}/>
         <Route path="user/profile/wallet" element={<Wallet />}/>
         <Route path="user/profile/chat" element={<Chat />} />
+        <Route path="user/profile/meet" element={<VideoMeet/>} />
         <Route path="courses/enrolled" element={<Enrolled />} />
         <Route path="tutors" element={<Tutors />} />
         <Route path="courses/enrolled/:id" element={<ViewCourse />} />

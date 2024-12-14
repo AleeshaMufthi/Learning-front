@@ -12,6 +12,7 @@ const CourseOwned = "/user/profile/courses";
 const ViewTransaction = "/user/profile/transactions";
 const Wallet = "/user/profile/wallet";
 const Chat = "/user/profile/chat"
+const Meet = "/user/profile/meet"
 const Enrolled = "/courses/enrolled";
 const Tutors = "/tutors"
 const UserCourse = (id) => `/courses/${id}`;
@@ -23,6 +24,7 @@ const Tutor = "/tutor"
 const TutorDashboard = "/tutor/dashboard"
 const TutorProfile = "/tutor/profile";
 const TutorChat = "/tutor/profile/chat"
+const TutorMeet = '/tutor/profile/meet'
 const TutorSignIn = (pathname) => `/tutor/signin?from=${pathname}`;
 const TutorSignUp = "/tutor/signup";
 const TutorforgetPassword = "/tutor/forgetPassword"
@@ -54,6 +56,8 @@ export {
     Profile,
     Explore,
     Tutors,
+    Meet,
+    TutorMeet,
     ForgetPassword,
     ResetPassword,
     CourseOwned,

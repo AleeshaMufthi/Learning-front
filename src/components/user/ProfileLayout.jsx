@@ -25,6 +25,10 @@ const sidebarMenu = [
       title: "Chat",
       link: "/user/profile/chat",
       icon: <ChatBubbleOvalLeftEllipsisIcon />
+    },{
+      title: "Meet",
+      link: "/user/profile/meet",
+      icon: <ChatBubbleOvalLeftEllipsisIcon />
     }
   ];
 

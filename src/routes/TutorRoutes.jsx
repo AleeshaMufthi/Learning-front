@@ -20,6 +20,7 @@ import ManageCourses from "../pages/Tutor/ManageCourses.jsx";
 import EditCourseForm from '../pages/Tutor/EditCourseForm.jsx';
 import ViewLesson from '../pages/Tutor/ViewLesson.jsx';
 import { Chat } from '../pages/Tutor/Chat.jsx';
+import VideoMeet from '../pages/Tutor/VideoMeet.jsx';
 
 export default function TutorRoutes() {
 
@@ -69,6 +70,7 @@ export default function TutorRoutes() {
           <Route path="resetPassword" element={<ResetPassword />} />
          
           <Route path="profile/chat" element={<Chat />} />
+          <Route path='profile/meet' element={<VideoMeet />} />
        
         </Routes>
       

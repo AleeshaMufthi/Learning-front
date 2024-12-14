@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
+    "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
@@ -23,15 +25,18 @@
     "apexcharts": "^3.52.0",
     "autoprefixer": "^10.4.19",
     "axios": "^1.7.3",
+    "crypto-browserify": "^3.12.1",
     "emoji-picker-react": "^4.12.0",
     "firebase": "^10.13.1",
     "flowbite": "^2.5.1",
     "flowbite-react": "^0.10.1",
     "formik": "^2.4.6",
+    "global": "^4.4.0",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.454.0",
     "postcss": "^8.4.40",
     "prop-types": "^15.8.1",
+    "randombytes": "^2.1.0",
     "react": "^18.3.1",
     "react-apexcharts": "^1.4.1",
     "react-dom": "^18.3.1",
@@ -52,6 +57,7 @@
     "eslint-plugin-react": "^7.34.3",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
+    "node-polyfill-webpack-plugin": "^4.1.0",
     "vite": "^5.3.4"
   }
 }

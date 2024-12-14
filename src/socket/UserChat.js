@@ -42,6 +42,7 @@ export const UserChat = (handleError) => {
          
           setMessages(messages)
           setInstructors(uniqueInstructors);
+          
   
         } catch (error) {
           console.log(error.message)

@@ -56,15 +56,15 @@ function classNames(...classes) {
         .catch((err) => console.log(err));
     }, []);
 
-    useEffect(() => {
-      const thumbnail = watch("thumbnail");
-      if (thumbnail && thumbnail.length > 0) {
-        const file = thumbnail[0];
-        const fileReader = new FileReader();
-        fileReader.onload = (e) => setImagePreviewURL(e.target.result);
-        fileReader.readAsDataURL(file);
-      }
-    }, [watch("thumbnail")]);
+    // useEffect(() => {
+    //   const thumbnail = watch("thumbnail");
+    //   if (thumbnail && thumbnail.length > 0) {
+    //     const file = thumbnail[0];
+    //     const fileReader = new FileReader();
+    //     fileReader.onload = (e) => setImagePreviewURL(e.target.result);
+    //     // fileReader.readAsDataURL(file);
+    //   }
+    // }, [watch("thumbnail")]);
 
     const handleImageChange = (event) => {
       const file = event.target.files[0];
