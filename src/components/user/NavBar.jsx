@@ -1,10 +1,12 @@
 import { Button, Navbar } from "flowbite-react";
-import React from "react";
+import React, { useEffect } from "react";
 import Logo from "../common/Logo";
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import MenuDropDown from "./MenuDropDown";
 import { User, UserSignIn, Profile, Tutor, Explore, Enrolled, Tutors } from "../../api/link";
+import { ToastContainer, toast } from "react-toastify";
+import socket from "../../socket/SocketioClient";
 
 
 function NavBar() {
@@ -25,6 +27,28 @@ function NavBar() {
       { name: "Tutors", href: Tutors},
     ];
     const navitems = user?.loggedIn ? UserNav : NormalNav;
+
+    useEffect(() => {
+      console.log("Emitting joinRoom for userId:", user.userId);
+      socket.emit("joinRoom", { userId: user.userId }); // Join room with userId
+      socket.on("newNotification", ({ Notification }) => {
+        console.log("Notification received:", Notification);
+        toast.info(`${Notification.heading} 
+           ${Notification.message}`, {
+          position: "top-right", // Position of the toast
+          autoClose: 6000, // Auto-close after 5 seconds
+          hideProgressBar: false, // Show progress bar
+          closeOnClick: true, // Close on click
+          pauseOnHover: true, // Pause on hover
+          draggable: true, // Allow dragging
+          progress: undefined, // Optional custom progress value
+          icon: "ℹ️", // Custom icon (optional)
+        });
+      });
+      return () => {
+        socket.off("newNotification"); // Remove only the specific listener
+      };
+    }, []);
 
     return (
           <Navbar
@@ -48,7 +72,7 @@ function NavBar() {
             </Link>
           ))}
         </div>
-
+        <ToastContainer />
         <div className="flex items-center">
           {user.loggedIn ? (
             <MenuDropDown className="w-3" user={user} />

@@ -9,6 +9,8 @@ import { createLessonAPI } from "../../api/tutor";
 import * as yup from "yup"
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
+import socket from "../../socket/SocketioClient";
+import { useSelector } from "react-redux";
 
 const LoadingFallback = ({ progress, message }) => (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -28,7 +30,11 @@ const lessonSchema = yup.object({
     description: yup.string().required().min(5).max(50),
   });
 
-  export default function CreateLesson({ course, setCourse }) {   
+  export default function CreateLesson({ course, setCourse }) { 
+    
+      const user = useSelector((state) => state.user)
+      const tutor = useSelector((state) => state.tutor)
+
     const [isOpen, setIsOpen] = useState(false);
     const [error, setError] = useState(null);
     const [fileName, setFileName] = useState(null);
@@ -91,6 +97,21 @@ const lessonSchema = yup.object({
         duration: 6000,
       });
         navigate(`/tutor/courses/${course._id}`);
+
+      // Notification
+        if(socket){
+          const Notification = {
+            heading: "Lesson Added!",
+            message: `New Lesson has add-on to the course`,
+            from: tutor.tutorId,
+            fromModel: "Tutors",
+            to: user.userId,
+            toModel: "Users",
+          };
+          socket.emit("to-users", Notification);
+        }
+
+
       } catch (err) {
         console.error(err);
         toast.error("Failed to create lesson.");

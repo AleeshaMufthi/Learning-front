@@ -20,6 +20,7 @@ import ViewTransaction from '../pages/User/ViewTransaction.jsx'
 import ViewCourse from '../pages/User/ViewCourse.jsx'
 import Enrolled from '../pages/User/Enrolled.jsx'
 import Wallet from '../pages/User/ViewWallet.jsx'
+import Notification from '../pages/User/Notification.jsx'
 import Tutors from '../pages/User/Tutors.jsx'
 import NavBar from '../components/user/NavBar.jsx'
 import { Chat } from '../pages/User/Chat.jsx'
@@ -72,6 +73,7 @@ export default function UserRoutes() {
         <Route path="user/profile/wallet" element={<Wallet />}/>
         <Route path="user/profile/chat" element={<Chat />} />
         <Route path="user/profile/meet" element={<VideoMeet/>} />
+        <Route path='user/profile/notification' element={<Notification />}/>
         <Route path="courses/enrolled" element={<Enrolled />} />
         <Route path="tutors" element={<Tutors />} />
         <Route path="courses/enrolled/:id" element={<ViewCourse />} />

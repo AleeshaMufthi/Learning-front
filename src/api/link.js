@@ -13,6 +13,7 @@ const ViewTransaction = "/user/profile/transactions";
 const Wallet = "/user/profile/wallet";
 const Chat = "/user/profile/chat"
 const Meet = "/user/profile/meet"
+const Notification = "/user/profile/notification"
 const Enrolled = "/courses/enrolled";
 const Tutors = "/tutors"
 const UserCourse = (id) => `/courses/${id}`;
@@ -64,6 +65,7 @@ export {
     ViewTransaction,
     Wallet,
     Chat,
+    Notification,
     Enrolled,
     Tutor,
     TutorDashboard,

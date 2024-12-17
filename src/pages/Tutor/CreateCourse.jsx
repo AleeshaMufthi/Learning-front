@@ -12,6 +12,8 @@ import * as yup from 'yup'
 import React from 'react'
 import Footer from "../../components/common/Footer";
 import toast from "react-hot-toast";
+import socket from "../../socket/SocketioClient";
+import { useSelector } from "react-redux";
 
 const courseSchema = yup
   .object({
@@ -40,6 +42,9 @@ const courseSchema = yup
   .required();
 
 export default function CreateCourse() {
+
+  const user = useSelector((state) => state.user)
+  const tutor = useSelector((state) => state.tutor)
 
   const [categories, setCategories] = useState([]);
   const [imagePreviewURL, setImagePreviewURL] = useState(null);
@@ -86,6 +91,19 @@ export default function CreateCourse() {
       reset();
       toast.success("Course created successfully!");
       navigate("/tutor/courses");
+      
+  if(socket){
+    const Notification = {
+      heading: "New Course Created!",
+      message: `Tutor uploaded a new course, It will show after adding the lesson.`,
+      from: tutor.tutorId,
+      fromModel: "Tutors",
+      to: user.userId,
+      toModel: "Users",
+    };
+    socket.emit("to-users", Notification);
+  }
+  
     } catch (error) {
       console.error("Error creating course:", error);
       alert("Error occurred while creating the course");

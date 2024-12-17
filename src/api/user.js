@@ -62,6 +62,10 @@ const createOrderAPI = (courseId) =>
   const fetchAllMessagesAPI = (tutorId) => API.get(`/user/chat/message/${tutorId}`)
 
   // const UserViewLesson = (lessonId) => API.get(`/user/lessons/video?id=${lessonId}`);
+
+  const getAllNotificationsAPI = () => API.get('/user/notification');
+
+  const markAsReadAPI = (notificationId) => API.put(`/user/notification/${notificationId}`)
   
 
 export {
@@ -92,4 +96,6 @@ export {
     fetchEnrolledCoursesAPI,
     messageFromUserAPI,
     fetchAllMessagesAPI,
+    getAllNotificationsAPI,
+    markAsReadAPI,
 }

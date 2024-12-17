@@ -1,5 +1,5 @@
 import { Fragment, useState } from "react";
-import { ClipboardDocumentCheckIcon, FunnelIcon, UserCircleIcon, XMarkIcon, BookOpenIcon, ReceiptRefundIcon, WalletIcon, ChatBubbleOvalLeftEllipsisIcon, VideoCameraIcon } from "@heroicons/react/20/solid";
+import { ClipboardDocumentCheckIcon, FunnelIcon, UserCircleIcon, XMarkIcon, BookOpenIcon, ReceiptRefundIcon, WalletIcon, ChatBubbleOvalLeftEllipsisIcon, VideoCameraIcon, BellIcon } from "@heroicons/react/20/solid";
 import { useSelector } from "react-redux";
 import { Dialog, Transition } from "@headlessui/react";
 import { Link, useLocation } from "react-router-dom";
@@ -29,6 +29,10 @@ const sidebarMenu = [
       title: "Session",
       link: "/user/profile/meet",
       icon: <VideoCameraIcon />
+    },{
+      title: "Notifications",
+      link: "/user/profile/notification",
+      icon: <BellIcon />
     }
   ];
 
