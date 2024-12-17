@@ -74,21 +74,11 @@ const lessonSchema = yup.object({
       formData.append("courseId", course._id);
       
       try {
-        const response = await createLessonAPI(formData, (progressEvent) => {
-          const { loaded, total } = progressEvent;
-          const progress =  total ? Math.round((loaded * 100) / total) : 0;
-          setUploadProgress(progress); // Update the state here
-          if (progress === 100) {
-            setProcessing(true);
-          }
-        });
+        const response = await createLessonAPI(formData);
         setUploadProgress(100); 
         setProcessing(false);
-
         setIsOpen(false);
-        toast.success("Lesson created successfully", {
-          duration: 6000,
-        });
+
        
       if (setCourse) {
         const newLesson = response; // Adjust this based on your API response
@@ -97,7 +87,9 @@ const lessonSchema = yup.object({
           lessons: [...prevCourse.lessons, newLesson],
         }));
       }
-    
+      toast.success("Lesson created successfully", {
+        duration: 6000,
+      });
         navigate(`/tutor/courses/${course._id}`);
       } catch (err) {
         console.error(err);

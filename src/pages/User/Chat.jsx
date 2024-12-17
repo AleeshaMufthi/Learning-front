@@ -8,6 +8,7 @@ import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import Picker from "emoji-picker-react";
 import '../../style/chat.css'
+import { handlefileUpload } from "../../utils/cloudinary";
 
 
 export const Chat = () => {
@@ -24,17 +25,15 @@ export const Chat = () => {
     const [typingTimeout, setTypingTimeout] = useState(null)
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [showMediaOptions, setShowMediaOptions] = useState(false);
-    // const [isRecording, setIsRecording] = useState(false);
-    // const [mediaRecorder, setMediaRecorder] = useState(null);
-    // const [audioChunks, setAudioChunks] = useState([])
-    // const [audioStream, setAudioStream] = useState(null)
     const [onlineUsers, setOnlineUsers] = useState({});
     const chatContainerRef = useRef(null)
     const [change, setChange] = useState(false)
     const messageContainerRef = useRef(null);
     const typingTimeoutRef = useRef(null);
-    
-    console.log(instructors, 'instructoooooooooooooooorrrrrrrrrrrrrrrrsssssssssss');
+
+    const [uploadedMedia, setUploadedMedia] = useState({}); 
+    const [loading, setLoading] = useState(false);
+
     useEffect(() =>{
         if (selectedInstructor) {
             socket.emit("joinedRoom", { sender, selectedInstructor })
@@ -67,9 +66,9 @@ export const Chat = () => {
 
         return () => {
             socket.off("messageRecieved");
+            socket.off("userStatus");
             socket.off("typing");
             socket.off("stopTyping");
-            socket.off("userStatus");
         };
 
     }, [])
@@ -192,12 +191,49 @@ export const Chat = () => {
             }, 2000)
         );
     }
-
+    
     useEffect(() => {
         if (chatContainerRef.current) {
             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
         }
     }, [messages]);
+
+    const handleFileUpload = async (e, type) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+          try {
+            setLoading(true); 
+              const formData = new FormData();
+              formData.append("file", file);
+              formData.append('upload_preset', 'brain-booster');
+
+              const upload = await handlefileUpload(formData);
+              console.log(upload, 'uploadddddddddd');
+              
+              const mediaUrl = upload.url;
+              console.log(mediaUrl, 'media url');
+              
+              setUploadedMedia((prev) => ({ ...prev, [type]: mediaUrl }));
+
+              setMessages((prev) => [...prev,{
+                _id:'',
+                sender: sender.userId,
+                senderType: 'Users',
+                recipient: selectedInstructor,
+                recipientType: 'Tutors',
+                message: mediaUrl,
+                type: type,
+                Time:  new Date().toLocaleTimeString([], {  hour: "2-digit",  minute: "2-digit",})}]);
+              
+              socket.emit('sendMessage', { sender, recipient: selectedInstructor, message: mediaUrl, type });
+
+          } catch (error) {
+              console.log(error)
+          } finally{
+            setLoading(false);
+          }
+  };
+
     return (
         <>
         <div className="h-screen flex flex-col bg-gray-100 overflow-hidden">
@@ -261,9 +297,27 @@ export const Chat = () => {
                 {messages.map((data, index) => {
                   const isSender = data.sender === sender.userId
                   return (
+                   
                     <div key={index} className={`flex ${isSender ? 'justify-end' : 'justify-start'}`}>
                       <div className={`max-w-xs lg:max-w-md xl:max-w-lg px-4 py-2 rounded-lg ${isSender ? 'bg-green-500 text-white' : 'bg-lime-200 text-gray-800'}`}>
+
+                  
+                       
+                        {data.type === "text" ? (
                         <p>{data.message}</p>
+                        ) : data.type === "image" ? (
+                          <img src={data.message} alt="uploaded" className="w-full max-w-sm" />
+                        ) : data.type === "video" ? (
+                          <video controls className="w-full max-w-md" src={data.message} type="video">
+                        Your browser does not support the video tag.
+                        </video>
+                        ) : data.type === "audio" ? (
+                        <audio controls src={data.message} type="audio">
+                      Your browser does not support the audio element.
+                      </audio>
+                      ) : (
+                     <p>Unsupported file type</p>
+                      )}
                         <p className="text-xs mt-1 text-right">{data.Time}</p>
                       </div>
                     </div>
@@ -290,6 +344,12 @@ export const Chat = () => {
                   </div>
                 )}
               </div>
+              {loading && (
+                      <div className="flex items-center justify-center mt-2">
+                        <div className="w-5 h-5 border-2 border-t-2 border-green-600 rounded-full animate-spin"></div>
+                        <span className="ml-2 text-green-950 font-bold">Uploading...</span>
+                      </div>
+              )}
               <div className="p-4 bg-white border-t border-gray-200 sticky bottom-0">
                 <div className="flex items-center space-x-2">
                   <button

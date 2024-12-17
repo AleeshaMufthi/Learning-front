@@ -46,6 +46,7 @@ export default function CourseLesson() {
         
       }
     };
+    
 
     return (
       <>
@@ -93,7 +94,7 @@ export default function CourseLesson() {
             <div className="flex-1 p-10">
               <img src="" alt="" />
               <div className="flex justify-center">
-                <CreateLesson course={course} />
+                <CreateLesson course={course}/>
               </div>
               {course?.lessons?.length ? (
                 <>

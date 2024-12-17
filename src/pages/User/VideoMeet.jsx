@@ -121,7 +121,27 @@ const VideoMeet = () => {
         :
         (incominCallInfo?.isSomeoneCalling) &&
         <div className='flex flex-col mb-8'>
-          <section className='m-4'><u>{incominCallInfo?.from}</u> is calling</section>
+          <section className="m-4 p-4 bg-gray-100 rounded-md shadow-lg flex items-center space-x-4">
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    fill="none" 
+    viewBox="0 0 24 24" 
+    strokeWidth={1.5} 
+    stroke="currentColor" 
+    className="w-6 h-6 text-green-500"
+  >
+    <path 
+      strokeLinecap="round" 
+      strokeLinejoin="round" 
+      d="M15.75 6.75v-3A2.25 2.25 0 0013.5 1.5h-3A2.25 2.25 0 008.25 3.75v3m7.5 0H8.25m7.5 0a2.25 2.25 0 012.25 2.25v7.5a2.25 2.25 0 01-2.25 2.25H8.25a2.25 2.25 0 01-2.25-2.25v-7.5a2.25 2.25 0 012.25-2.25"
+    />
+  </svg>
+  <div>
+    {/* <p className="text-lg font-semibold text-gray-800">{incominCallInfo?.from}</p> */}
+    <p className="text-lg font-semibold text-gray-800">Instructor</p>
+    <p className="text-sm text-gray-500">is calling</p>
+  </div>
+</section>
           <button onClick={answerCall} className='p-2 rounded-lg bg-green-600 text-white hover:bg-green-700'>Answer call</button>
         </div>
       }

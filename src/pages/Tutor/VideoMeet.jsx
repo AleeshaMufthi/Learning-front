@@ -137,7 +137,8 @@ const VideoMeet = () => {
     />
   </svg>
   <div>
-    <p className="text-lg font-semibold text-gray-800">{incominCallInfo?.from}</p>
+    {/* <p className="text-lg font-semibold text-gray-800">{incominCallInfo?.from}</p> */}
+    <p className="text-lg font-semibold text-gray-800">Student</p>
     <p className="text-sm text-gray-500">is calling</p>
   </div>
 </section>
