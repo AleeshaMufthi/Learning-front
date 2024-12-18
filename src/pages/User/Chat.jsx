@@ -18,6 +18,7 @@ export const Chat = () => {
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([]);
     const { instructors, studentMessages, setFetchChange } = UserChat();
+    console.log(instructors, 'instrrrrrrrrrrrrrrr');
     
     const [Instructors, setInstructors] = useState([]);
     const [selectedInstructor, setSelectedInstructor] = useState();
@@ -39,6 +40,8 @@ export const Chat = () => {
             socket.emit("joinedRoom", { sender, selectedInstructor })
         }
     }, [selectedInstructor])
+
+    
     
     useEffect(() => {
         socket.on("messageRecieved", ({ messageData }) => {
@@ -143,11 +146,10 @@ export const Chat = () => {
                     ...instructor,
                     latestMessageTime: instructorMessageTimestamps[instructor._id] || 0,
                 }));
-                const sortedInstructors = updatedInstructors.sort(
-                    (a, b) => b.latestMessageTime - a.latestMessageTime
-                );
-                setInstructors(sortedInstructors);
-                setSelectedInstructor(sortedInstructors[0]);
+               
+                
+                setInstructors(updatedInstructors);
+                setSelectedInstructor(updatedInstructors[0]);
 
             } catch (error) {
                 if (error?.data?.message === 'No messages found') {
@@ -208,7 +210,6 @@ export const Chat = () => {
               formData.append('upload_preset', 'brain-booster');
 
               const upload = await handlefileUpload(formData);
-              console.log(upload, 'uploadddddddddd');
               
               const mediaUrl = upload.url;
               console.log(mediaUrl, 'media url');
@@ -249,8 +250,7 @@ export const Chat = () => {
                   onClick={() => setSelectedInstructor(instructor)}
                 >
                   <div className="relative">
-                    {/* <img src={instructor.profileImage} className="w-12 h-12 rounded-full object-cover" alt={instructor.name} /> */}
-                    <img src="https://i.pinimg.com/236x/ad/57/b1/ad57b11e313616c7980afaa6b9cc6990.jpg" className="w-12 h-12 rounded-full object-cover" alt={instructor.name} />
+                     <img src={instructor.thumbnail} className="w-12 h-12 rounded-full object-cover" alt={instructor.name} /> 
                     {onlineUsers[instructor.email] === 'online' && (
                       <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
                     )}
@@ -273,9 +273,9 @@ export const Chat = () => {
         <div className="flex-1 flex flex-col bg-gray-50 overflow-hidden">
           {selectedInstructor ? (
             <>
+            {console.log(selectedInstructor, '0000000000000000000000000000000000000000000000000000000')}
               <div className="flex items-center p-4 border-b border-gray-200 bg-white">
-                {/* <img src={selectedInstructor.profileImage} className="w-10 h-10 rounded-full object-cover" alt={selectedInstructor.name} /> */}
-                <img src="https://img.freepik.com/premium-photo/beautiful-british-girl-white-sweater_146105-51507.jpg?semt=ais_hybrid" className="w-10 h-10 rounded-full object-cover" alt={selectedInstructor.name} />
+                <img src={selectedInstructor.thumbnail} className="w-10 h-10 rounded-full object-cover" alt={selectedInstructor.name} /> 
                 <div className="ml-3">
                   <p className="font-semibold text-gray-800">{selectedInstructor.name}</p>
                   {onlineUsers[selectedInstructor.email] === 'online' && (
@@ -325,12 +325,11 @@ export const Chat = () => {
                 })}
                 {typingStatus[selectedInstructor._id] && (
                   <div className="flex items-center gap-2">
-                    {/* <img
-                      src={selectedInstructor.profileImage}
+                     <img
+                      src={selectedInstructor.thumbnail}
                       className="w-5 h-5 rounded-full bg-black border-2 border-zinc-400"
                       alt="Instructor"
-                    /> */}
-                    <img src="https://img.freepik.com/premium-photo/beautiful-british-girl-white-sweater_146105-51507.jpg?semt=ais_hybrid" className="w-5 h-5 rounded-full bg-black border-2 border-zinc-400" alt={selectedInstructor.name} />
+                    /> 
                     <div className="flex items-center bg-lime-200 rounded-lg shadow-md px-2 py-1">
                       <span className="text-md font-semibold text-gray-950">
                         typing...

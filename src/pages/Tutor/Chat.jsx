@@ -184,7 +184,6 @@ useEffect(()=>{
             }, 2000)
         );
     }
-    
 
     useEffect(() => {
         if (chatContainerRef.current) {
@@ -242,8 +241,7 @@ useEffect(()=>{
                 onClick={() => setSelectedStudent(student)}
               >
                 <div className="relative">
-                  {/* <img src={instructor.profileImage} className="w-12 h-12 rounded-full object-cover" alt={instructor.name} /> */}
-                  <img src="https://i.pinimg.com/236x/ad/57/b1/ad57b11e313616c7980afaa6b9cc6990.jpg" className="w-12 h-12 rounded-full object-cover" alt={instructor.name} />
+                <img src={student.thumbnail} className="w-12 h-12 rounded-full object-cover" alt={student.name} /> 
                   {onlineUsers[student.email] === 'online' && (
                     <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
                   )}
@@ -266,9 +264,9 @@ useEffect(()=>{
       <div className="flex-1 flex flex-col bg-gray-50 overflow-hidden">
         {selectedStudent ? (
           <>
+          {console.log(selectedStudent, 'selected studentttttttttttttttttttttt')}
             <div className="flex items-center p-4 border-b border-gray-200 bg-white">
-              {/* <img src={selectedStudent.profileImage} className="w-10 h-10 rounded-full object-cover" alt={selectedStudent.name} /> */}
-              <img src="https://img.freepik.com/premium-photo/beautiful-british-girl-white-sweater_146105-51507.jpg?semt=ais_hybrid" className="w-10 h-10 rounded-full object-cover" alt={selectedStudent.name} />
+               <img src={selectedStudent.thumbnail} className="w-10 h-10 rounded-full object-cover" alt={selectedStudent.name} /> 
               <div className="ml-3">
                 <p className="font-semibold text-gray-800">{selectedStudent.name}</p>
                 {onlineUsers[selectedStudent.email] === 'online' && (
@@ -311,12 +309,11 @@ useEffect(()=>{
                 })}
               {typingStatus[selectedStudent._id] && (
                 <div className="flex items-center gap-2">
-                  {/* <img
-                    src={selectedStudent.profileImage}
+                  <img
+                    src={selectedStudent.thumbnail}
                     className="w-5 h-5 rounded-full bg-black border-2 border-zinc-400"
                     alt="Instructor"
-                  /> */}
-                  <img src="https://img.freepik.com/premium-photo/beautiful-british-girl-white-sweater_146105-51507.jpg?semt=ais_hybrid" className="w-5 h-5 rounded-full bg-black border-2 border-zinc-400" alt={selectedInstructor.name} />
+                  />
                   <div className="flex items-center bg-lime-200 rounded-lg shadow-md px-2 py-1">
                     <span className="text-md font-semibold text-gray-950">
                       typing...

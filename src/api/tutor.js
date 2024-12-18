@@ -12,7 +12,7 @@ const handleTutorLogOutAPI = () => API.delete("/auth/tutor/logout");
 
 // tutor profile
 const getTutorDetailsAPI = () => API.get("/tutor/details");
-const updateTutorDetailsAPI = (body) => API.post("/tutor/details", body);
+const updateTutorDetailsAPI = (formData) => API.post("/tutor/details",  formData, { headers: { "Content-Type": "multipart/form-data" }});
 const getTopTutorsAPI = async (route = "/tutor/details/top") => {
   return API.get(route);
 };

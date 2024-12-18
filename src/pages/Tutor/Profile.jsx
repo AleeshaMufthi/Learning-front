@@ -17,6 +17,10 @@ function classNames(...classes) {
     const [editMode, setEditMode] = useState(false);
     const [tutorDetails, setTutorDetails] = useState({});
     const [error, setError] = useState(null);
+    const [agreed, setAgreed] = useState(false);
+    const [imagePreviewURL, setImagePreviewURL] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
+
     const {
       register,
       handleSubmit,
@@ -25,47 +29,63 @@ function classNames(...classes) {
       formState: { errors },
     } = useForm({
       resolver: yupResolver(profileSchema),
+      defaultValues: tutorDetails,
     });
+
     useEffect(() => {
-      console.log("mounted");
       getTutorDetailsAPI()
         .then((response) => {
           const tutorDetails = response.data.tutorDetails;
+          console.log(tutorDetails, '+++++++++++++++++++++');
+          
           setTutorDetails({
             name: tutorDetails.name,
             age: tutorDetails.age,
             about: tutorDetails.about,
             address: tutorDetails.address,
             qualification: tutorDetails.qualification,
-            skills: tutorDetails.skills,
+            thumbnail: tutorDetails.thumbnail,
           });
           setValue("name", tutorDetails.name);
           setValue("age", tutorDetails.age);
           setValue("about", tutorDetails.about);
           setValue("address", tutorDetails.address);
           setValue("qualification", tutorDetails.qualification);
-          setValue("skills", tutorDetails.skills);
+          setValue("thumbnail", tutorDetails.thumbnail);
         })
         .catch((err) => console.log(err));
     }, []);
+
+    const handleImageChange = (event) => {
+      const file = event.target.files[0];
+      setSelectedImage(file);
+      setValue('thumbnail', file); // Set form value for thumbnail
+      const fileReader = new FileReader();
+      fileReader.onload = (e) => setImagePreviewURL(e.target.result); // Preview image
+      fileReader.readAsDataURL(file); // Read file for preview
+  };
+
     const handleOnSubmit = (data) => {
       setError(null);
-      const newData = JSON.parse(JSON.stringify(data));
-      const oldData = JSON.parse(JSON.stringify(tutorDetails));
-      const sortedNewData = JSON.stringify(newData, Object.keys(newData).sort());
-      const sortedOldData = JSON.stringify(oldData, Object.keys(oldData).sort());
-      if (sortedNewData === sortedOldData) {
-        setError(
-          "No change detected. Please review your entered data and make any necessary modifications before submitting."
-        );
-        return;
-      }
-      updateTutorDetailsAPI(data)
+      const formData = new FormData()
+
+      formData.append('name', data.name)
+      formData.append('age',data.age)
+      formData.append('about', data.about)
+      formData.append('address', data.address)
+      formData.append('qualification',data.qualification)
+      formData.append('thumbnail', selectedImage);
+      updateTutorDetailsAPI(formData)
         .then((response) => {
           toast.success("Profile Updated Successfully", {
             duration: 3000,
           });
           setEditMode(false);
+          setUserDetails((prevState) => ({
+            ...prevState, 
+            thumbnail: response.data.userDetails.thumbnail[0],
+            }));
+        setImagePreviewURL(response.data.userDetails.thumbnail[0]); 
         })
         .catch((err) => {
           console.log(err);
@@ -126,6 +146,39 @@ function classNames(...classes) {
             onSubmit={handleSubmit(handleOnSubmit)}
             className="mx-auto mt-16 max-w-xl sm:mt-20"
           >
+
+<div className="mb-6">
+              <label className="block text-sm font-semibold leading-6 text-gray-900">Profile Picture</label>
+                        <div className="text-center">
+                        <div className="flex items-center justify-center">
+             <img
+              src={imagePreviewURL ||tutorDetails.thumbnail} // Fallback image if no profile image
+              alt="User Profile"
+              className="w-24 h-24 rounded-full object-cover border-2 border-gray-300"
+              />
+               </div>
+                          <div className="mt-4 flex text-sm leading-6 text-gray-600">
+                            <label
+                              htmlFor="thumbnail"
+                              className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2"
+                            >
+                              <span>Upload Picture</span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange} // Handle image upload
+                                className="form-input"
+                              />
+                            </label>
+                          </div>
+                          <p className="text-xs leading-5 text-gray-600">PNG, JPG, WEBP up to 1MB</p>
+                          <p className="text-red-600 text-xs mt-2">{errors.thumbnail?.message}</p>
+                        
+                        </div>
+                      
+            </div>
+
+
             <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
               <div className="sm:col-span-2">
                 <label

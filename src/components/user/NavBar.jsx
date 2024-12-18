@@ -54,7 +54,6 @@ function NavBar() {
           <Navbar
       style={{ backgroundColor: "#2d3748"}}
       fluid={true}
-      rounded={true}
     >
       <div className="flex items-center justify-between w-full">
         <Logo className="mr-3" to={User} size={1.3} />

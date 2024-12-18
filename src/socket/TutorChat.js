@@ -13,7 +13,7 @@ export const TutorChat = (handleError) => {
             try {
 
                 const students = await fetchEnrolledUsersAPI()
-                console.log(students,'studentssssssssssssssssssssssssss');
+                console.log(students,'studentssssssssssssssssssssssssss detailssssssssss');
                 
                 
                 if (students.error) {

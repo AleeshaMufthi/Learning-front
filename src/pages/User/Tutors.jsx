@@ -3,12 +3,16 @@ import { Card } from "flowbite-react";
 import { Mail } from "lucide-react";
 import { getAllTutorsAPI } from "../../api/tutor";
 import { useState, useEffect } from "react";
-
+import { Chat } from "../../api/link";
+import { Link } from "react-router-dom";
 export default function Tutors() {
 
     const [tutors, setTutors] = useState([]);
+
     useEffect(() => {
         getAllTutorsAPI().then((response) => {
+          console.log(response.data.data, 'datataaa');
+          
         setTutors(response.data.data);
       });
     }, []); 
@@ -24,16 +28,18 @@ export default function Tutors() {
         </header>
 
         <div className="flex justify-center pb-5">
-        <Button size="lg"  className="bg-green-800 hover:bg-green-600">
-             One-to-One Session with Tutors
-        </Button>
+        <Link to={Chat}>
+    <Button size="lg" className="bg-green-800 hover:bg-green-600">
+      One-to-One Session with Tutors
+    </Button>
+  </Link>
         </div>
   
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
           {tutors.map((tutor, id) => (
             <Card key={id} className="overflow-hidden">
               <img
-                src="https://i.pinimg.com/236x/b6/c5/bd/b6c5bd9994d760ef064e4ac23acf304d.jpg"
+                src={tutor.thumbnail}
                 alt={`Portrait of ${tutor.name}`}
                 width={400}
                 height={400}

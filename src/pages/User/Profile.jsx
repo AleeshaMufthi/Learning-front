@@ -33,38 +33,30 @@ function classNames(...classes) {
       resolver: yupResolver(profileSchema),
       defaultValues: userDetails, 
     });
-
+    
     useEffect(() => {
-      console.log("mounted");
       getUserDetailsAPI()
         .then((response) => {
           const userDetails = response.data.userDetails;
+          console.log(userDetails, 'user details');
+          
           setUserDetails({
             name: userDetails.name,
             age: userDetails.age,
             about: userDetails.about,
             address: userDetails.address,
             visible: userDetails.visible,
+            thumbnail: userDetails.thumbnail,
           });
           setAgreed(userDetails.visible);
           setValue("name", userDetails.name);
           setValue("age", userDetails.age);
           setValue("about", userDetails.about);
           setValue("address", userDetails.address);
-          setValue("thumbnail", userDetails.thumbnail[0])
+          setValue("thumbnail", userDetails.thumbnail)
         })
         .catch((err) => console.log(err));
     }, []);
-
-    // useEffect(() => {
-    //   const thumbnail = watch("thumbnail");
-    //   if (thumbnail && thumbnail.length > 0) {
-    //     const file = thumbnail[0];
-    //     const fileReader = new FileReader();
-    //     fileReader.onload = (e) => setImagePreviewURL(e.target.result);
-    //     // fileReader.readAsDataURL(file);
-    //   }
-    // }, [watch("thumbnail")]);
 
     const handleImageChange = (event) => {
       const file = event.target.files[0];
@@ -94,7 +86,15 @@ function classNames(...classes) {
           toast.success("Profile Updated Successfully", {
             duration: 3000,
           });
+          
           setEditMode(false);
+          const updatedDetails = response.data.userDetails;
+          
+        setUserDetails((prevState) => ({
+        ...prevState, 
+        thumbnail: response.data.userDetails.thumbnail[0],
+        }));
+    setImagePreviewURL(response.data.userDetails.thumbnail[0]); 
         })
         .catch((err) => {
           console.log(err);
@@ -157,11 +157,16 @@ function classNames(...classes) {
             className="mx-auto mt-16 max-w-xl sm:mt-20"
           >
 
-<div className="mb-6">
+            <div className="mb-6">
               <label className="block text-sm font-semibold leading-6 text-gray-900">Profile Picture</label>
-              <div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
                         <div className="text-center">
-                          <PhotoIcon className="mx-auto h-12 w-12 text-gray-300" aria-hidden="true" />
+                        <div className="flex items-center justify-center">
+             <img
+              src={imagePreviewURL ||userDetails.thumbnail} // Fallback image if no profile image
+              alt="User Profile"
+              className="w-24 h-24 rounded-full object-cover border-2 border-gray-300"
+              />
+               </div>
                           <div className="mt-4 flex text-sm leading-6 text-gray-600">
                             <label
                               htmlFor="thumbnail"
@@ -178,16 +183,11 @@ function classNames(...classes) {
                           </div>
                           <p className="text-xs leading-5 text-gray-600">PNG, JPG, WEBP up to 1MB</p>
                           <p className="text-red-600 text-xs mt-2">{errors.thumbnail?.message}</p>
-                          {imagePreviewURL && (
-                            <img
-                              className="mx-auto mt-4 h-32 object-cover"
-                              src={imagePreviewURL}
-                              alt="Preview"
-                            />
-                          )}
+                        
                         </div>
-                      </div>
+                      
             </div>
+
 
             <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
               <div className="sm:col-span-2">
@@ -311,38 +311,7 @@ function classNames(...classes) {
                 {errors.about?.message}
               </p>
             </div>
-            <div className="sm:col-span-2">
-            
-              <Switch.Group as="div" className="flex gap-x-4 sm:col-span-2">
-                <div className="flex h-6 items-center">
-                  <Switch
-                    checked={agreed}
-                    {...(editMode ? null : { disabled: true })}
-                    onChange={setAgreed}
-                    className={classNames(
-                      agreed ? "bg-indigo-600" : "bg-gray-200",
-                      "flex w-8 flex-none cursor-pointer rounded-full p-px ring-1 ring-inset ring-gray-900/5 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    )}
-                  >
-                    <span className="sr-only">Agree to policies</span>
-                    <span
-                      aria-hidden="true"
-                      className={classNames(
-                        agreed ? "translate-x-3.5" : "translate-x-0",
-                        "h-4 w-4 transform rounded-full bg-white shadow-sm ring-1 ring-gray-900/5 transition duration-200 ease-in-out"
-                      )}
-                    />
-                  </Switch>
-                </div>
-                <Switch.Label className="text-sm leading-6 text-gray-600">
-                  By selecting this, you agree to make your{" "}
-                  <a href={Dumy} className="font-semibold text-indigo-600">
-                    profile&nbsp;public
-                  </a>
-                  .
-                </Switch.Label>
-              </Switch.Group>
-            </div>
+           
             <div className="flex justify-center"></div>
             <div className="mt-10">
               <button
