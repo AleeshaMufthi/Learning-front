@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import loadScript from "../../utils/loadScript";
 import toast from "react-hot-toast";
 import { createOrderAPI, verifyPaymentAPI } from "../../api/user";
+import { calculateRevenueAPI } from "../../api/user";
 
 
 function Payment({ children, courseId, setIsEnrolled, onEnroll }) {
@@ -67,10 +68,13 @@ function Payment({ children, courseId, setIsEnrolled, onEnroll }) {
             duration: 1000,
           });
           setIsEnrolled(true);
-
-          // await onEnroll(courseId)
-          
-          // navigate("/courses/enrolled");
+          try {
+            await calculateRevenueAPI(order_id_from_db);
+            console.log("Revenue calculated successfully");
+          } catch (error) {
+            console.error("Error processing revenue:", error);
+            toast.error("Failed to calculate revenue. Please contact support.");
+          }
         },
         prefill: {
           name: user?.name,

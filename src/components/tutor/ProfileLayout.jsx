@@ -1,5 +1,5 @@
 import { Fragment, useState } from "react";
-import { ClipboardDocumentCheckIcon, FunnelIcon, UserCircleIcon, XMarkIcon, ChatBubbleOvalLeftEllipsisIcon, VideoCameraIcon } from "@heroicons/react/20/solid";
+import { ClipboardDocumentCheckIcon, FunnelIcon, UserCircleIcon, XMarkIcon, ChatBubbleOvalLeftEllipsisIcon, VideoCameraIcon, CurrencyDollarIcon } from "@heroicons/react/20/solid";
 import { useSelector } from "react-redux";
 import { Dialog, Transition } from "@headlessui/react";
 import { Link, useLocation } from "react-router-dom";
@@ -7,7 +7,8 @@ import { Link, useLocation } from "react-router-dom";
 const sidebarMenu = [
     { title: "Profile", link: "/tutor/profile", icon: <UserCircleIcon /> },
     { title: "Chat", link: "/tutor/profile/chat", icon: <ChatBubbleOvalLeftEllipsisIcon />},
-    { title: "Session", link: "/tutor/profile/meet", icon: <VideoCameraIcon />}
+    { title: "Session", link: "/tutor/profile/meet", icon: <VideoCameraIcon />},
+    { title: "Revenue", link: "/tutor/profile/revenue", icon: <CurrencyDollarIcon />},
     // {
     //   title: "Courses",
     //   link: "/user/profile/courses",

@@ -30,6 +30,7 @@ const TutorSignIn = (pathname) => `/tutor/signin?from=${pathname}`;
 const TutorSignUp = "/tutor/signup";
 const TutorforgetPassword = "/tutor/forgetPassword"
 const TutorresetPassword = "/tutor/resetPassword"
+const Revenue = "/tutor/profile/revenue"
 const ManageCourse = "/tutor/courses";
 const CreateCourse = "/tutor/courses/create";
 const EditCourseForm = (id) =>`/tutor/courses/edit/${id}`
@@ -43,6 +44,7 @@ const AdminManageUser = "/user/manage";
 const AdminManageTutor = "/tutor/manage";
 const AdminProfile = "/admin/profile";
 const AdminCategory = "/admin/category";
+const AdminRevenue = "/admin/revenue";
 
 
 export {
@@ -66,6 +68,7 @@ export {
     Wallet,
     Chat,
     Notification,
+    Revenue,
     Enrolled,
     Tutor,
     TutorDashboard,
@@ -86,4 +89,5 @@ export {
     AdminManageTutor,
     AdminProfile,
     AdminCategory,
+    AdminRevenue,
 }

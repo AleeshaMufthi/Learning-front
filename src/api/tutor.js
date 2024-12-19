@@ -59,6 +59,9 @@ const tutorMessageAPI = () => API.get(`/tutor/chat/message`)
 const fetchTutorMessagesAPI = (userId) => API.get(`/tutor/chat/message/${userId}`)
 // const fetchTutorMessagesAPI = async (userId) => API.get(`/tutor/chat/message/${userId}`);
 
+const tutorRevenueAPI = (route = '/tutor/revenue') => {
+  return API.get(route)
+}
 
 export{
     tutorSignInAPI,
@@ -82,4 +85,5 @@ export{
     fetchEnrolledUsersAPI,
     tutorMessageAPI,
     fetchTutorMessagesAPI,
+    tutorRevenueAPI,
 }

@@ -66,6 +66,15 @@ const createOrderAPI = (courseId) =>
   const getAllNotificationsAPI = () => API.get('/user/notification');
 
   const markAsReadAPI = (notificationId) => API.put(`/user/notification/${notificationId}`)
+
+  const calculateRevenueAPI = (orderId) => {
+    if (!orderId) {
+        console.error("Order ID is invalid or missing.");
+        return;
+    }
+    return API.post(`/user/revenue/process-payment/${orderId}`);
+};
+
   
 
 export {
@@ -98,4 +107,5 @@ export {
     fetchAllMessagesAPI,
     getAllNotificationsAPI,
     markAsReadAPI,
+    calculateRevenueAPI,
 }

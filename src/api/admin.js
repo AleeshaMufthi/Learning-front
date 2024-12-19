@@ -44,6 +44,10 @@ const handleAdminLogOutAPI = () => API.delete("/auth/admin/logout");
     return API.delete(route);
   };
 
+  const adminRevenueAPI = (route = '/admin/revenue') => {
+    return API.get(route)
+  }
+
   export {
     adminSignInAPI,
     adminSignUpAPI,
@@ -60,4 +64,5 @@ const handleAdminLogOutAPI = () => API.delete("/auth/admin/logout");
     createCategoryAPI,
     updateCategoryAPI,
     deleteCategoryAPI,
+    adminRevenueAPI,
   }

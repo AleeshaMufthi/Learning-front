@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { getSignedInAdminAPI } from "../api/admin";
 import { PrivateAdmin } from "../components/authorization/privateAccess";
 import ManageAdmin from "../pages/Admin/ManageAdmin";
+import Revenue from '../pages/Admin/Revenue'
 import { Toaster } from "react-hot-toast";
 
 export default function adminRoutes() {
@@ -53,6 +54,7 @@ export default function adminRoutes() {
             <Route path="/tutors" element={<ManageTutors />} />
             <Route path="/category" element={<ManageCategory />} />
             <Route path="/admins" element={<ManageAdmin />} />
+            <Route path="/revenue" element={<Revenue />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
