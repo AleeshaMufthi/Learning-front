@@ -48,6 +48,9 @@ const handleAdminLogOutAPI = () => API.delete("/auth/admin/logout");
     return API.get(route)
   }
 
+  const adminDasboardAPI = (route = '/admin/dashboard') => {
+    return API.get(route)
+  }
   export {
     adminSignInAPI,
     adminSignUpAPI,
@@ -65,4 +68,5 @@ const handleAdminLogOutAPI = () => API.delete("/auth/admin/logout");
     updateCategoryAPI,
     deleteCategoryAPI,
     adminRevenueAPI,
+    adminDasboardAPI,
   }

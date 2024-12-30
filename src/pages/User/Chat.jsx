@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import Picker from "emoji-picker-react";
 import '../../style/chat.css'
 import { handlefileUpload } from "../../utils/cloudinary";
+import userIcon from '../../assets/usericon.jpg'
 
 
 export const Chat = () => {
@@ -190,7 +191,7 @@ export const Chat = () => {
                     roomId: [sender.email, selectedInstructor.email].sort().join("-"),
                     userId: sender.userId
                 });
-            }, 2000)
+            }, 3000)
         );
     }
     
@@ -250,7 +251,7 @@ export const Chat = () => {
                   onClick={() => setSelectedInstructor(instructor)}
                 >
                   <div className="relative">
-                     <img src={instructor.thumbnail} className="w-12 h-12 rounded-full object-cover" alt={instructor.name} /> 
+                     <img src={instructor.thumbnail || userIcon} className="w-12 h-12 rounded-full object-cover" alt={instructor.name} /> 
                     {onlineUsers[instructor.email] === 'online' && (
                       <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
                     )}
@@ -275,7 +276,7 @@ export const Chat = () => {
             <>
             {console.log(selectedInstructor, '0000000000000000000000000000000000000000000000000000000')}
               <div className="flex items-center p-4 border-b border-gray-200 bg-white">
-                <img src={selectedInstructor.thumbnail} className="w-10 h-10 rounded-full object-cover" alt={selectedInstructor.name} /> 
+                <img src={selectedInstructor.thumbnail || userIcon} className="w-10 h-10 rounded-full object-cover" alt={selectedInstructor.name} /> 
                 <div className="ml-3">
                   <p className="font-semibold text-gray-800">{selectedInstructor.name}</p>
                   {onlineUsers[selectedInstructor.email] === 'online' && (
@@ -326,7 +327,7 @@ export const Chat = () => {
                 {typingStatus[selectedInstructor._id] && (
                   <div className="flex items-center gap-2">
                      <img
-                      src={selectedInstructor.thumbnail}
+                      src={selectedInstructor.thumbnail || userIcon}
                       className="w-5 h-5 rounded-full bg-black border-2 border-zinc-400"
                       alt="Instructor"
                     /> 

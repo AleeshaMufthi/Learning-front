@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getAllNotificationsAPI, markAsReadAPI } from "../../api/user";
+import ProfileLayout from "../../components/user/ProfileLayout";
+import PageInfo from "../../components/common/PageInfo";
 
 const Notification = () => {
     const [notifications, setNotifications] = useState([]);
@@ -38,6 +40,8 @@ const Notification = () => {
     };
   
     return (
+      <ProfileLayout>
+        <PageInfo />
       <div className="p-4">
         <h2 className="text-2xl font-bold mb-4">Notifications</h2>
   
@@ -79,6 +83,7 @@ const Notification = () => {
           <p>No notifications available.</p>
         )}
       </div>
+      </ProfileLayout>
     );
   };
   
