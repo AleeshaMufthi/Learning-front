@@ -2,7 +2,7 @@ import React ,{ useRef, useState, useEffect } from "react";
 import { useLocation, NavLink } from "react-router-dom";
 import SidebarLinkGroup from "./SidebarLinkGroup";
 import Logo from "../common/Logo";
-import { UserIcon, BookIcon, GroupIcon, DollarSignIcon } from "lucide-react";
+import { UserIcon, BookIcon, GroupIcon, DollarSignIcon, BookOpenIcon } from "lucide-react";
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
 
@@ -214,6 +214,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                 >
                  <DollarSignIcon />
                   Revenue
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/admin/courses"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-white duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                    pathname.includes("courses") && "bg-gray dark:bg-meta-4"
+                  }`}
+                >
+                 <BookOpenIcon />
+                  Courses
                 </NavLink>
               </li>
              

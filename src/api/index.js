@@ -22,7 +22,7 @@ API.interceptors.response.use(
     }
 
     if (error?.response?.data?.err?.name === "TokenMissingError") {
-      console.log("Token djks Missing");
+      console.log("Token Missing");
       removeLocalAuth();
       window.location.href = "/signin";
     }

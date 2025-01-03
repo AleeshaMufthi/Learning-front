@@ -14,6 +14,7 @@ import { PrivateAdmin } from "../components/authorization/privateAccess";
 import ManageAdmin from "../pages/Admin/ManageAdmin";
 import Revenue from '../pages/Admin/Revenue'
 import { Toaster } from "react-hot-toast";
+import CourseOverview from "../pages/Admin/CourseOverview";
 
 export default function adminRoutes() {
     const dispatch = useDispatch();
@@ -55,6 +56,7 @@ export default function adminRoutes() {
             <Route path="/category" element={<ManageCategory />} />
             <Route path="/admins" element={<ManageAdmin />} />
             <Route path="/revenue" element={<Revenue />} />
+            <Route path="/courses" element={<CourseOverview />}/>
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

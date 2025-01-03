@@ -11,6 +11,7 @@ import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import socket from "../../socket/SocketioClient";
 import { useSelector } from "react-redux";
+import { Explore } from "../../api/link";
 
 const LoadingFallback = ({ progress, message }) => (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -103,6 +104,7 @@ const lessonSchema = yup.object({
           const Notification = {
             heading: "Lesson Added!",
             message: `New Lesson has add-on to the course`,
+            url: `/courses/enroll/${course._id}`,
             from: tutor.tutorId,
             fromModel: "Tutors",
             to: user.userId,
@@ -111,7 +113,7 @@ const lessonSchema = yup.object({
           socket.emit("to-users", Notification);
         }
 
-
+      
       } catch (err) {
         console.error(err);
         toast.error("Failed to create lesson.");

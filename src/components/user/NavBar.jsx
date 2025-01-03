@@ -42,11 +42,11 @@ function NavBar() {
           pauseOnHover: true, // Pause on hover
           draggable: true, // Allow dragging
           progress: undefined, // Optional custom progress value
-          icon: "ℹ️", // Custom icon (optional)
+          icon: "ℹ️",
         });
       });
       return () => {
-        socket.off("newNotification"); // Remove only the specific listener
+        socket.off("newNotification");
       };
     }, []);
 

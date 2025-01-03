@@ -25,26 +25,36 @@ export default function Wallet() {
     return (
       <ProfileLayout>
       <PageInfo pageName="Wallet" />
-      <div className="mx-auto max-w-2xl relative text-center">
-        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">My Wallet</h2>
-        {isLoading ? (
-          <Loading />
-        ) : (
-          <div>
-            <p className="text-xl pt-5">Balance: ₹{balance}</p>
-            <div className="">
-              {transactions.map((transaction) => (
-                <div key={transaction._id} className="transaction-item">
-                  <span>{transaction.description}</span>
-                  <Badge color={transaction.amount > 0 ? "success" : "error"}>
-                    ₹{transaction.amount}
-                  </Badge>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+      <div>
+  <p className="text-xl pt-5 font-bold">Total Balance: ₹{balance}</p>
+  <div className="mt-4 space-y-4">
+    {transactions.map((transaction) => (
+      <div
+        key={transaction._id}
+        className="transaction-item border rounded-lg p-4 bg-gray-50 shadow-sm"
+      >
+        {/* Description */}
+        <div className="mb-2">
+          <span className="font-semibold text-gray-700">{transaction.description}</span>
+        </div>
+        {/* Transaction ID */}
+        <div className="mb-2">
+          <span className="font-semibold text-gray-700">Transaction ID: </span>
+          <span className="text-gray-600">{transaction._id}</span>
+        </div>
+        {/* Price */}
+        <div>
+          <Badge
+            color={transaction.amount > 0 ? "success" : "error"}
+            className="font-semibold text-lg"
+          >Amount: 
+            ₹{transaction.amount}
+          </Badge>
+        </div>
       </div>
+    ))}
+  </div>
+</div>
     </ProfileLayout>
     );
   }

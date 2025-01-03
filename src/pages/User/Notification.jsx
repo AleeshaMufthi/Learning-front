@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { getAllNotificationsAPI, markAsReadAPI } from "../../api/user";
 import ProfileLayout from "../../components/user/ProfileLayout";
 import PageInfo from "../../components/common/PageInfo";
+import { useNavigate } from "react-router-dom";
 
 const Notification = () => {
     const [notifications, setNotifications] = useState([]);
+    const navigate = useNavigate()
   
     useEffect(() => {
       const fetchNotifications = async () => {
@@ -24,7 +26,10 @@ const Notification = () => {
     }, []);
   
     // Mark a notification as read
-    const handleMarkAsRead = async (id) => {
+    const handleMarkAsRead = async (id, url) => {
+      console.log(id, 'iddddddddddddd');
+      
+      console.log(url, 'urllllllllllll')
       try {
         await markAsReadAPI(id); // API call to mark notification as read
         
@@ -34,6 +39,10 @@ const Notification = () => {
             notification._id === id ? { ...notification, isRead: true } : notification
           )
         );
+        console.log(url, 'url to direct')
+        if (url) {
+          navigate(url); // React Router navigation
+        }
       } catch (error) {
         console.error("Error marking notification as read:", error);
       }
@@ -53,7 +62,7 @@ const Notification = () => {
                 className={`p-4 border rounded-lg shadow-md cursor-pointer ${
                   notification.isRead ? "bg-gray-100" : "bg-blue-100"
                 }`}
-                onClick={() => handleMarkAsRead(notification._id)}
+                onClick={() => handleMarkAsRead(notification._id, notification.url)}
               >
                 {/* Notification Heading */}
                 <h3

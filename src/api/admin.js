@@ -51,6 +51,7 @@ const handleAdminLogOutAPI = () => API.delete("/auth/admin/logout");
   const adminDasboardAPI = (route = '/admin/dashboard') => {
     return API.get(route)
   }
+
   export {
     adminSignInAPI,
     adminSignUpAPI,

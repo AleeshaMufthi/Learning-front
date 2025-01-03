@@ -14,7 +14,6 @@ const  TableList = ({ tutor = false }) => {
         const response = tutor
           ? await getAllTutorsAPI()
           : await getAllUsersAPI();
-        console.log(response.data);
         setUsers(response.data.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -133,9 +132,9 @@ const  TableList = ({ tutor = false }) => {
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xll:pl-11">
                 Status
               </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-black xll:pl-11">
-                {tutor ? "Courses" : "Enrolled"}
-              </th>
+              {/* <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-black xll:pl-11">
+                {tutor ? "Courses" : "enrolled"}
+              </th> */}
               <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xll:pl-11">
                 Actions
               </th>
@@ -175,9 +174,9 @@ const  TableList = ({ tutor = false }) => {
                     </p>
                   </td>
 
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  {/* <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <p className="text-black dark:text-white">0</p>
-                  </td>
+                  </td> */}
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <div className="flex items-center space-x-3.5 text-center">
                       {user.isBlocked ? (

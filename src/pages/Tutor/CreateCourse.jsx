@@ -12,7 +12,7 @@ import * as yup from 'yup'
 import React from 'react'
 import Footer from "../../components/common/Footer";
 import toast from "react-hot-toast";
-import socket from "../../socket/SocketioClient";
+// import socket from "../../socket/SocketioClient";
 import { useSelector } from "react-redux";
 
 const courseSchema = yup
@@ -92,17 +92,17 @@ export default function CreateCourse() {
       toast.success("Course created successfully!");
       navigate("/tutor/courses");
       
-  if(socket){
-    const Notification = {
-      heading: "New Course Created!",
-      message: `Tutor uploaded a new course, It will show after adding the lesson.`,
-      from: tutor.tutorId,
-      fromModel: "Tutors",
-      to: user.userId,
-      toModel: "Users",
-    };
-    socket.emit("to-users", Notification);
-  }
+  // if(socket){
+  //   const Notification = {
+  //     heading: "New Course Created!",
+  //     message: `Tutor uploaded a new course, It will show after adding the lesson.`,
+  //     from: tutor.tutorId,
+  //     fromModel: "Tutors",
+  //     to: user.userId,
+  //     toModel: "Users",
+  //   };
+  //   socket.emit("to-users", Notification);
+  // }
   
     } catch (error) {
       console.error("Error creating course:", error);

@@ -23,7 +23,6 @@ export default function CourseLesson() {
       setIsLoading(true);
       getCourseDetailsAPI(id).then((response) => {
         const course = response.data?.data;
-        console.log(course, 'courseeeeeeeeeee');
         setCourse(course);
         setTimeout(() => {
           setIsLoading(false);
