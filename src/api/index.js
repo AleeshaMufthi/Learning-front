@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { getTutorTokenUpdate } from "./tutor";
 
 const API = axios.create({
-    baseURL: 'https://brain-booster.site',
+    baseURL: 'https://api.brain-booster.site',
     withCredentials: true,
 })
 
