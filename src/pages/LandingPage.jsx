@@ -7,6 +7,11 @@ import { useState, useRef, useEffect } from 'react'
 import Counter from "../utils/Counter";
 import Logo from "../components/common/Logo";
 import { User, Tutor, Explore } from '../api/link'
+import PartnerLogos from "../components/common/PartnerLogos";
+import CareerFeatures from "../components/common/CareerFeautures";
+import VideoBanner from "../components/common/VideoBanner";
+import LandingFooter from "../components/common/LandingFooter";
+
 
 const navigation = [
   { name: "Home", href: User },
@@ -128,39 +133,48 @@ const LandingPage = () => {
         </div>
       </Dialog>
     </header>
-    <div className="relateve isolate px-6 lg:px-8">
+    <div className="relative isolate px-6 lg:px-8">
 
-    <div className="text-center mt-6">
-        <h1 className="text-3xl font-semibold tracking-tight nexa-font text-white sm:text-6xl mb-6">
-          Expand your knowledge
+      <div className="text-center mt-6">
+        <h1 className="text-3xl font-semibold tracking-tight nexa-font text-white sm:text-5xl mb-6">
+        Ready to Unlock Limitless Learning?
         </h1>
-        <p className="mt-4 text-lg leading-8 text-gray-500 typed-js-color">
+        <p className="mt-4 text-lg leading-8 text-gray-300 typed-js-color">
           {" "}
           <span className="font-semibold" ref={el} />
         </p>
       </div>
 
-  <div className="flex flex-wrap md:flex-nowrap justify-between items-center mt-5">
-  <div className="md:w-1/2 mb-8 md:mb-0 relative h-80">
-    <div className="absolute top-0 left-0 w-full h-full bg-gray-800 opacity-50" />
-    <img src="https://i.pinimg.com/564x/6c/12/f3/6c12f3167b8945e763ceb027ba0be817.jpg" alt="Tutor" className="w-full h-full object-cover rounded-lg" />
-    <Link to="/tutor" className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-6 py-3 text-lg font-semibold bg-yellow-500 text-gray-800 rounded hover:bg-yellow-400">
-      Join Our Tutor Team <span aria-hidden="true">&rarr;</span>
-    </Link>
-  </div>
+      <div className="flex flex-wrap md:flex-nowrap justify-between items-center mt-5">
+        <div className="md:w-1/2 mb-8 md:mb-0 relative h-80">
+          <div className="absolute top-0 left-0 w-full h-full opacity-50" />
+            <img src="https://i.pinimg.com/564x/6c/12/f3/6c12f3167b8945e763ceb027ba0be817.jpg" alt="Tutor" className="w-full h-full object-cover rounded-lg" />
+              <Link to="/tutor" className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-6 py-3 text-lg font-semibold bg-gray-700 rounded hover:bg-gray-600">
+                Join Our Tutor Team <span aria-hidden="true">&rarr;</span>
+              </Link>
+          </div>
 
-  <div className="md:w-1/2 mb-8 md:mb-0 relative h-80">
-    <div className="absolute top-0 left-0 w-full h-full bg-gray-800 opacity-50" />
-    <img src="https://i.pinimg.com/474x/d2/60/77/d260777287632de53d838823d080f487.jpg" alt="User" className="w-full h-full object-cover rounded-lg" />
-    <Link
-      to="/user"
-      className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-6 py-3 text-lg font-semibold bg-yellow-500 text-gray-800 rounded hover:bg-yellow-400"
-    >
-      Start your learning journey
-    </Link>
-  </div>
-</div>
-
+      <div className="md:w-1/2 mb-8 md:mb-0 relative h-80">
+        <div className="absolute top-0 left-0 w-full h-full opacity-50" />
+            <img src="https://i.pinimg.com/474x/d2/60/77/d260777287632de53d838823d080f487.jpg" alt="User" className="w-full h-full object-cover rounded-lg" />
+              <Link
+              to="/user"
+              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-6 py-3 text-lg font-semibold bg-gray-700 rounded hover:bg-gray-600"
+              >
+              Start your learning journey <span aria-hidden="true">&rarr;</span>
+              </Link>
+        </div>
+      </div>
+      </div>
+     
+      <div className="pt-3">
+      <PartnerLogos />
+      </div>
+      <VideoBanner />
+     <div className="">
+     <CareerFeatures />
+     </div>
+    
       
 
       {/* <hr className="w-64 h-1 mx-auto my-4 bg-gray-100 border-0 rounded md:my-10 light:bg-gray-700" /> */}
@@ -194,7 +208,7 @@ const LandingPage = () => {
           </dl>
         </div>
       </div>
-    </div>
+    <LandingFooter />
   </div>
   )
 

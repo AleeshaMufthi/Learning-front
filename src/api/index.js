@@ -2,9 +2,14 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { getTutorTokenUpdate } from "./tutor";
 
+// const API = axios.create({
+//     baseURL: 'https://api.brain-booster.site',
+//     withCredentials: true,
+// })
+
 const API = axios.create({
-    baseURL: 'https://api.brain-booster.site',
-    withCredentials: true,
+  baseURL: 'http://localhost:3000',
+  withCredentials: true,
 })
 
 API.interceptors.request.use((req)=>{

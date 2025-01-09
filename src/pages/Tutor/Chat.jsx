@@ -11,6 +11,7 @@ import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
 import '../../style/chat.css'
 import { handlefileUpload } from "../../utils/cloudinary";
 import userIcon from '../../assets/usericon.jpg' 
+import ProfileLayout from "../../components/tutor/ProfileLayout";
 
 export const Chat = () => {
     const instructor = useSelector((state) => state.tutor)
@@ -35,6 +36,8 @@ export const Chat = () => {
 
     const [uploadedMedia, setUploadedMedia] = useState({}); 
     const [loading, setLoading] = useState(false);
+
+    const [unreadMessages, setUnreadMessages] = useState({});
     
 useEffect(()=>{
     if(selectedStudent){
@@ -44,8 +47,14 @@ useEffect(()=>{
 
     useEffect(() => {
        socket.on("messageRecieved", ({messageData}) => {
-        
         setMessages((prev) => [...prev, messageData]);
+
+        if (messageData.sender !== selectedStudent?._id) {
+          setUnreadMessages((prev) => ({
+              ...prev,
+              [messageData.sender]: (prev[messageData.sender] || 0) + 1,
+          }));
+      }
       });
 
       socket.on("userStatus", ({ email, status }) => {
@@ -73,7 +82,7 @@ useEffect(()=>{
         socket.off("stopTyping");
         socket.off("userStatus");
     };
-    }, [])
+    }, [selectedStudent])
 
     useEffect(() => {
         if (messageContainerRef.current) {
@@ -229,6 +238,7 @@ useEffect(()=>{
 
   return (
       <>
+      <ProfileLayout tutor>
       <div className="h-screen flex flex-col bg-gray-100 overflow-hidden">
       <div className="flex-1 flex flex-col lg:flex-row bg-gray-200 shadow-xl rounded-lg border-2 border-gray-300 h-full sm:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl">
       {/* Sidebar */}
@@ -241,6 +251,11 @@ useEffect(()=>{
                 className="flex items-center p-3 border-b border-gray-300 cursor-pointer hover:bg-gray-50"
                 onClick={() => setSelectedStudent(student)}
               >
+        {unreadMessages[instructor._id] > 0 && (
+            <span className="bg-red-500 text-white text-xs font-bold rounded-full px-2 py-1 ml-2">
+                {unreadMessages[instructor._id]}
+            </span>
+        )}
                 <div className="relative">
                 <img src={student.thumbnail || userIcon} className="w-12 h-12 rounded-full object-cover" alt={student.name} /> 
                   {onlineUsers[student.email] === 'online' && (
@@ -439,6 +454,7 @@ useEffect(()=>{
       </div>
     </div>
   </div>
+  </ProfileLayout>
       </>
 
   )

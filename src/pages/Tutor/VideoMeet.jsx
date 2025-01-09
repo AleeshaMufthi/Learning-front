@@ -1,6 +1,8 @@
 import SimplePeer from "simple-peer";
 import socket from "../../socket/SocketioClient";
 import React, { useEffect, useRef, useState } from 'react';
+import ProfileLayout from "../../components/tutor/ProfileLayout";
+import PageInfo from "../../components/common/PageInfo";
 
 const VideoMeet = () => {
   const myVideoRef = useRef();
@@ -10,6 +12,9 @@ const VideoMeet = () => {
   const [userId, setUserId] = useState('');
   const [isCallAccepted, setIsCallAccepted] = useState(false);
   const [incominCallInfo, setIncominCallInfo] = useState({})
+
+  const [isAudioMuted, setIsAudioMuted] = useState(false);
+  const [isVideoMuted, setIsVideoMuted] = useState(false);
 
   useEffect(() => {
     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
@@ -30,6 +35,26 @@ const VideoMeet = () => {
   const handleIncomingCall = ({ from, signalData }) => {
     setIncominCallInfo({ isSomeoneCalling: true, from, signalData });
   }
+
+  const toggleAudio = () => {
+    if (stream) {
+      const audioTrack = stream.getAudioTracks()[0];
+      if (audioTrack) {
+        audioTrack.enabled = !audioTrack.enabled;
+        setIsAudioMuted(!audioTrack.enabled);
+      }
+    }
+  };
+
+  const toggleVideo = () => {
+    if (stream) {
+      const videoTrack = stream.getVideoTracks()[0];
+      if (videoTrack) {
+        videoTrack.enabled = !videoTrack.enabled;
+        setIsVideoMuted(!videoTrack.enabled);
+      }
+    }
+  };
 
   const initiateCall = () => {
     if (userId) {
@@ -86,6 +111,7 @@ const VideoMeet = () => {
     window.location.reload();
   }
   return (
+     <ProfileLayout tutor>
     <div className="flex flex-col item-center">
       <h2 className='text-center text-lg font-semibold'>Video Calling</h2>
 
@@ -115,6 +141,15 @@ const VideoMeet = () => {
           </div>
         }
       </div>
+
+      <div className="flex gap-4 mb-8">
+          <button onClick={toggleAudio} className="p-2 rounded-lg bg-gray-600 text-white hover:bg-gray-700">
+            {isAudioMuted ? 'Unmute Audio' : 'Mute Audio'}
+          </button>
+          <button onClick={toggleVideo} className="p-2 rounded-lg bg-gray-600 text-white hover:bg-gray-700">
+            {isVideoMuted ? 'Unmute Video' : 'Mute Video'}
+          </button>
+        </div>
 
       {isCallAccepted ?
         <button className='p-2 rounded-lg bg-red-600 text-white hover:bg-red-700' onClick={endCall}>End Call</button>
@@ -148,6 +183,7 @@ const VideoMeet = () => {
         </div>
       }
     </div>
+    </ProfileLayout>
   );
 }
 

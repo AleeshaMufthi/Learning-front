@@ -35,10 +35,11 @@ function classNames(...classes) {
     });
     
     useEffect(() => {
+      
       getUserDetailsAPI()
         .then((response) => {
+          
           const userDetails = response.data.userDetails;
-          console.log(userDetails, 'user details');
           
           setUserDetails({
             name: userDetails.name,
@@ -73,16 +74,25 @@ function classNames(...classes) {
       data.visible = agreed;
 
       const formData = new FormData()
-
+      if (!selectedImage) {
+        toast('Please select an image before submitting.')
+        setError("Please select an image before submitting.");
+        return;
+    }
+    
       formData.append('name', data.name)
       formData.append('age',data.age)
       formData.append('about', data.about)
       formData.append('address', data.address)
       formData.append('visible',data.visible)
       formData.append('thumbnail', selectedImage);
-
+    
       updateUserDetailsAPI(formData)
+     
+      
         .then((response) => {
+          console.log(response, 'update user details');
+          
           toast.success("Profile Updated Successfully", {
             duration: 3000,
           });
@@ -97,8 +107,9 @@ function classNames(...classes) {
     setImagePreviewURL(response.data.userDetails.thumbnail[0]); 
         })
         .catch((err) => {
-          console.log(err);
-          setError(err?.response.errors.message);
+          console.log(err, 'Error updating profile');
+          err.response?.data?.message || err.message || "Something went wrong";
+          setError(errorMessage); 
         });
     };
 

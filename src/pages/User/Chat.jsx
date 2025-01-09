@@ -10,7 +10,7 @@ import Picker from "emoji-picker-react";
 import '../../style/chat.css'
 import { handlefileUpload } from "../../utils/cloudinary";
 import userIcon from '../../assets/usericon.jpg'
-
+import ProfileLayout from "../../components/user/ProfileLayout";
 
 export const Chat = () => {
 
@@ -19,7 +19,6 @@ export const Chat = () => {
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([]);
     const { instructors, studentMessages, setFetchChange } = UserChat();
-    console.log(instructors, 'instrrrrrrrrrrrrrrr');
     
     const [Instructors, setInstructors] = useState([]);
     const [selectedInstructor, setSelectedInstructor] = useState();
@@ -36,17 +35,26 @@ export const Chat = () => {
     const [uploadedMedia, setUploadedMedia] = useState({}); 
     const [loading, setLoading] = useState(false);
 
+    const [unreadMessages, setUnreadMessages] = useState({});
+
+
     useEffect(() =>{
         if (selectedInstructor) {
             socket.emit("joinedRoom", { sender, selectedInstructor })
         }
     }, [selectedInstructor])
-
-    
     
     useEffect(() => {
         socket.on("messageRecieved", ({ messageData }) => {
             setMessages((prev) => [...prev, messageData])
+
+            if (messageData.sender !== selectedInstructor?._id) {
+              setUnreadMessages((prev) => ({
+                  ...prev,
+                  [messageData.sender]: (prev[messageData.sender] || 0) + 1,
+              }));
+          }
+
           });
 
         socket.on("userStatus", ({ email, status }) => {
@@ -75,7 +83,7 @@ export const Chat = () => {
             socket.off("stopTyping");
         };
 
-    }, [])
+    }, [selectedInstructor])
     
 
     useEffect(() => {
@@ -238,6 +246,7 @@ export const Chat = () => {
 
     return (
         <>
+              <ProfileLayout>
         <div className="h-screen flex flex-col bg-gray-100 overflow-hidden">
         <div className="flex-1 flex flex-col lg:flex-row bg-gray-200 shadow-xl rounded-lg border-2 border-gray-300 h-full sm:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl 2xl:max-w-screen-2xl">
         {/* Sidebar */}
@@ -250,8 +259,14 @@ export const Chat = () => {
                   className="flex items-center p-3 border-b border-gray-300 cursor-pointer hover:bg-gray-50"
                   onClick={() => setSelectedInstructor(instructor)}
                 >
+                            {unreadMessages[instructor._id] > 0 && (
+            <span className="bg-red-500 text-white text-xs font-bold rounded-full px-2 py-1 ml-2">
+                {unreadMessages[instructor._id]}
+            </span>
+        )}
                   <div className="relative">
                      <img src={instructor.thumbnail || userIcon} className="w-12 h-12 rounded-full object-cover" alt={instructor.name} /> 
+                     
                     {onlineUsers[instructor.email] === 'online' && (
                       <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
                     )}
@@ -274,7 +289,6 @@ export const Chat = () => {
         <div className="flex-1 flex flex-col bg-gray-50 overflow-hidden">
           {selectedInstructor ? (
             <>
-            {console.log(selectedInstructor, '0000000000000000000000000000000000000000000000000000000')}
               <div className="flex items-center p-4 border-b border-gray-200 bg-white">
                 <img src={selectedInstructor.thumbnail || userIcon} className="w-10 h-10 rounded-full object-cover" alt={selectedInstructor.name} /> 
                 <div className="ml-3">
@@ -453,6 +467,7 @@ export const Chat = () => {
         </div>
       </div>
     </div>
+     </ProfileLayout>
         </>
 
     )
