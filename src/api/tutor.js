@@ -27,11 +27,10 @@ const createCourseAPI = (formData, route = `/tutor/courses/create`) => {
   });
 };
 
-const createLessonAPI = (formData, onUploadProgress, route = `/tutor/lessons`) => {
-  return API.post(route, formData, {
+const createLessonAPI = (formData, onUploadProgress) => {
+  return API.post('/tutor/lessons', formData, {
     headers: {
       "Content-Type": "multipart/form-data",
-      Authorization: `Bearer ${localStorage.getItem("access token")}`,
     },
     onUploadProgress,
   });
