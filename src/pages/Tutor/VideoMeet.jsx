@@ -86,7 +86,15 @@ const VideoMeet = () => {
   const answerCall = () => {
     setIsCallAccepted(true);
 
-    const peer = new SimplePeer({ initiator: false, trickle: false, stream: stream });
+    const peer = new SimplePeer({ initiator: false, trickle: false, stream: stream, 
+      config:{
+        iceServers:[
+          {
+            urls:"stun:stun.l.google.com:19302"
+          }
+        ]
+      }
+    });
 
     peer.on('signal', (data) => {
       socket.emit('answerCall', { signal: data, to: incominCallInfo.from });
