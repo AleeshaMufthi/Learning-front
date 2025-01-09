@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 export default function NotFound() {
     return (
       <>
+
+      
         <main className="grid min-h-full h-screen place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
           <div className="text-center">
             <p className="text-9xl font-semibold text-indigo-600 flex justify-center text-center">
