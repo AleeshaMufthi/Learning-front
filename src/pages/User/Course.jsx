@@ -2,13 +2,13 @@ import React, { useEffect, useState} from "react";
 import { Toaster, toast } from "react-hot-toast";
 import Loading from "../../components/common/Loading";
 import SectionTitle from "../../components/common/SectionTitle";
-import { BookOpenIcon, ClockIcon, CodeBracketIcon, UserGroupIcon, CheckCircleIcon, ChevronUpIcon, LockClosedIcon } from "@heroicons/react/24/outline";
-import { Disclosure, Tab } from "@headlessui/react";
+import { BookOpenIcon, UserGroupIcon, CheckCircleIcon, ChevronUpIcon, LockClosedIcon } from "@heroicons/react/24/outline";
+import { Tab, Disclosure } from "@headlessui/react";
 import { getUser } from "../../components/authorization/getUser";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams, Link } from "react-router-dom";
 import { getCourseDetailsAPI, enrollCourseAPI, isEnrolledInCourseAPI } from "../../api/user";
 import timeAgo from "../../utils/timeAgo";
-import { Button } from "flowbite-react";
+import { Button, Card } from "flowbite-react";
 import Modal from "../../components/user/Modal";
 import HorizontalRule from '../../components/common/HorizontalRule'
 import Payment from "../../components/user/Payment";
@@ -28,6 +28,8 @@ export default function Course() {
     useEffect(() => {
       (async () => {
         const courseDetails = await getCourseDetailsAPI(params.id);
+        console.log(courseDetails, 'courseDetailssssssss');
+        
         console.log(user.userId)
         const userCourse = await isEnrolledInCourseAPI(params.id,user.userId);
         console.log(userCourse,"==============================")
@@ -66,297 +68,147 @@ export default function Course() {
         }
       );
     };
-
-    console.log(isEnrolled,"entrolled")
+    console.log(isEnrolled,"enrolled")
     return (
+ 
       <>
-        <Toaster />
-        {isLoading ? (
-          <Loading />
-        ) : (
-          <div className="flex nexa-font">
-            <div className="w-3/5 mx-3">
-              <SectionTitle
-                title="Course Overview"
-                description="get an overview of the course here"
-              />
-              <HorizontalRule />
-              <div className="flex justify-around sm:px-10 md:px-15 lg:px-20 mt-10 bg-white rounded-xl sm:p-5 md:p-10">
-                <div className="flex justify-center items-center">
-                  <span className="text-md text-center px-4 text-gray-600 md:text-lg">
-                    Instructor
-                    <HorizontalRule />
-                    <h1 className="text-sm text-amber-500 md:text-lg">
-                      {course?.tutor?.name}
-                    </h1>
-                  </span>
-                  <img
-                    src="https://secure.gravatar.com/avatar/c98bb1db01e83b0183281b6aa6173647?s=250&d=mm&r=g"
-                    alt="profile picture"
-                    className="rounded-full w-10 sm:w-10 md:w-15 lg:w-20"
-                  />
+      <Toaster />
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <div className="flex flex-col lg:flex-row space-y-8 lg:space-y-0 lg:space-x-8 p-8">
+          {/* Left Column - Course Details & Instructor */}
+          <div className="w-full lg:w-3/5 space-y-6">
+            {/* Course Overview */}
+            <SectionTitle title="Course Overview" description="Get an overview of the course here" />
+            <HorizontalRule />
+            
+            {/* Course Details */}
+            <div className="flex flex-col sm:flex-row sm:space-x-8 bg-white rounded-lg p-5 shadow-lg">
+              <div className="flex flex-col sm:w-2/3 space-y-3">
+                <h3 className="text-2xl font-semibold">{course.title}</h3>
+                <p className="text-lg text-gray-500">{course.tagline}</p>
+                
+                {/* Course Image */}
+                <img
+                  src={course.thumbnail}
+                  alt="Course Thumbnail"
+                  className="w-full h-64 object-cover rounded-lg mt-4"
+                />
+                
+                <div className="flex justify-between text-gray-600 mt-4">
+                  <div className="flex items-center">
+                    <BookOpenIcon className="w-5 text-blue-500 mr-2" />
+                    <span>{course.lessons?.length} Lessons</span>
+                  </div>
+                  <div className="flex items-center">
+                    <UserGroupIcon className="w-5 text-blue-500 mr-2" />
+                    <span>{course.totalStudentsEnrolled ?? 3} Enrolled</span>
+                  </div>
                 </div>
-               
               </div>
-              <div className="bg-white flex p-3 my-3 rounded-lg">
-                <ul className="flex justify-evenly w-full">
-                  <li className="flex gap-2">
-                    <BookOpenIcon className="w-5 text-blue-500" />
-                    {course.lessons?.length} Lessons
-                  </li>
-                  <li className="flex gap-2">
-                    <UserGroupIcon className="w-5 text-blue-500" />
-                    {course.totalStudentsEnrolled ?? 3} enrolled
-                  </li>
-                </ul>
-              </div>
-              <div className="flex justify-center bg-white rounded-xl mt-2">
-                <div
-                  className="w-full px-2 py-2 sm:px-4"
-                  style={{ minHeight: "31rem" }}
-                >
-                  <Tab.Group>
-                    <Tab.List className="flex space-x-1 rounded-xl bg-gray-500 p-1">
-                      <Tab
-                        className={({ selected }) =>
-                          classNames(
-                            "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-gray-700",
-                            "ring-white ring-opacity-60 ring-offset-2 ring-offset-gray-400 focus:outline-none focus:ring-2",
-                            selected
-                              ? "bg-white shadow"
-                              : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
-                          )
-                        }
-                      >
-                        Overview
-                      </Tab>
-  
-                      <Tab
-                        className={({ selected }) =>
-                          classNames(
-                            "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-gray-700",
-                            "ring-white ring-opacity-60 ring-offset-2 ring-offset-gray-400 focus:outline-none focus:ring-2",
-                            selected
-                              ? "bg-white shadow"
-                              : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
-                          )
-                        }
-                      >
-                        Lessons
-                      </Tab>
-                     
-                    </Tab.List>
-                    <Tab.Panels className="mt-2">
-                      <Tab.Panel
-                        className={classNames(
-                          "rounded-xl bg-white p-3",
-                          "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2"
-                        )}
-                      >
-                        <ul>
-                          <li>
-                            {" "}
-                            <div className="sm:p-2 md:p-3 lg:p-5">
-                              <div className="sm:ml-1 md:ml-3 lg:ml-5 flex justify-between">
-                                <div>
-                                  <h3 className="sm:text-2xl md:text-2xl lg:text-3xl">
-                                    {course.title.charAt(0).toUpperCase() +
-                                      course.title.slice(1)}
-                                  </h3>
-  
-                                  <h3 className="sm:text-sm md:text-md text-gray-500">
-                                    {course.tagline}
-                                  </h3>
-                                </div>
-                                <div className="flex flex-col justify-center">
-                                  <h3 className="text-xs text-gray-500">
-                                    {formattedDate?.createdAt}
-                                  </h3>
-                                  <h3 className="text-xs text-gray-500 text-end">
-                                    {formattedDate?.timeAgo} Ago
-                                  </h3>
-                                </div>
-                              </div>
-                              <HorizontalRule />
-                              <div className="flex justify-center pb-4">
-                                <img
-                                  src={course.thumbnail}
-                                  alt="course thumbnail image"
-                                  className="rounded-lg w-132.5 shadow-2"
-                                />
-                              </div>
-                              <HorizontalRule />
-                              <div className="px-20 text-justify">
-                                <span className="text-justify">
-                                  {course.about}
-                                </span>
-                              </div>
-                            </div>
-                          </li>
-                        </ul>
-                      </Tab.Panel>
-                      <Tab.Panel
-                        className={classNames(
-                          "rounded-xl bg-white p-3 ",
-                          "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2"
-                        )}
-                      >
-                        <ul>
-                          <li>
-                            <div className="sm:p-2 md:p-3 lg:p-5">
-                              <div className="sm:ml-1 md:ml-3 lg:ml-5 flex justify-between">
-                                <div>
-                                  <h3 className="sm:text-xl md:text-2xl lg:text-3xl pb-3">
-                                    Total Lessons - {course?.lessons?.length}
-                                  </h3>
-                                  <h3 className="sm:text-sm md:text-md text-gray-500 pb-3">
-                                    {course.tagline}
-                                  </h3>
-                                </div>
-                                <div className="flex flex-col justify-center">
-                                  <h3 className="text-xs text-gray-500">
-                                    {formattedDate.createdAt}
-                                  </h3>
-                                  <h3 className="text-xs text-gray-500 text-end">
-                                    {formattedDate.timeAgo} ago
-                                  </h3>
-                                </div>
-                              </div>
-                              <div className="w-full px-4">
-                                <div className="mx-auto w-full rounded-2xl bg-white">
-                                  {course?.lessons?.map((lesson, index) => (
-                                    <Disclosure
-                                      as="div"
-                                      className="mt-2"
-                                      key={lesson._id}
-                                    >
-                                      {({ open }) => (
-                                        <>
-                                          <Disclosure.Button className="w-full justify-between rounded-lg bg-indigo-100 px-4 py-3 text-left text-sm font-medium text-purple-900 hover:bg-indigo-200 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
-                                            <div className="flex items-center gap-2">
-                                              {/* First line - left-aligned */}
-                                              <span>{index + 1}</span>
-                                              <span>{lesson.title}</span>
-                                            </div>
-  
-                                            <div className="flex items-center gap-2">
-                                              <div className="ml-auto">10: 00
-                                              </div>
-
-                                            {/* <div className="flex items-center gap-2">
-                                              <div className="ml-auto">
-                                                {(lesson.duration / 60).toFixed(
-                                                  2
-                                                )}
-                                                :00
-                                              </div> */}
-  
-                                              <ChevronUpIcon
-                                                className={`${
-                                                  open
-                                                    ? "transform"
-                                                    : "rotate-180"
-                                                } h-5 w-5 text-purple-500`}
-                                              />
-                                            </div>
-                                          </Disclosure.Button>
-  
-                                          <Disclosure.Panel className="px-4 pt-4 pb-2 text-sm text-gray-500 flex justify-between">
-                                            <div className="flex">
-                                              <LockClosedIcon className="w-4 mr-2 mb-2" />
-                                              {lesson.description}
-                                            </div>
-                                            <div>
-                                              {timeAgo(lesson.createdAt)} ago
-                                            </div>
-                                          </Disclosure.Panel>
-                                        </>
-                                      )}
-                                    </Disclosure>
-                                  ))}
-                                </div>
-                              </div>
-                            </div>
-                          </li>
-                        </ul>
-                      </Tab.Panel>
-                    </Tab.Panels>
-                  </Tab.Group>
+              
+              {/* Instructor Info */}
+              <div className="sm:w-1/3 flex flex-col items-center sm:items-start mt-3 sm:mt-0">
+                <HorizontalRule className="my-2" />
+                <div className="flex items-center">
+                  <img
+                    src={course.tutor.thumbnail || "https://i.pinimg.com/236x/76/f3/f3/76f3f3007969fd3b6db21c744e1ef289.jpg"}
+                    alt="Instructor Thumbnail"
+                    className="w-16 h-16 object-cover rounded-full"
+                  />
+                  <div className="ml-4">
+                  <span className="text-sm font-normal">Course created by,</span>
+                    <h4 className="text-lg font-medium">Prof. {course.tutor?.name}</h4>
+                  </div>
                 </div>
               </div>
             </div>
-  
-            <div className="w-2/5 mx-3">
-              <SectionTitle title="price" description="This is a Paid Course" />
-              <HorizontalRule />
-              <div className="rounded-2xl bg-white py-10 text-center ring-1 ring-inset ring-gray-900/5 lg:flex-col lg:justify-center lg:py-16">
-                <div className="mx-auto max-w-xs px-8">
-                  {isEnrolled ? (
-                    <div className="flex flex-col items-center">
-                      <CheckCircleIcon className="text-green-400 w-20" />
-                      Enrolled for Course
-                      <Button
-                        className="mt-5"
-                        onClick={() =>
-                          navigate(`/courses/enrolled/${course._id}`)
-                        }
-                      >
-                        View Course
-                      </Button>
-                    </div>
-                  ) : (
-                    <>
-                      <p className="text-base font-semibold text-gray-600">
-                        Pay once & own it forever
-                      </p>
-                      <p className="mt-6 flex items-baseline justify-center gap-x-2">
-                        <span className="sm:text-xl md:text-2xl lg:text-5xl font-bold tracking-tight text-gray-900">
-                          ₹{course?.price}
-                        </span>
-                        <span className="text-sm font-semibold leading-6 tracking-wide text-gray-600">
-                          INR
-                        </span>
-                      </p>
-                      <Payment
-                      courseId={course._id}
-                      setIsEnrolled={(value) => {
-                        setIsEnrolled(value);
-                      }}
-                      // onEnroll={handleEnrollCourse}
+          <div className="bg-white p-6 rounded-lg shadow-lg mt-6">
+              <p className="text-lg font-semibold">Lessons Overview</p>
+
+              {course.lessons && course.lessons.length > 0 ? (
+            <ul className="mt-4 space-y-4">
+              {course.lessons.map((lesson, index) => (
+            <li key={lesson._id} className="flex items-start space-x-4 border-b pb-4">
+                 <div className="text-md font-semibold text-gray-800">
+            {index + 1}.
+          </div>
+            <div className="text-2xl text-blue-500">
+            
+              <i className="fas fa-video"></i>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-gray-800">
+              {lesson.title}
+              </h3>
+            <p className="text-gray-700 text-justify">{lesson.description}
+            <span className="text-sm text-gray-500 ml-5">
+                (Published On: {new Date(lesson.createdAt).toLocaleDateString()})
+              </span>
+            </p>
+            </div>
+            <div className="text-red-500">
+            <i className="fas fa-lock"></i>
+          </div>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p className="text-gray-500 mt-4">No lessons available for this course.</p>
+  )}
+</div>
+</div>
+    
+          {/* Right Column - Price & Payment */}
+          <div className="w-full lg:w-2/5 bg-white rounded-lg p-8 shadow-lg">
+            <SectionTitle title="Price" description="This is a Paid Course" />
+            <HorizontalRule />
+            
+            <div className="text-center space-y-4">
+              {isEnrolled ? (
+                <div className="flex flex-col items-center">
+                  <CheckCircleIcon className="text-green-400 w-20" />
+                    <Link
+                        to={`/courses/enrolled/${course._id}`}
+                        className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-semibold rounded-lg text-md px-11 py-2 text-center mb-3 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
                     >
-                      Get Course
-                    </Payment>
-                      {/* <button
-                      onClick={() => setIsOpen(!isOpen)}
-                      className="mt-2 block w-full rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    >
-                      Fake Buy
-                    </button> */}
-                    
-                    {/* <Modal
-                      isOpen={isOpen}
-                      setIsOpen={setIsOpen}
-                      modalData={{
-                        title: "Confirm Payment",
-                        description:
-                          'By Clicking "Confirm" you are accepting Learnt payment procedures and proceed to payment',
-                        onClick: () => handleEnrollCourse(course._id, "fake"),
-                      }}
-                    /> */}
-                 
-                      <p className="mt-6 text-xs leading-5 text-gray-600">
-                        Invoices and receipts available for easy company
-                        reimbursement
-                      </p>
-                    </>
-                  )}
+                     Start Learning
+                    </Link>
+                  <p>Woohoo! You're in! Get ready to learn and have fun! 📚</p>
+                  <Button
+                    className="mt-5"
+                    onClick={() => navigate(`/courses/enrolled/${course._id}`)}
+                  >
+                    View Course
+                  </Button>
                 </div>
-              </div>
+              ) : (
+                <>
+                  <p className="text-lg font-semibold text-gray-600">
+                    Pay once & own it forever
+                  </p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    ₹{course?.price} INR
+                  </p>
+                  <Payment
+                    courseId={course._id}
+                    setIsEnrolled={setIsEnrolled}
+                  >
+                    Get Course
+                  </Payment>
+                  <p className="text-xs text-gray-500 mt-4">
+                    Invoices and receipts available for easy company reimbursement.
+                  </p>
+                </>
+              )}
             </div>
           </div>
-        )}
-        <Footer />
-      </>
+        </div>
+      )}
+      <Footer />
+    </>
+    
     );
   }
   

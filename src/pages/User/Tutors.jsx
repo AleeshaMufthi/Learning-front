@@ -39,7 +39,7 @@ export default function Tutors() {
           {tutors.map((tutor, id) => (
             <Card key={id} className="overflow-hidden">
               <img
-                src={tutor.thumbnail}
+                src={tutor.thumbnail || "https://i.pinimg.com/236x/76/f3/f3/76f3f3007969fd3b6db21c744e1ef289.jpg"}
                 alt={`Portrait of ${tutor.name}`}
                 width={400}
                 height={400}

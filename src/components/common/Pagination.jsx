@@ -1,11 +1,20 @@
 export default function Pagination({ page, total, limit, setPage }) {
-    const totalPages = Math.ceil(total / limit);
+  console.log({ page, total, limit,  },'page, total, limit');
+
+  const totalPages = Math.ceil(total / limit); // Calculate total pages
+console.log(totalPages, 'total pages');
+
+  const setPrev = () => setPage((prev) => Math.max(prev - 1, 1));
+  const setNext = () => setPage((prev) => Math.min(prev + 1, totalPages));
+  const setCustom = (page) => setPage(page);
+    
+    
   
     return (
       <>
         <div className="flex items-center justify-center py-10 lg:px-0 sm:px-6 px-4">
           <div className="lg:w-3/5 w-full flex items-center justify-between border-t border-gray-200">
-            {totalPages > 1 ? (
+            {total > 1 ? (
               <>
                 <div
                   className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer"
@@ -45,7 +54,7 @@ export default function Pagination({ page, total, limit, setPage }) {
                   </p>
                 </div>
                 <div className="flex">
-                  {[...Array(totalPages)].map((val, index) => (
+                  {[...Array(Math.ceil(total/limit))].map((val, index) => (
                     <div className="sm:flex" key={index}>
                       <p
                         className={

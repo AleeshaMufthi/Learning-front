@@ -9,7 +9,6 @@ import { useSelector } from "react-redux";
 import Picker from "emoji-picker-react";
 import '../../style/chat.css'
 import { handlefileUpload } from "../../utils/cloudinary";
-import userIcon from '../../assets/usericon.jpg'
 import ProfileLayout from "../../components/user/ProfileLayout";
 
 export const Chat = () => {
@@ -265,7 +264,7 @@ export const Chat = () => {
             </span>
         )}
                   <div className="relative">
-                     <img src={instructor.thumbnail || userIcon} className="w-12 h-12 rounded-full object-cover" alt={instructor.name} /> 
+                     <img src={instructor.thumbnail || "https://i.pinimg.com/236x/76/f3/f3/76f3f3007969fd3b6db21c744e1ef289.jpg"} className="w-12 h-12 rounded-full object-cover" alt={instructor.name} /> 
                      
                     {onlineUsers[instructor.email] === 'online' && (
                       <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
@@ -290,7 +289,7 @@ export const Chat = () => {
           {selectedInstructor ? (
             <>
               <div className="flex items-center p-4 border-b border-gray-200 bg-white">
-                <img src={selectedInstructor.thumbnail || userIcon} className="w-10 h-10 rounded-full object-cover" alt={selectedInstructor.name} /> 
+                <img src={selectedInstructor.thumbnail || "https://i.pinimg.com/236x/76/f3/f3/76f3f3007969fd3b6db21c744e1ef289.jpg"} className="w-10 h-10 rounded-full object-cover" alt={selectedInstructor.name} /> 
                 <div className="ml-3">
                   <p className="font-semibold text-gray-800">{selectedInstructor.name}</p>
                   {onlineUsers[selectedInstructor.email] === 'online' && (

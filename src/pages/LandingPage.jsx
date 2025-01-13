@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from 'react'
 
 import Counter from "../utils/Counter";
 import Logo from "../components/common/Logo";
-import { User, Tutor, Explore } from '../api/link'
+import { User, Explore } from '../api/link'
 import PartnerLogos from "../components/common/PartnerLogos";
 import CareerFeatures from "../components/common/CareerFeautures";
 import VideoBanner from "../components/common/VideoBanner";
@@ -14,9 +14,9 @@ import LandingFooter from "../components/common/LandingFooter";
 
 
 const navigation = [
-  { name: "Home", href: User },
+  { name: "Home",},
   { name: "Explore", href: Explore},
-  { name: "Teach", href: Tutor },
+  { name: "About", },
   { name: "Contact"},
 ]
 
@@ -80,7 +80,7 @@ const LandingPage = () => {
             <Link
               key={item.name}
               to={item.href}
-              className="text-sm font-semibold leading-6  text-grey-900"
+              className="text-sm font-semibold leading-6 text-grey-900"
             >
               {item.name}
             </Link>
@@ -149,7 +149,7 @@ const LandingPage = () => {
         <div className="md:w-1/2 mb-8 md:mb-0 relative h-80">
           <div className="absolute top-0 left-0 w-full h-full opacity-50" />
             <img src="https://i.pinimg.com/564x/6c/12/f3/6c12f3167b8945e763ceb027ba0be817.jpg" alt="Tutor" className="w-full h-full object-cover rounded-lg" />
-              <Link to="/tutor" className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-6 py-3 text-lg font-semibold bg-gray-700 rounded hover:bg-gray-600">
+              <Link to="/tutor" className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-6 py-3 text-lg font-semibold bg-gray-700 rounded text-amber-400 hover:bg-gray-600">
                 Join Our Tutor Team <span aria-hidden="true">&rarr;</span>
               </Link>
           </div>
@@ -159,7 +159,7 @@ const LandingPage = () => {
             <img src="https://i.pinimg.com/474x/d2/60/77/d260777287632de53d838823d080f487.jpg" alt="User" className="w-full h-full object-cover rounded-lg" />
               <Link
               to="/user"
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-6 py-3 text-lg font-semibold bg-gray-700 rounded hover:bg-gray-600"
+              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-6 py-3 text-lg font-semibold bg-gray-700 rounded text-amber-400 hover:bg-gray-600"
               >
               Start your learning journey <span aria-hidden="true">&rarr;</span>
               </Link>

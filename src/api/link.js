@@ -6,6 +6,8 @@ const UserSignIn = (pathname) => `/signin?from=${pathname}`
 const UserSignUp = "/signup"
 const Profile = "/user/profile";
 const Explore = "/explore";
+const Contact = "/contact"
+const About = "/about"
 const ForgetPassword = "/forgetPassword"
 const ResetPassword = "/resetPassword"
 const CourseOwned = "/user/profile/courses";
@@ -58,6 +60,8 @@ export {
     // UserViewLesson,
     Profile,
     Explore,
+    Contact,
+    About,
     Tutors,
     Meet,
     TutorMeet,

@@ -56,6 +56,7 @@ export default function UserRoutes() {
 
   return (
     <div>
+      
       <NavBar />
       <Toaster />
       <Routes>
@@ -65,6 +66,8 @@ export default function UserRoutes() {
         <Route path="/forgetPassword" element={<ForgetPassword />} />
         <Route path="/resetPassword" element={<ResetPassword />} />
         <Route path="user/profile" element={<Profile />} />
+   
+
         <Route element={<PrivateUser />}>
         <Route path="explore" element={<Explore />} />
         <Route path="courses/:id" element={<Course />} />
@@ -80,6 +83,7 @@ export default function UserRoutes() {
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
+
      
     </div>
   );

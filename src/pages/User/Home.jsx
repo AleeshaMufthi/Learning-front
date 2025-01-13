@@ -10,13 +10,13 @@ import Footer from '../../components/common/Footer'
 export default function Home() {
    const [categories, setCategories] = useState([]);
     const [showComponent, setShowComponent] = useState(false);
-
     
     const closeBanner = () => {
       setShowComponent(false);
     };
     useEffect(() => {
       getAllCategoriesAPI().then(({ data }) => {
+        
         setCategories(data.categories);
       });
       setTimeout(() => {

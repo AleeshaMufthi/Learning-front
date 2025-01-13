@@ -219,7 +219,7 @@ export default function SignIn() {
             </p>
           </div>
           <img
-            src={LoginPageImg}
+            src="https://expandandthrive.com/wp-content/uploads/2022/01/test13.jpg"
             alt="Background"
             className="object-cover w-full h-full"
           />

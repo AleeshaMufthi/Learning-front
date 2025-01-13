@@ -37,7 +37,7 @@ export default function Enrolled() {
           ) : courses.length ? (
             courses.map((course) => (
               <div
-                className="max-w-sm block hover:shadow-lg duration-300 bg-white border overflow-hidden border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 ml-10"
+                className="max-w-sm block hover:shadow-2xl duration-300 bg-white border overflow-hidden border-gray-200 rounded-lg shadow-2xl dark:bg-white ml-10"
                 key={course._id}
               >
                 <div className="overflow-hidden">
@@ -45,13 +45,13 @@ export default function Enrolled() {
                     <img
                       src={course.thumbnail}
                       alt="Product Image"
-                      className="rounded-t-lg duration-300 scale-105 min-h-[11rem] object-cover hover:scale-100"
+                      className="rounded-t-lg h-48 w-full object-coverrounded-t-lg duration-300 scale-105 min-h-[11rem] object-cover hover:scale-100 pb-3"
                     />
                   </Link>
                 </div>
-                <div className="px-5 pb-5">
+                <div className="px-8">
                   <Link to={Dumy}>
-                    <h5 className="text-xl font-semibold tracking-tight text-white text-center uppercase pt-4 nexa-font pb-3">
+                    <h5 className="text-xl font-bold text-gray-800 truncate mb-1">
                       {course.title}
                     </h5>
                     <span className="text-sm font-semibold tracking-tight text-gray-600 nexa-font pb-3">
@@ -61,16 +61,14 @@ export default function Enrolled() {
                 
                   <div className="flex items-center justify-between">
                     <div className="flex flex-col items-start justify-start">
-                      <span className="text-sm font-bold text-red-500 line-through ">
-                        ₹{course.price + 490}
-                      </span>
-                      <span className="text-2xl font-bold text-green-900 ">
+                      
+                      <span className="text-xl font-bold text-green-600">
                         ₹{course.price}
                       </span>
                     </div>
                     <Link
                       to={`/courses/enrolled/${course._id}`}
-                      className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                      className="block text-center bg-indigo-500 hover:bg-indigo-700 text-white py-2 px-6 rounded-md mb-8"
                     >
                       Start Learning
                     </Link>

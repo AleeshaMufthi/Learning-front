@@ -15,8 +15,8 @@ function NavBar() {
     const NormalNav = [
       { name: "Home", href: User },
       { name: "Explore", href: Explore  },
-      { name: "Teach", href: Tutor},
       { name: "Contact"},
+      { name: "About"},
     ];
   
     const UserNav = [
