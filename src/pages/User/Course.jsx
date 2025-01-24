@@ -8,11 +8,11 @@ import { getUser } from "../../components/authorization/getUser";
 import { useLocation, useNavigate, useParams, Link } from "react-router-dom";
 import { getCourseDetailsAPI, enrollCourseAPI, isEnrolledInCourseAPI } from "../../api/user";
 import timeAgo from "../../utils/timeAgo";
-import { Button, Card } from "flowbite-react";
-import Modal from "../../components/user/Modal";
-import HorizontalRule from '../../components/common/HorizontalRule'
+import { Button } from "flowbite-react";
+import HorizontalRule from '../../components/common/HorizontalRule';
 import Payment from "../../components/user/Payment";
 import Footer from "../../components/common/Footer";
+import { getReviewAPI } from "../../api/user";
 
 export default function Course() {
     const [course, setCourse] = useState({});
@@ -20,24 +20,64 @@ export default function Course() {
     const [isOpen, setIsOpen] = useState(false);
     const [isEnrolled, setIsEnrolled] = useState(false);
     const [formattedDate, setFormattedDate] = useState({});
+    const [reviews, setReviews] = useState({ reviews: [], hasReviewed: false });
+
     const user = getUser();
     const params = useParams();
     const navigate = useNavigate();
     const { pathname } = useLocation();
   
-    useEffect(() => {
-      (async () => {
-        const courseDetails = await getCourseDetailsAPI(params.id);
-        console.log(courseDetails, 'courseDetailssssssss');
+//     useEffect(() => {
+//       (async () => {
+//         const courseDetails = await getCourseDetailsAPI(params.id);
+//         console.log(courseDetails, 'courseDetailssssssss');
         
-        console.log(user.userId)
-        const userCourse = await isEnrolledInCourseAPI(params.id,user.userId);
-        console.log(userCourse,"==============================")
-        setIsEnrolled(userCourse?.data?.enrolled);
-        setCourse(courseDetails.data.data);
-        setTimeout(() => setIsLoading(false));
-      })();
-    }, []);
+//         console.log(user.userId)
+//         const userCourse = await isEnrolledInCourseAPI(params.id, user.userId);
+//         console.log(userCourse,"==============================")
+//         setIsEnrolled(userCourse?.data?.enrolled);
+//         setCourse(courseDetails.data.data);
+//         setTimeout(() => setIsLoading(false));
+
+//         // Fetch the reviews for this course
+//       const reviewsData = await getReviewAPI(params.id);
+//       console.log(reviewsData, 'reviews dataa');
+//       console.log(reviewsData.data, 'reviews dataa.dataa');
+//       setReviews(reviewsData.data);  // Store the reviews
+//       setIsLoading(false);
+//       })();
+// }, []);
+
+useEffect(() => {
+  (async () => {
+    try {
+      setIsLoading(true);
+
+      // Fetch course details
+      const courseDetails = await getCourseDetailsAPI(params.id);
+      setCourse(courseDetails.data.data);
+
+      // Check if the user is enrolled in the course
+      const userCourse = await isEnrolledInCourseAPI(params.id, user.userId);
+      setIsEnrolled(userCourse?.data?.enrolled);
+
+      // Fetch the reviews for this course
+      const { data: reviewsData } = await getReviewAPI(params.id);
+      console.log(reviewsData.reviews, 'reviewdata.reviewsssssss');
+      
+      setReviews({
+        reviews: reviewsData?.reviews || [], // Ensure reviews is an array
+        hasReviewed: reviewsData?.hasReviewed || false,
+      });
+    } catch (error) {
+      console.error("Error fetching course details or reviews:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  })();
+}, [params.id, user.userId]);
+
+
 
     useEffect(() => {
       const courseDate = new Date(course.createdAt).toDateString();
@@ -79,7 +119,7 @@ export default function Course() {
         <div className="flex flex-col lg:flex-row space-y-8 lg:space-y-0 lg:space-x-8 p-8">
           {/* Left Column - Course Details & Instructor */}
           <div className="w-full lg:w-3/5 space-y-6">
-            {/* Course Overview */}
+          
             <SectionTitle title="Course Overview" description="Get an overview of the course here" />
             <HorizontalRule />
             
@@ -161,7 +201,7 @@ export default function Course() {
 </div>
     
           {/* Right Column - Price & Payment */}
-          <div className="w-full lg:w-2/5 bg-white rounded-lg p-8 shadow-lg">
+          <div className="bg-white rounded-lg p-2 shadow-lg">
             <SectionTitle title="Price" description="This is a Paid Course" />
             <HorizontalRule />
             
@@ -203,9 +243,43 @@ export default function Course() {
                 </>
               )}
             </div>
+
+           {/* Reviews Section */}
+  <p className="text-lg font-semibold mb-4">Reviews</p>
+  {reviews?.reviews?.length > 0 ? (
+    reviews.reviews.slice(0, 3).map((review, index) => ( // Limit to 3 reviews
+      <div
+        key={index}
+        className="flex flex-col bg-gray-50 p-4 mb-4 rounded-lg shadow-md"
+      >
+        {/* Thumbnail and Username */}
+        <div className="flex items-center">
+          <img
+            src={review.userId.thumbnail}
+            alt="User Thumbnail"
+            className="w-16 h-16 rounded-full object-cover border-2 border-gray-300 mr-4"
+          />
+          <p className="text-lg font-semibold">{review.userId.name}</p>
+        </div>
+        <p className="text-gray-700 ml-20">{review.reviewText}</p>
+          <p className="text-yellow-500 font-bold ml-20">{review.rating}⭐ rating</p>
+      
+      </div>
+    ))
+  ) : (
+    <p className="text-gray-500 mt-4">No reviews yet for this course.</p>
+  )}
+
           </div>
+
+                      
+    
+
+
         </div>
       )}
+      
+      
       <Footer />
     </>
     

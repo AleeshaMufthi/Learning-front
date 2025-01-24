@@ -10,6 +10,7 @@ const Contact = "/contact"
 const About = "/about"
 const ForgetPassword = "/forgetPassword"
 const ResetPassword = "/resetPassword"
+const ChangePassword = "/changePassword"
 const CourseOwned = "/user/profile/courses";
 const ViewTransaction = "/user/profile/transactions";
 const Wallet = "/user/profile/wallet";
@@ -18,6 +19,7 @@ const Meet = "/user/profile/meet"
 const Notification = "/user/profile/notification"
 const Enrolled = "/courses/enrolled";
 const Tutors = "/tutors"
+const Quiz = "/quiz"
 const UserCourse = (id) => `/courses/${id}`;
 const UserViewCourse = (id) => `/courses/enrolled/${id}`;
 
@@ -35,6 +37,7 @@ const TutorresetPassword = "/tutor/resetPassword"
 const Revenue = "/tutor/profile/revenue"
 const ManageCourse = "/tutor/courses";
 const CreateCourse = "/tutor/courses/create";
+const AddQuiz = "/addQuiz";
 const EditCourseForm = (id) =>`/tutor/courses/edit/${id}`
 const TutorViewCourse = (id) => `/tutor/courses/${id}`;
 
@@ -63,10 +66,12 @@ export {
     Contact,
     About,
     Tutors,
+    Quiz,
     Meet,
     TutorMeet,
     ForgetPassword,
     ResetPassword,
+    ChangePassword,
     CourseOwned,
     ViewTransaction,
     Wallet,
@@ -82,6 +87,7 @@ export {
     TutorChat,
     TutorforgetPassword,
     TutorresetPassword,
+    AddQuiz,
     ManageCourse,
     CreateCourse,
     EditCourseForm,

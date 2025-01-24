@@ -7,8 +7,6 @@ console.log(totalPages, 'total pages');
   const setPrev = () => setPage((prev) => Math.max(prev - 1, 1));
   const setNext = () => setPage((prev) => Math.min(prev + 1, totalPages));
   const setCustom = (page) => setPage(page);
-    
-    
   
     return (
       <>
@@ -16,7 +14,7 @@ console.log(totalPages, 'total pages');
           <div className="lg:w-3/5 w-full flex items-center justify-between border-t border-gray-200">
             {total > 1 ? (
               <>
-                <div
+                <div        
                   className="flex items-center pt-3 text-gray-600 hover:text-indigo-700 cursor-pointer"
                   onClick={() => setPrev()}
                 >

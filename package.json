@@ -32,6 +32,7 @@
     "flowbite-react": "^0.10.1",
     "formik": "^2.4.6",
     "global": "^4.4.0",
+    "html2pdf.js": "^0.10.2",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.454.0",
     "postcss": "^8.4.40",

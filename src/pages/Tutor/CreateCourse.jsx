@@ -62,7 +62,7 @@ export default function CreateCourse() {
 
   useEffect(() => {
     getAllCategoriesAPI().then(({ data }) => {
-      setCategories(data.categories);
+      setCategories(data.category);
     });
   }, []);
 

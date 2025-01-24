@@ -33,8 +33,8 @@ const lessonSchema = yup.object({
 
   export default function CreateLesson({ course, setCourse }) { 
     
-      const user = useSelector((state) => state.user)
-      const tutor = useSelector((state) => state.tutor)
+    const user = useSelector((state) => state.user)
+    const tutor = useSelector((state) => state.tutor)
 
     const [isOpen, setIsOpen] = useState(false);
     const [error, setError] = useState(null);
@@ -112,7 +112,6 @@ const lessonSchema = yup.object({
           };
           socket.emit("to-users", Notification);
         }
-
       
       } catch (err) {
         console.error(err);

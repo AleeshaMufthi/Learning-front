@@ -1,16 +1,11 @@
 import { Fragment, useState } from "react";
-import { ClipboardDocumentCheckIcon, FunnelIcon, UserCircleIcon, XMarkIcon, BookOpenIcon, ReceiptRefundIcon, WalletIcon, ChatBubbleOvalLeftEllipsisIcon, VideoCameraIcon, BellIcon } from "@heroicons/react/20/solid";
+import { ClipboardDocumentCheckIcon, FunnelIcon, UserCircleIcon, XMarkIcon, ReceiptRefundIcon, WalletIcon, StarIcon, ChatBubbleOvalLeftEllipsisIcon, VideoCameraIcon, BellIcon } from "@heroicons/react/20/solid";
 import { useSelector } from "react-redux";
 import { Dialog, Transition } from "@headlessui/react";
 import { Link, useLocation } from "react-router-dom";
 
 const sidebarMenu = [
     { title: "Profile", link: "/user/profile", icon: <UserCircleIcon /> },
-    {
-      title: "Courses",
-      link: "/user/profile/courses",
-      icon: <BookOpenIcon />,
-    },
     {
       title: "Transactions",
       link: "/user/profile/transactions",
@@ -33,7 +28,11 @@ const sidebarMenu = [
       title: "Notifications",
       link: "/user/profile/notification",
       icon: <BellIcon />
-    }
+    },{
+      title: "Reviews",
+      link: "/user/profile/courses",
+      icon: <StarIcon />,
+    },
   ];
 
   export default function ProfileLayout({ children, tutor = false }) {

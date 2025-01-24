@@ -340,7 +340,7 @@ export const Chat = () => {
                 {typingStatus[selectedInstructor._id] && (
                   <div className="flex items-center gap-2">
                      <img
-                      src={selectedInstructor.thumbnail || userIcon}
+                      src={selectedInstructor.thumbnail || "https://i.pinimg.com/236x/76/f3/f3/76f3f3007969fd3b6db21c744e1ef289.jpg"}
                       className="w-5 h-5 rounded-full bg-black border-2 border-zinc-400"
                       alt="Instructor"
                     /> 

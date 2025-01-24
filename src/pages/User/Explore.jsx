@@ -34,7 +34,7 @@ export default function Explore() {
 
   useEffect(() => {
     getAllCategoriesAPI().then(({ data }) => {
-      const options = data.categories.map((category) => {
+      const options = data.category.map((category) => {
         return {
           value: category.title,
           checked: false,
@@ -85,7 +85,7 @@ export default function Explore() {
               <input
                 type="text"
                 placeholder="Search courses..."
-                className="block w-full px-4 py-2 border rounded-md shadow-md focus:outline-2 focus:ring-2 focus:ring-blue-400"
+                className="block w-full px-4 py-2 border border-gray-500 placeholder:text-gray-700 rounded-md shadow-md focus:outline-2 focus:ring-2 focus:ring-blue-400"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -156,7 +156,7 @@ export default function Explore() {
               ))
             ) : (
               <div className="text-center text-gray-500">
-                <h2>No courses found!</h2>
+                <h2>No courses found!!!</h2>
               </div>
             )}
           </div>
@@ -164,17 +164,16 @@ export default function Explore() {
           {/* Pagination */}
           <div className="mt-10">
           <Pagination
-  page={page}
-  total={total} // Pass total pages
-  limit={limit}
-  setPage={(action) => {
-    if (action === "prev") setPage((prev) => Math.max(prev - 1, 1));
-    else if (action === "next")
-      setPage((prev) => Math.min(prev + 1, Math.ceil(total / limit)));
-    else setPage(action);
-  }}
-/>
-        
+            page={page}
+            total={total} // Pass total pages
+            limit={limit}
+            setPage={(action) => {
+             if (action === "prev") setPage((prev) => Math.max(prev - 1, 1));
+                else if (action === "next")
+              setPage((prev) => Math.min(prev + 1, Math.ceil(total / limit)));
+              else setPage(action);
+            }}
+          />
           </div>
         </section>
       </main>

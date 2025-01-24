@@ -25,6 +25,9 @@ import Tutors from '../pages/User/Tutors.jsx'
 import NavBar from '../components/user/NavBar.jsx'
 import { Chat } from '../pages/User/Chat.jsx'
 import VideoMeet from '../pages/User/VideoMeet.jsx'
+import ChangePassword from '../pages/User/ChangePassword.jsx'
+import Quiz from '../pages/User/Quiz.jsx'
+import Certificate from '../pages/User/Certificate.jsx'
 
 
 export default function UserRoutes() {
@@ -42,7 +45,7 @@ export default function UserRoutes() {
             dispatch(removeUser());
             return;
           }
-          dispatch(
+          dispatch( 
             setUser({
               ...response.data?.userData,
               userId: response.data.userData._id,
@@ -65,8 +68,9 @@ export default function UserRoutes() {
         <Route path="signup" element={<SignUp />} />
         <Route path="/forgetPassword" element={<ForgetPassword />} />
         <Route path="/resetPassword" element={<ResetPassword />} />
+        <Route path="/changePassword" element={<ChangePassword />} />
         <Route path="user/profile" element={<Profile />} />
-   
+      
 
         <Route element={<PrivateUser />}>
         <Route path="explore" element={<Explore />} />
@@ -80,6 +84,8 @@ export default function UserRoutes() {
         <Route path="courses/enrolled" element={<Enrolled />} />
         <Route path="tutors" element={<Tutors />} />
         <Route path="courses/enrolled/:id" element={<ViewCourse />} />
+        <Route path='quiz/:courseId' element={<Quiz />} />
+        <Route path='certificates' element={<Certificate />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

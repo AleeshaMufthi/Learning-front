@@ -22,6 +22,7 @@ import ViewLesson from '../pages/Tutor/ViewLesson.jsx';
 import { Chat } from '../pages/Tutor/Chat.jsx';
 import VideoMeet from '../pages/Tutor/VideoMeet.jsx';
 import Revenue from '../pages/Tutor/Revenue.jsx';
+import AddQuiz from '../components/tutor/AddQuiz.jsx'
 
 export default function TutorRoutes() {
 
@@ -62,6 +63,7 @@ export default function TutorRoutes() {
           <Route path="courses" element={<ManageCourses />} />
           <Route path="courses/:id" element={<CourseLesson />} />
           <Route path="courses/edit/:id" element={<EditCourseForm />}/>
+          <Route path="addQuiz" element={<AddQuiz />}/>
         </Route>
         <Route path="/" element={<Home />} />
           <Route path="signin" element={<SignIn />} />

@@ -1,27 +1,42 @@
 import { useEffect, useState } from "react";
-import { blockUserAPI, blockTutorAPI, unBlockTutorAPI, unBlockUserAPI, getAllTutorsAPI, getAllUsersAPI } from "../../api/admin";
+import { blockUserAPI, blockTutorAPI, unBlockTutorAPI, unBlockUserAPI, getAllUsersAPI } from "../../api/admin";
+import { getAllTutorsAPI } from "../../api/tutor";
 import timeAgo from "../../utils/timeAgo";
 import { Toaster, toast } from "react-hot-toast";
+import useDebounce from "../../hooks/useDebounce";
+import Pagination from "../common/Pagination";
 
 const  TableList = ({ tutor = false }) => {
 
   const [users, setUsers] = useState([]);
   const [updateData, setUpdateData] = useState(false);
 
+      const [page, setPage] = useState(1);
+      const [search, setSearch] = useState("");
+      const [limit, setLimit] = useState(5);
+      const [total, setTotal] = useState(0);
+
+  const debouncedSearch = useDebounce(search, 500);
+  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const query = `page=${page}&search=${debouncedSearch}&limit=${limit}`;
         const response = tutor
-          ? await getAllTutorsAPI()
-          : await getAllUsersAPI();
+          ? await getAllTutorsAPI(query)
+          : await getAllUsersAPI(query);
+        console.log(response.data.data, 'responseeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+        
         setUsers(response.data.data);
+        setTotal(response.data.total);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
-  }, [tutor, updateData]);
+  }, [tutor, updateData, page, debouncedSearch, limit]);
 
   const handleBlockUser = (userId) => {
     toast(
@@ -117,94 +132,99 @@ const  TableList = ({ tutor = false }) => {
     };
   };
   return (
-    <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2 5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7 5 xl:pb-1">
+   <>
       <Toaster />
-      <div className="max-w-full overflow-x-auto">
-        <table className="w-full table-auto">
-          <thead>
-            <tr className="bg-gray-2 text-left dark:bg-meta-4">
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-black xll:pl-11">
-                {tutor ? "Tutors" : "Users"}
-              </th>
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-black xll:pl-11">
-                Member Since
-              </th>
-              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xll:pl-11">
-                Status
-              </th>
-              {/* <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-black xll:pl-11">
-                {tutor ? "Courses" : "enrolled"}
-              </th> */}
-              <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-black xll:pl-11">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.length ? (
-              users.map((user) => (
-                <tr key={user._id}>
-                  <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
-                    <h5 className="font-medium text-black dark:text-white">
-                      {user.name}
-                    </h5>
-                    <p className="text-lg">
-                      {tutor ? user.tutorname : user.username}
-                    </p>
-                    <p className="text-sm">{user.email}</p>
-                  </td>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <p className="text-black dark:text-black">
-                      {new Date(user.createdAt).toDateString()}
-                    </p>
-                    <p className="dark:text-gray-700 text-black-400">
-                      {timeAgo(user.createdAt)} Ago
-                    </p>
-                  </td>
-
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <p className="inline-flex rounded-full bg-success bg-opacity-10 py-1 px-3 text-sm font-medium text-success">
-                      {user.isBlocked ? (
-                        <span className="text-red-500 nexa-font">Blocked</span>
-                      ) : (
-                        <span className="text-hgreen-400 nexa-font">
-                          Active
-                        </span>
-                      )}
-                    </p>
-                  </td>
-
-                  {/* <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <p className="text-black dark:text-white">0</p>
-                  </td> */}
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <div className="flex items-center space-x-3.5 text-center">
-                      {user.isBlocked ? (
-                        <span
-                          onClick={() => handleUnblockUser(user._id)}
-                          className="focus:outline-none text-white bg-green-700 hover:bg-green-900 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-1.5 mr-2 mb-2 dark:green-red-600 dark:hover:bg-green-700 dark:focus:ring-green-900"
-                        >
-                          UnBlock
-                        </span>
-                      ) : (
-                        <span
-                          onClick={() => handleBlockUser(user._id)}
-                          className="focus:outline-none text-white bg-indigo-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-1.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
-                        >
-                          Block
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <>No Members Found</>
-            )}
-          </tbody>
-        </table>
+      <div className="flex justify-between items-center mb-4">
+      <input
+        type="text"
+        placeholder="Search instructors..."
+        className="w-1/3 px-4 py-2 border rounded-md focus:ring focus:ring-blue-300"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
       </div>
+     <div className="overflow-x-auto bg-gray-300 ">
+      <table className="w-full border-collapse border border-gray-200">
+        <thead>
+          <tr className="bg-gray-500">
+            <th className="px-4 py-2 text-left text-lg">Profile</th>
+            <th className="px-4 py-2 text-left text-lg">Name</th>
+            <th className="px-4 py-2 text-left text-lg">Member Since</th>
+            <th className="px-4 py-2 text-left text-lg">Status</th>
+            <th className="px-4 py-2 text-left text-lg">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.length > 0 ? (
+            users.map((user) => (
+              <tr key={user._id} className="border-t">
+                <td className="px-4 py-2">
+                <img
+                src={user.thumbnail || "https://i.pinimg.com/236x/76/f3/f3/76f3f3007969fd3b6db21c744e1ef289.jpg"}
+                alt={user.title}
+                className="w-16 h-16 rounded-full object-cover"
+              />
+                </td>
+                <td className="px-4 py-2">
+                  <p className="font-medium">{user.name}</p>
+                  <p className="text-sm text-gray-500">{user.email}</p>
+                </td>
+                <td className="px-4 py-2">{new Date(user.createdAt).toDateString()}</td>
+                <td className="px-4 py-2">
+                  <span
+                    className={`px-2 py-1 rounded ${
+                      user.isBlocked ? "bg-red-100 text-red-600" : "bg-green-100 text-green-600"
+                    }`}
+                  >
+                    {user.isBlocked ? "Blocked" : "Active"}
+                  </span>
+                </td>
+                <td className="px-4 py-2">
+                  {user.isBlocked ? (
+                    <button
+                      onClick={() => handleUnblockUser(user._id)}
+                      className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-700"
+                    >
+                      Unblock
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleBlockUser(user._id)}
+                      className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-700"
+                    >
+                      Block
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="4" className="text-center py-4">
+                No {tutor ? "Tutors" : "Users"} found.
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </div>
+
+        {/* Pagination */}
+                      <div className="mt-10">
+                      <Pagination
+                      page={page}
+                      total={total} 
+                      limit={limit}
+                      setPage={(action) => {
+                  if (action === "prev") setPage((prev) => Math.max(prev - 1, 1));
+                    else if (action === "next")
+                    setPage((prev) => Math.min(prev + 1, Math.ceil(total / limit)));
+                    else setPage(action);
+                  }}
+               />
+              </div>
+   
+              </>
   );
 };
 export default TableList;

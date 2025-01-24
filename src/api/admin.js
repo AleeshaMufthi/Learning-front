@@ -1,5 +1,4 @@
 import API from ".";
-
 const adminSignInAPI = (body) => API.post("./auth/admin/signin", body);
 const adminSignUpAPI = (body) => API.post("/auth/admin/signup", body);
 const adminOtpSendAPI = (body) => API.post("./auth/admin/sendotp", body);
@@ -8,9 +7,8 @@ const getSignedInAdminAPI = () => API.get("/auth/admin/restore");
 const handleAdminLogOutAPI = () => API.delete("/auth/admin/logout");
 
 // user list
-  const getAllUsersAPI = (route = "/admin/users") => {
-    return API.get(route);
-  };
+const getAllUsersAPI = (data) => API.get(`/admin/users?${data}`)
+
   const blockUserAPI = (userId) => {
     return API.post("/admin/users/block", { userId });
   };
@@ -18,11 +16,11 @@ const handleAdminLogOutAPI = () => API.delete("/auth/admin/logout");
     return API.post("/admin/users/unblock", { userId });
   };
 
-
   // tutors list
   const getAllTutorsAPI = (route = "/admin/tutors") => {
     return API.get(route);
   };
+
   const blockTutorAPI = (userId) => {
     return API.post("/admin/tutors/block", { userId });
   };

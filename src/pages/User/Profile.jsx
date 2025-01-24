@@ -9,6 +9,7 @@ import profileSchema from "../../utils/validation/profileSchema";
 import { getUserDetailsAPI, updateUserDetailsAPI } from "../../api/user";
 import toast from "react-hot-toast";
 import { Dumy } from "../../api/link";
+import { Link } from "react-router-dom";
 
 
 function classNames(...classes) {
@@ -40,6 +41,7 @@ function classNames(...classes) {
         .then((response) => {
           
           const userDetails = response.data.userDetails;
+          console.log(userDetails, 'user details');
           
           setUserDetails({
             name: userDetails.name,
@@ -59,293 +61,260 @@ function classNames(...classes) {
         .catch((err) => console.log(err));
     }, []);
 
-    const handleImageChange = (event) => {
-      const file = event.target.files[0];
-      setSelectedImage(file);
-      setValue('thumbnail', file); // Set form value for thumbnail
-      const fileReader = new FileReader();
-      fileReader.onload = (e) => setImagePreviewURL(e.target.result); // Preview image
-      fileReader.readAsDataURL(file); // Read file for preview
-  };
-
-    const handleOnSubmit = (data) => {
-      setError(null);
-      
-      data.visible = agreed;
-
-      const formData = new FormData()
-      if (!selectedImage) {
-        toast('Please select an image before submitting.')
-        setError("Please select an image before submitting.");
-        return;
-    }
-    
-      formData.append('name', data.name)
-      formData.append('age',data.age)
-      formData.append('about', data.about)
-      formData.append('address', data.address)
-      formData.append('visible',data.visible)
-      formData.append('thumbnail', selectedImage);
-    
-      updateUserDetailsAPI(formData)
-     
-      
-        .then((response) => {
-          console.log(response, 'update user details');
-          
-          toast.success("Profile Updated Successfully", {
-            duration: 3000,
-          });
-          
-          setEditMode(false);
-          const updatedDetails = response.data.userDetails;
-          
-        setUserDetails((prevState) => ({
-        ...prevState, 
-        thumbnail: response.data.userDetails.thumbnail[0],
-        }));
-    setImagePreviewURL(response.data.userDetails.thumbnail[0]); 
-        })
-        .catch((err) => {
-          console.log(err, 'Error updating profile');
-          err.response?.data?.message || err.message || "Something went wrong";
-          setError(errorMessage); 
-        });
+    const handleImageChange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          setImagePreviewURL(reader.result);
+          setSelectedImage(file);
+        };
+        reader.readAsDataURL(file);
+      }
     };
+
+  useEffect(() => {
+    if (selectedImage) {
+      console.log('Selected image updated:--------', selectedImage);
+      // Your API call logic here
+      handleOnSubmit();  // Assuming handleOnSubmit sends the form data
+    }
+  }, [selectedImage]);
+
+  const handleOnSubmit = async (data) => {
+    setError(null);
+    try {
+      // data.visible = agreed;
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("age", data.age);
+      formData.append("about", data.about);
+      formData.append("address", data.address);
+      // formData.append("visible", data.visible);
+  
+      // Check if selectedImage exists before appending to formData
+      if (selectedImage) {
+        formData.append("thumbnail", selectedImage);
+      } else {
+        // Handle the case where no image is selected
+        console.log('No image selected');
+      }
+  
+      const response = await updateUserDetailsAPI(formData);
+      console.log(response); // Check API response
+  
+      const updatedDetails = response.data.data;
+      setUserDetails((updatedDetails));
+      if (updatedDetails.thumbnail?.length > 0) {
+        setImagePreviewURL(updatedDetails.thumbnail);
+      }
+  
+      toast.success("Profile Updated Successfully");
+      setEditMode(false);
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "Something went wrong");
+      toast.error(err.message || "Something went wrong");
+    }
+  };
+   
+  
 
     return (
       <>
       <ProfileLayout>
-        <PageInfo pageName={"profile"} />
-        <div className="isolate bg-gray-300 px-6 lg:px-8 rounded-md pt-10 pb-10">
-          <div className="mx-auto max-w-2xl relative text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Customize Profile 
+        <PageInfo pageName={"Customize profile"} />
+        <div className="bg-white shadow-xl rounded-lg overflow-hidden">
+        <div className="relative h-48 bg-gradient-to-r from-gray-700 to-purple-300">
+          <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/60 to-transparent">
+            <h2 className="text-3xl mb-20 font-bold text-white">
+              {userDetails.name}
             </h2>
-
-            <div className="absolute ml-13">
-              {editMode ? (
-                <h1 className="py-1 px-2 text-sm rounded-md bg-indigo-500 text-white">
-                  Edit
-                </h1>
-              ) : (
-                <h1 className="px-2 py-1 text-sm rounded-md bg-gray-500 text-white">
-                  View Only
-                </h1>
+            <p className="text-white/80 mb-10">{userDetails.email}</p>
+          </div>
+        </div>
+        <div className="relative px-6 py-10">
+          <div className="absolute -top-20 left-6">
+            <div className="relative">
+              <img
+                src={imagePreviewURL || userDetails.thumbnail || "/placeholder-avatar.png"}
+                alt="User Profile"
+                className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
+              />
+              {editMode && (
+                <label
+                  htmlFor="thumbnail"
+                  className="absolute bottom-0 right-0 bg-indigo-600 text-white p-2 rounded-full cursor-pointer hover:bg-indigo-700 transition"
+                >
+                  <PencilSquareIcon className="w-5 h-5" />
+                  <input
+                    type="file"
+                    id="thumbnail"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                  />
+                </label>
               )}
             </div>
-            <span
-              className="absolute flex flex-col justify-center items-center right-10"
-              data-te-toggle="tooltip"
-              title={editMode ? "Turn off Edit mode" : "Turn On Edit Mode"}
-            >
-              {editMode ? (
-                <PencilSquareIcon className="w-6 hover:scale-105 duration-300 cursor-pointer text-primary font-extrabold" />
-              ) : (
-                <LockClosedIcon className="w-6 hover:scale-105 duration-300 cursor-pointer text-red-500" />
-              )}
+          </div>
+          <div className="flex justify-end mb-4">
+            <div className="flex items-center space-x-2">
+              <span className="text-sm font-medium text-gray-700">
+                {editMode ? "Edit Mode" : "View Mode"}
+              </span>
               <Switch
                 checked={editMode}
                 onChange={() => setEditMode(!editMode)}
                 className={classNames(
                   editMode ? "bg-indigo-600" : "bg-gray-200",
-                  "flex w-8 flex-none cursor-pointer mt-3 rounded-full p-px ring-1 ring-inset ring-gray-900/5 transition-colors durattion-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  "relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2"
                 )}
               >
-                <span className="sr-only">Agree to Policies</span>
+                <span className="sr-only">Enable edit mode</span>
                 <span
-                  aria-hidden="true"
                   className={classNames(
-                    editMode ? "translate-x-3.5" : "translate-x-0",
-                    "h-4 w-4 transform rounded-full bg-white shadow-sm ring-1 ring-gray-900/5 transition duration-200 ease-in-out"
+                    editMode ? "translate-x-5" : "translate-x-0",
+                    "pointer-events-none relative inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
                   )}
-                />
-              </Switch>
-            </span>
-          </div>
-          <form
-            onSubmit={ handleSubmit(handleOnSubmit)}
-            className="mx-auto mt-16 max-w-xl sm:mt-20"
-          >
-
-            <div className="mb-6">
-              <label className="block text-sm font-semibold leading-6 text-gray-900">Profile Picture</label>
-                        <div className="text-center">
-                        <div className="flex items-center justify-center">
-             <img
-              src={imagePreviewURL ||userDetails.thumbnail} // Fallback image if no profile image
-              alt="User Profile"
-              className="w-24 h-24 rounded-full object-cover border-2 border-gray-300"
-              />
-               </div>
-                          <div className="mt-4 flex text-sm leading-6 text-gray-600">
-                            <label
-                              htmlFor="thumbnail"
-                              className="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2"
-                            >
-                              <span>Upload Picture</span>
-                              <input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleImageChange} // Handle image upload
-                                className="form-input"
-                              />
-                            </label>
-                          </div>
-                          <p className="text-xs leading-5 text-gray-600">PNG, JPG, WEBP up to 1MB</p>
-                          <p className="text-red-600 text-xs mt-2">{errors.thumbnail?.message}</p>
-                        
-                        </div>
-                      
-            </div>
-
-
-            <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
-              <div className="sm:col-span-2">
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-semibold leading-6 text-gray-900"
                 >
+                  <span
+                    className={classNames(
+                      editMode
+                        ? "opacity-0 duration-100 ease-out"
+                        : "opacity-100 duration-200 ease-in",
+                      "absolute inset-0 flex h-full w-full items-center justify-center transition-opacity"
+                    )}
+                    aria-hidden="true"
+                  >
+                    <LockClosedIcon className="h-3 w-3 text-gray-400" />
+                  </span>
+                  <span
+                    className={classNames(
+                      editMode
+                        ? "opacity-100 duration-200 ease-in"
+                        : "opacity-0 duration-100 ease-out",
+                      "absolute inset-0 flex h-full w-full items-center justify-center transition-opacity"
+                    )}
+                    aria-hidden="true"
+                  >
+                    <PencilSquareIcon className="h-3 w-3 text-indigo-600" />
+                  </span>
+                </span>
+              </Switch>
+            </div>
+          </div>
+          <form onSubmit={handleSubmit(handleOnSubmit)} className="space-y-6">
+            <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-6">
+              <div className="sm:col-span-2">
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                   Name
                 </label>
-                <div className="mt-2.5">
-                  <input
-                    {...(editMode ? null : { disabled: true })}
-                    type="text"
-                    id="name"
-                    autoComplete="off"
-                    placeholder={userDetails.name}
-                    {...register("name")}
-                    className={classNames(
-                      errors.name
-                        ? "ring-red-600 rounded-md focus:ring-red-600"
-                        : "ring-gray-300 focus:ring-indigo-600",
-                      "block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset  placeholder:text-gray-400 focus:ring-2 focus:ring-inset  sm:text-sm sm:leading-6"
-                    )}
-                  />
-                </div>
-                <p className="text-red-600 nexa-font text-xs mt-2 ml-1">
-                  {errors.name?.message}
-                </p>
-              </div>
-  
-              <div className="col-span-full">
-                <label
-                  htmlFor="age"
-                  className="block text-sm font-semibold leading-6 text-gray-900"
-                >
-                  Age
-                  <span className="text-xs ml-3 mb-1 text-gray-400 text-end">
-                    (optional)
-                  </span>
-                </label>
-                <div className="mt-2">
-                  <input
-                    type="number"
-                    name="age"
-                    {...(editMode ? null : { disabled: true })}
-                    id="age"
-                    placeholder={userDetails.age}
-                    {...register("age")}
-                    className={classNames(
-                      errors.age
-                        ? "ring-red-600 rounded-md focus:ring-red-600"
-                        : "ring-gray-300 focus:ring-indigo-600",
-                      "block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset  placeholder:text-gray-400 focus:ring-2 focus:ring-inset  sm:text-sm sm:leading-6"
-                    )}
-                  />
-                  <p className="text-red-600 nexa-font text-xs mt-2 ml-1">
-                    {errors.age?.message}
-                  </p>
-                </div>
-              </div>
-            
-              <div className="col-span-full">
-                <label
-                  htmlFor="address"
-                  className="block text-sm font-semibold leading-6 text-gray-900"
-                >
-                  Address
-                  <span className="text-xs ml-3 mb-1 text-gray-400 text-end">
-                    (optional)
-                  </span>
-                </label>
-                <div className="mt-2">
-                  <textarea
-                    name="address"
-                    id="address"
-                    {...(editMode ? null : { disabled: true })}
-                    rows={3}
-                    {...register("address")}
-                    placeholder={userDetails.address}
-                    className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${
-                      errors.address?.message && "ring-red-600 ring-1 rounded-md"
-                    }`}
-                    defaultValue={""}
-                  />
-                </div>
-                <p className="text-red-600 nexa-font text-xs mt-2 ml-1">
-                  {errors.address?.message}
-                </p>
-              </div>
-            </div>
-            <div className="sm:col-span-2">
-              <label
-                htmlFor="message"
-                className="block text-sm font-semibold leading-6 text-gray-900"
-              >
-                Bio/About Me
-                <span className="text-xs ml-3 mb-1 text-gray-400 text-end">
-                  (optional)
-                </span>
-              </label>
-              <div className="mt-2.5">
-                <textarea
-                  {...(editMode ? null : { disabled: true })}
-                  name="message"
-                  id="message"
-                  autoComplete="off"
-                  placeholder={userDetails.about}
-                  rows={4}
-                  {...register("about")}
+                <input
+                  type="text"
+                  id="name"
+                  {...register("name")}
+                  disabled={!editMode}
                   className={classNames(
-                    errors.about
-                      ? "ring-red-600 rounded-md focus:ring-red-600"
-                      : "ring-gray-300 focus:ring-indigo-600",
-                    "block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset  placeholder:text-gray-400 focus:ring-2 focus:ring-inset  sm:text-sm sm:leading-6"
+                    "mt-1 block w-full rounded-md shadow-sm sm:text-sm",
+                    editMode
+                      ? "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                      : "border-transparent bg-gray-100",
+                    errors.name ? "border-red-300" : ""
                   )}
-                  // className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  defaultValue={""}
                 />
+                {errors.name && (
+                  <p className="mt-2 text-sm text-red-600">{errors.name.message}</p>
+                )}
               </div>
-              <p className="text-red-600 nexa-font text-xs mt-2 ml-1">
-                {errors.about?.message}
-              </p>
+              <div>
+                <label htmlFor="age" className="block text-sm font-medium text-gray-700">
+                  Age
+                </label>
+                <input
+                  type="number"
+                  id="age"
+                  {...register("age")}
+                  disabled={!editMode}
+                  className={classNames(
+                    "mt-1 block w-full rounded-md shadow-sm sm:text-sm",
+                    editMode
+                      ? "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                      : "border-transparent bg-gray-100",
+                    errors.age ? "border-red-300" : ""
+                  )}
+                />
+                {errors.age && (
+                  <p className="mt-2 text-sm text-red-600">{errors.age.message}</p>
+                )}
+              </div>
+             
+              <div className="sm:col-span-2">
+                <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+                  Address
+                </label>
+                <textarea
+                  id="address"
+                  {...register("address")}
+                  rows={3}
+                  disabled={!editMode}
+                  className={classNames(
+                    "mt-1 block w-full rounded-md shadow-sm sm:text-sm",
+                    editMode
+                      ? "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                      : "border-transparent bg-gray-100",
+                    errors.address ? "border-red-300" : ""
+                  )}
+                />
+                {errors.address && (
+                  <p className="mt-2 text-sm text-red-600">{errors.address.message}</p>
+                )}
+              </div>
+              <div className="sm:col-span-2">
+                <label htmlFor="about" className="block text-sm font-medium text-gray-700">
+                  Bio/About Me
+                </label>
+                <textarea
+                  id="about"
+                  {...register("about")}
+                  rows={4}
+                  disabled={!editMode}
+                  className={classNames(
+                    "mt-1 block w-full rounded-md shadow-sm sm:text-sm",
+                    editMode
+                      ? "border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                      : "border-transparent bg-gray-100",
+                    errors.about ? "border-red-300" : ""
+                  )}
+                />
+                {errors.about && (
+                  <p className="mt-2 text-sm text-red-600">{errors.about.message}</p>
+                )}
+              </div>
             </div>
-           
-            <div className="flex justify-center"></div>
-            <div className="mt-10">
-              <button
-                {...(editMode ? null : { disabled: true })}
-                type="submit"
-                className={`${
-                  editMode
-                    ? "bg-indigo-600 hover:bg-indigo-500"
-                    : "bg-gray-400 cursor-not-allowed"
-                } ${
-                  error
-                    ? "ring-1 ring-opacity-40 ring-red-700 ring-offset-2"
-                    : null
-                } block w-full rounded-md px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
-              >
-                Update Profile
-              </button>
-              <p className="text-red-600 nexa-font text-xs text-center mt-3 ml-1">
-                {error}
-              </p>
-            </div>
+            {editMode && (
+              <div className="flex justify-end">
+                <button
+                  type="submit"
+                  className="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                >
+                  Save Changes
+                </button>
+              </div>
+            )}
           </form>
+          {error && (
+            <p className="mt-4 text-sm text-center text-red-600">{error}</p>
+          )}
         </div>
+      </div>
+      <p className="mb-4 mt-2">Wanna change password!</p>
+      <Link
+      to="/changePassword"
+              className="text-white mt-4 bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-semibold rounded-lg text-md px-11 py-2 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+              >
+            change password
+        </Link>
       </ProfileLayout>
       </>
     );

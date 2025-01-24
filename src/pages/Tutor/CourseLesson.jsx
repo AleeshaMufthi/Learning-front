@@ -10,6 +10,8 @@ import Loading from "../../components/common/Loading";
 import ViewLesson from "./ViewLesson";
 import toast from "react-hot-toast";
 import EditCourseForm from "./EditCourseForm";
+import AddQuiz from "../../components/tutor/AddQuiz";
+import { getQuizByCourseIdAPI } from "../../api/tutor";
 
 export default function CourseLesson() {
     const navigate = useNavigate()
@@ -18,20 +20,48 @@ export default function CourseLesson() {
     const [isLoading, setIsLoading] = useState(true);
     const [selectedLesson, setSelectedLesson] = useState(null);
  
+    const [quizzes, setQuizzes] = useState([]);
+
     
+    // useEffect(() => {
+    //   setIsLoading(true);
+    //   getCourseDetailsAPI(id).then((response) => {
+    //     const course = response.data?.data;
+    //     setCourse(course);
+    //     setTimeout(() => {
+    //       setIsLoading(false);
+    //     }, 1000);
+    //   });
+    // }, []);
+
     useEffect(() => {
-      setIsLoading(true);
-      getCourseDetailsAPI(id).then((response) => {
-        const course = response.data?.data;
-        setCourse(course);
-        setTimeout(() => {
+      const fetchData = async () => {
+        setIsLoading(true);
+        try {
+          const response = await getCourseDetailsAPI(id);
+          const courseData = response.data?.data;
+          setCourse(courseData);
+    
+          const quizResponse = await getQuizByCourseIdAPI(id);
+          console.log(quizResponse, 'ppppppppppppppppppppppppppppp');
+          const quizzes = quizResponse.data?.data || [];
+          const allQuestions = quizzes.flatMap(quiz => quiz.questions || []);
+
+      console.log(allQuestions, "0000000000000000000000000");
+      setQuizzes(allQuestions);
+           // Adjust based on API response structure
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        } finally {
           setIsLoading(false);
-        }, 1000);
-      });
-    }, []);
+        }
+      };
+    
+      fetchData();
+    }, [id]);
+    
 
     const handleDeleteCourse = async () => {
-      
         try {
           setIsLoading(true);
           await deleteCourseAPI(id); // Call the delete API
@@ -91,9 +121,11 @@ export default function CourseLesson() {
             </div>
             
             <div className="flex-1 p-10">
-              <img src="" alt="" />
               <div className="flex justify-center">
                 <CreateLesson course={course}/>
+              </div>
+              <div className="flex justify-center">
+                <AddQuiz course={course}/>
               </div>
               {course?.lessons?.length ? (
                 <>
@@ -119,6 +151,24 @@ export default function CourseLesson() {
     </div>
   </div>
 )}
+
+<div className="mt-10">
+  <h1 className="text-amber-500 text-xl font-bold mb-5">Quizzes</h1>
+  {quizzes.length > 0 ? (
+    quizzes.map((quiz) => (
+      <div
+        key={quiz._id}
+        className="p-5 mb-5 bg-gray-100 rounded shadow dark:bg-gray-700"
+      >
+        <h2 className="text-lg font-bold text-blue-500">Qs: {quiz.question}</h2>
+        <p className="text-gray-500">Ans: {quiz.correctAnswer}</p>
+      </div>
+    ))
+  ) : (
+    <p className="text-gray-400">No quizzes added yet.</p>
+  )}
+</div>
+
             </div>
           </div>
         </>

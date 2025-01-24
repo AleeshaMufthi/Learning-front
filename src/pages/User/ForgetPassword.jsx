@@ -160,8 +160,6 @@ export default function ForgetPassword() {
         </div>
 
       )}
-
-
 {otpSent && !otpVerified && (
        <div className="flex items-center justify-between mt-2">
                 <span

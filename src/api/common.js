@@ -1,7 +1,7 @@
 import API from './index'
 
-const getAllCategoriesAPI = (route = "/admin/category") => {
-  return API.get(route);
+const getAllCategoriesAdminAPI = (data) => {
+  return API.get(`/admin/category?${data}`);
 };
 const getAllCoursesAPI = () => {
   return API.get("/user/courses");
@@ -12,10 +12,14 @@ const getAllCourseByFilter = (data) => {
 const getLessonDetailsAPI = (lessonId) => {
   return API.get(`/user/lessons/${lessonId}`);
 };
+const getAllCategoriesAPI = () => {
+  return API.get('/admin/category/all')
+}
 
 export {
-  getAllCategoriesAPI,
+  getAllCategoriesAdminAPI,
   getAllCoursesAPI,
   getAllCourseByFilter,
   getLessonDetailsAPI,
+  getAllCategoriesAPI,
 };

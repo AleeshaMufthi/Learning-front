@@ -17,6 +17,8 @@ const getUserDetailsAPI = () => API.get("/user/details");
 
 const updateUserDetailsAPI = (formData) => API.post("/user/details", formData, { headers: { "Content-Type": "multipart/form-data" }});
 
+const changePasswordAPI = (data) => API.post("/user/details/changePassword", data);
+
 // courses
 const getCourseDetailsAPI = (id, route = "/user/courses/enroll/") =>
     API.get(route + id);
@@ -45,9 +47,9 @@ const createOrderAPI = (courseId) =>
   const isEnrolledInCourseAPI = (courseId) =>
     API.get(`/user/details/enrolled/${courseId}/check`);
 
-  const getAllOrdersByUserAPI = () => API.get(`/user/orders`);
+  const getAllOrdersByUserAPI = (data) => API.get(`/user/orders?${data}`);
   
-  const getUserEnrolledCoursesAPI = () => API.get(`user/courses/enroll`);
+  const getUserEnrolledCoursesAPI = (data) => API.get(`user/courses/enroll?${data}`);
 
   // chat
 
@@ -75,7 +77,19 @@ const createOrderAPI = (courseId) =>
     return API.post(`/user/revenue/process-payment/${orderId}`);
 };
 
-  
+// quiz
+
+const getQuizDetailsAPI = (courseId) => API.get(`/user/quiz/${courseId}`)
+
+// review
+
+const addReviewAPI = (courseId, data) => API.post(`/user/review/create/${courseId}`, data)
+const getReviewAPI = (courseId) => API.get(`/user/review/${courseId}`)
+
+// certificate
+
+const createCertificateAPI = (data) => API.post(`/user/certificate/create`, data)
+const getCertifiedDetailsAPI = (userId) => API.get(`/user/certificate/${userId}`)
 
 export {
     userSignInAPI,
@@ -89,6 +103,7 @@ export {
     getTokenUpdate,
     handleLogOutAPI,
     getUserDetailsAPI,
+    changePasswordAPI,
     updateUserDetailsAPI,
     googleAuthAPI,
     getCourseDetailsAPI,
@@ -108,4 +123,9 @@ export {
     getAllNotificationsAPI,
     markAsReadAPI,
     calculateRevenueAPI,
+    getQuizDetailsAPI,
+    addReviewAPI,
+    getReviewAPI,
+    createCertificateAPI,
+    getCertifiedDetailsAPI,
 }

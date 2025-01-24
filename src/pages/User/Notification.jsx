@@ -27,9 +27,7 @@ const Notification = () => {
   
     // Mark a notification as read
     const handleMarkAsRead = async (id, url) => {
-      console.log(id, 'iddddddddddddd');
-      
-      console.log(url, 'urllllllllllll')
+
       try {
         await markAsReadAPI(id); // API call to mark notification as read
         
@@ -50,9 +48,8 @@ const Notification = () => {
   
     return (
       <ProfileLayout>
-        <PageInfo />
       <div className="p-4">
-        <h2 className="text-2xl font-bold mb-4">Notifications</h2>
+        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-5 text-center">Notifications</h2>
   
         {notifications.length > 0 ? (
           <ul className="space-y-3">

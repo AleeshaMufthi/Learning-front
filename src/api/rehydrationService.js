@@ -10,13 +10,11 @@ export const rehydrateSession = async () => {
   
     try {
       const role = localStorage.getItem("role");
-      if (!role) return; // No role, no rehydration needed
+      if (!role) return; 
   
-      // Refresh the token based on the role
       const newAccessToken = await refreshToken(); 
-      const userData = jwtDecode(newAccessToken); // Decode token to get user data
+      const userData = jwtDecode(newAccessToken); 
   
-      // Dispatch the correct state update based on role
       if (role === "tutor") {
         dispatch(
           setTutor({
@@ -45,7 +43,6 @@ export const rehydrateSession = async () => {
       }
     } catch (error) {
       console.error("Rehydration failed:", error);
-      // Optional: Clear local storage and redirect to login
       localStorage.clear();
       window.location.href = "/signin";
     }

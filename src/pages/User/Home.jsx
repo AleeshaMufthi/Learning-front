@@ -16,8 +16,7 @@ export default function Home() {
     };
     useEffect(() => {
       getAllCategoriesAPI().then(({ data }) => {
-        
-        setCategories(data.categories);
+        setCategories(data.category);
       });
       setTimeout(() => {
         setShowComponent(true);
