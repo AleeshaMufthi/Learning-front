@@ -18,7 +18,6 @@ function NavBar() {
     { name: "Home", href: Tutor },
     { name: "Manage Course", href: ManageCourse },
     { name: "Create Course", href: CreateCourse },
-    { name: "Dashboard", href: TutorDashboard },
     { name: "Profile", href: TutorProfile },
   ];
   const navitems = tutor?.loggedIn ? tutornav : normalnav;

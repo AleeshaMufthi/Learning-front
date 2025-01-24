@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Badge, Button } from "flowbite-react";
+import { Badge, Button, Card } from "flowbite-react";
 import CreateLesson from "../../components/tutor/CreateLesson";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getCourseDetailsAPI, deleteCourseAPI } from "../../api/tutor";
@@ -85,90 +85,87 @@ export default function CourseLesson() {
         <>
           <SectionTitle
             title={course?.title}
-            description={`Providing Learnt Course Management tool :- Manage Your ${course?.title} course`}
+            description={`Manage Your "${course?.title}" Course`}
           />
           <HorizontalRule />
-          <div className="flex nexa-font p-3">
-            <div className="flex-1 p-5 max-w-md bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+          <div className="flex flex-wrap gap-5 p-3">
+            {/* Left Section */}
+            <div className="flex-1 p-5 max-w-md bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
               <img
                 src={course?.thumbnail}
-                className="w-125 card ml-1 rounded"
-                alt="alternate image"
+                className="w-full rounded-lg"
+                alt="Course Thumbnail"
               />
-              <h1 className="text-white mt-3 uppercase text-center text-3xl p-5">{course.title}</h1>
-              <h3 className="mt-5 text-gray-400">{course.tagline}</h3>
-              <h3 className="mt-2 text-gray-400">{course.about}</h3>
-           
+              <h1 className="text-white mt-3 text-center text-3xl">{course.title}</h1>
+              <p className="text-gray-400 mt-5">{course.tagline}</p>
+              <p className="text-gray-400 mt-2">{course.about}</p>
 
-             <div className="flex mt-5 justify-between">
-             <Button 
-                onClick={handleDeleteCourse} 
-                color="red" 
-                variant="contained" 
-                disabled={isLoading}
-              >
-            {isLoading ? "Deleting..." : "Delete Course"}
-          </Button>
-
-          <Button 
-            onClick={() => navigate(`/tutor/courses/edit/${id}`)}   
-            color="blue" 
-            variant="contained"
-          >
-           Edit Course
-          </Button>
-             </div>
+              <div className="flex mt-5 justify-between">
+                <Button onClick={handleDeleteCourse} color="red" disabled={isLoading}>
+                  {isLoading ? "Deleting..." : "Delete Course"}
+                </Button>
+                <Button onClick={() => navigate(`/tutor/courses/edit/${id}`)} color="blue">
+                  Edit Course
+                </Button>
+              </div>
             </div>
-            
-            <div className="flex-1 p-10">
-              <div className="flex justify-center">
-                <CreateLesson course={course}/>
+
+            {/* Right Section */}
+            <div className="flex-1">
+              <div className="flex gap-5 mb-3">
+                <CreateLesson course={course} />
+                <AddQuiz course={course} />
               </div>
-              <div className="flex justify-center">
-                <AddQuiz course={course}/>
-              </div>
-              {course?.lessons?.length ? (
+              <p className="mb-10">Add 5 Quiz Questions based on the courses</p>
+              {course?.lessons?.length > 0 && (
                 <>
-                  <h1 className="text-amber-500 drop-shadow-sm  nexa-font text-start text-xl md:text-1xl ml-3 mt-10 mb-10 font-black">
-                    View Lessons
-                  </h1>
+                  <h1 className="text-amber-500 text-xl font-bold mb-5">Lessons</h1>
+                  <div className="grid gap-5">
+                    {course.lessons.map((lesson) => (
+                      <Card key={lesson._id} className="relative">
+                        <h2 className="text-lg font-bold text-white">{lesson.title}</h2>
+                        <p className="text-gray-500">{lesson.description}</p>
+                        <div className="flex gap-3 mt-5">
+                          {/* <Button
+                            color="green"
+                            onClick={() => setSelectedLesson(lesson)}
+                          >
+                            View Lesson
+                          </Button> */}
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
                 </>
-              ) : null}
-              
-              <ViewLesson />
+              )}
+
               {selectedLesson && (
-  <div className="mt-5">
-    <h2 className="text-white text-2xl">{selectedLesson.title}</h2>
-    <p className="text-gray-400">{selectedLesson.description}</p>
-    <div className="mt-5">
-      <video
-        controls
-        className="w-full rounded-lg shadow-lg"
-        src={selectedLesson.videoURL} // Display the fetched video URL here
-      >
-        Your browser does not support the video tag.
-      </video>
-    </div>
-  </div>
-)}
+                <div className="mt-10">
+                  <h2 className="text-white text-2xl">{selectedLesson.title}</h2>
+                  <p className="text-gray-400">{selectedLesson.description}</p>
+                  <video
+                    controls
+                    className="w-full rounded-lg shadow-lg mt-5"
+                    src={selectedLesson.videoURL}
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              )}
 
-<div className="mt-10">
-  <h1 className="text-amber-500 text-xl font-bold mb-5">Quizzes</h1>
-  {quizzes.length > 0 ? (
-    quizzes.map((quiz) => (
-      <div
-        key={quiz._id}
-        className="p-5 mb-5 bg-gray-100 rounded shadow dark:bg-gray-700"
-      >
-        <h2 className="text-lg font-bold text-blue-500">Qs: {quiz.question}</h2>
-        <p className="text-gray-500">Ans: {quiz.correctAnswer}</p>
-      </div>
-    ))
-  ) : (
-    <p className="text-gray-400">No quizzes added yet.</p>
-  )}
-</div>
-
+              <div className="mt-10">
+                <h1 className="text-amber-500 text-xl font-bold mb-5">Quizzes</h1>
+                {quizzes.length > 0 ? (
+                  quizzes.map((quiz) => (
+                    <Card key={quiz._id} className="bg-gray-100 dark:bg-gray-700">
+                      <h2 className="text-blue-500 font-bold">Qs: {quiz.question}</h2>
+                      <p className="text-gray-500">Ans: {quiz.correctAnswer}</p>
+                    </Card>
+                  ))
+                ) : (
+                  <p className="text-gray-400">No quizzes added yet.</p>
+                )}
+              </div>
             </div>
           </div>
         </>

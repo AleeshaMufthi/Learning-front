@@ -5,6 +5,7 @@ import { getAllCoursesByTutorAPI } from "../../api/tutor";
 import HorizontalRule from "../../components/common/HorizontalRule";
 import { Footer } from "flowbite-react";
 
+
 export default function ManageCourses() {
 
     const [courses, setCourses] = useState([]);
