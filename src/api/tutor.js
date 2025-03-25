@@ -5,14 +5,12 @@ const tutorSignInAPI = (body) => API.post("/auth/tutor/signin", body);
 const tutorSignUpAPI = (body) => API.post("/auth/tutor/signup", body);
 const tutorOtpSendAPI = (body) => API.post("/auth/tutor/sendotp", body);
 const tutorForgetPasswordAPI = (body) => API.post("/auth/tutor/forgetPassword",body);
-const tutorResetPasswordAPI = (body) => API.post("/auth/tutor/resetPassword",body)
+const tutorResetPasswordAPI = (body) => API.post("/auth/tutor/resetPassword",body);
 const getTutorTokenUpdate = () => API.get("/auth/tutor/token");
 const getSignedInTutorAPI = () => API.get("/auth/tutor/restore");
 const handleTutorLogOutAPI = () => API.delete("/auth/tutor/logout");
 
-
 // tutor profile
-
 const getTutorDetailsAPI = () => API.get("/tutor/details");
 const updateTutorDetailsAPI = (formData) => API.post("/tutor/details",  formData, { headers: { "Content-Type": "multipart/form-data" }});
 const getTopTutorsAPI = async (route = "/tutor/details/top") => {
@@ -22,7 +20,6 @@ const getAllTutorsAPI = (data) => API.get(`/tutor/details/all?${data}`)
 
 
 // courses
-
 const createCourseAPI = (formData, route = `/tutor/courses/create`) => {
   return API.post(route, formData, {
     headers: {
